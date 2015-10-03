@@ -21,7 +21,7 @@ cd /opt/zimbradmin
 curl -sL https://deb.nodesource.com/setup_0.12 | bash -
 
 # Then install with:
-#on installe le module async de node
+#on installe node
 apt-get install -y nodejs
 npm install async --save
 #on installe le module mysql de node
@@ -44,5 +44,6 @@ npm install connect-redis -save
 #on installe le module bunyan (gestion des logs)
 npm install bunyan -save
 #on installe le module bcrypt (cryptage)
- pm install bcrypt-nodejs -save
-
+npm install bcrypt-nodejs -save
+#on installe le module async de node
+npm install async -save
