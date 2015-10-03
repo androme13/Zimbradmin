@@ -1,0 +1,48 @@
+# user : debian
+# pwd : debian
+# mysql root pwd : debian
+
+#--------------------------------------------------------------------------
+
+# debian 7.8 x64
+# installation des paquets pour les prerequis
+apt-get install -y openssh-server mysql-server curl
+
+#--------------------------------------------------------------------------
+# creation structure zimbradmin
+mkdir /opt/zimbradmin
+cd /opt/zimbradmin
+
+
+
+#--------------------------------------------------------------------------
+# installation de node.js
+# Note the new setup script name for Node.js v0.12
+curl -sL https://deb.nodesource.com/setup_0.12 | bash -
+
+# Then install with:
+#on installe le module async de node
+apt-get install -y nodejs
+npm install async --save
+#on installe le module mysql de node
+npm install mysql --save
+#on installe le module express et express-session
+npm install express --save
+npm install express-session --save
+#on installe le module de gestion des cookies
+npm install cookie-parser -save
+#on installe le module gzip
+npm install compress -save
+#on installe le module extdirect
+npm install extdirect -save
+#on installe le module nconf
+npm install nconf -save
+#on installe le module redis
+npm install redis -save
+#on installe le module connect-redis (gestion des sessions)
+npm install connect-redis -save
+#on installe le module bunyan (gestion des logs)
+npm install bunyan -save
+#on installe le module bcrypt (cryptage)
+ pm install bcrypt-nodejs -save
+
