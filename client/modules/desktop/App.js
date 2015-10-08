@@ -6,47 +6,38 @@
  */
 
 
-Ext.infoMsg = function(){
+Ext.infoMsg = function () {
     var msgCt;
 
-    function createBox(t, s, c){
-       // return ['<div class="msg">',
-       //         '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',
-       //         '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><h3>', t, '</h3>', s, '</div></div></div>',
-       //         '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',
-       //         '</div>'].join('');
-       return '<div class="msg"><h3><font color="'+ c +'">&#9632;</font><CENTER><U>' + t + '</U></CENTER></h3><p>' + s + '</p></div>';
+    function createBox(t, s, c) {
+        // return ['<div class="msg">',
+        //         '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',
+        //         '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><h3>', t, '</h3>', s, '</div></div></div>',
+        //         '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',
+        //         '</div>'].join('');
+        return '<div class="msg"><h3><font color="' + c + '">&#9632;</font><CENTER><U>' + t + '</U></CENTER></h3><p>' + s + '</p></div>';
     }
     return {
-        msg : function(title, format, color){
-            if (!color)color="blue";
-            if(!msgCt){
-                msgCt = Ext.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
+        msg: function (title, format, color) {
+            if (!color)
+                color = "blue";
+            if (!msgCt) {
+                msgCt = Ext.DomHelper.insertFirst(document.body, {id: 'msg-div'}, true);
             }
             var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1));
             var m = Ext.DomHelper.append(msgCt, createBox(title, s, color), true);
             m.hide();
-            m.slideIn('t').ghost("t", { delay: 1000, remove: true});
+            m.slideIn('t').ghost("t", {delay: 1000, remove: true});
         },
-
-        init : function(){
-            if(!msgCt){
+        init: function () {
+            if (!msgCt) {
                 // It's better to create the msg-div here in order to avoid re-layouts 
                 // later that could interfere with the HtmlEditor and reset its iFrame.
-                msgCt = Ext.DomHelper.insertFirst(document.body, {id:'msg-div'}, true);
+                msgCt = Ext.DomHelper.insertFirst(document.body, {id: 'msg-div'}, true);
             }
         }
     };
 }();
-
-
-
-
-
-
-
-
-
 
 
 // fix hide submenu (in chrome 43)
@@ -161,7 +152,7 @@ Ext.define('Ext.ux.desktop.App', {
                                 me.finishtaskbar();
                                 me.loginwindow.close();
                                 me.desktop.taskbar.show();
-                                me.loadShortcuts();
+                                me.loadShortcuts(resultgetmodules.data);
                                 me.restoreShortcuts();
                             }
                             else
@@ -216,10 +207,10 @@ Ext.define('Ext.ux.desktop.App', {
                         me.getModule('login-win').firstLaunch = false;
                         me.finishmenubar();
                         me.finishtaskbar();
-                        me.loadShortcuts();
+                        me.loadShortcuts(resultgetmodules.data);
                         // on lance le polltask à la main puisque l'on ne passe pas par le login
                         me.runSessionPollTask();
-                        Ext.infoMsg.msg("Bienvenue",me.session.userinfo.firstname+' '+me.session.userinfo.lastname);
+                        Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
                     }
                 });
                 // puisque c'est un raffraichissement
@@ -312,7 +303,7 @@ Ext.define('Ext.ux.desktop.App', {
                 handler: function () {
                     var props = me.getModule(name);
                     var item = {name: props.launcher.text, module: props.id, iconCls: props.launcher.shortcutCls};
-                    me.addShortcut([item]);
+                    me.registerShortcut(item);
                 }
             });
         }
@@ -330,7 +321,8 @@ Ext.define('Ext.ux.desktop.App', {
         me.modules = me.loadModules();
         if (login) {
             me.modules.push(new MyDesktop.modules.login.Login());
-        };
+        }
+        ;
         me.initModules(me.modules);
         desktopCfg = me.getDesktopConfig();
         me.desktop = new Ext.ux.desktop.Desktop(desktopCfg);
@@ -342,42 +334,149 @@ Ext.define('Ext.ux.desktop.App', {
         me.isReady = true;
         me.fireEvent('ready', me);
     },
-    loadShortcuts: function () {
+    loadShortcuts: function (modules) {
         var me = this;
-        ExtRemote.DXUser.getshortcuts({'action': 'getshortcuts'},
-        function (result, event) {
-            if (result.success === true)
-            {
-                Ext.each(result.data, function (record) {
-                    // on genere les icones par record
-                    record.iconCls = record.module + '-shortcut';
-                });
-                record = result.data;
-                me.addShortcut(record);
+        var record = [];
+        //console.log(modules);
+        //console.log(this.modules[0].$className);
+
+        var shortcutsToCreate = [];
+
+
+        // on creer en premier un tableau qui contient que les modules
+        // qui possèdent un raccourci
+        modules.forEach(function (entry) {
+            if (entry.hasshortcut) {
+                shortcutsToCreate.push(entry);
             }
-        }
-        );
+        });
+
+        // ensuite on va chercher le nom du module chargé pour
+        // creer le raccourci
+        shortcutsToCreate.forEach(function (entry) {
+            // on parcourt les modules chargés pour voir si
+            // il y a correspondance dans les noms
+            me.modules.forEach(function (loadedModule) {
+                //console.log ('loadedmodules',loadedModules.$className);
+                //console.log ('entrymodules',entry.module);
+                if (entry.module == loadedModule.$className)
+                {
+                    //console.log (loadedModule);
+                    record.push({
+                        module: loadedModule.id,
+                        name: loadedModule.launcher.text,
+                        iconCls: loadedModule.id + '-shortcut',
+                    });
+                }
+            });
+
+        });
+        //console.log(record);
+        me.addShortcuts(record);
+
+
+        //console.log('shortcutsToCreate:', shortcutsToCreate);
+        /*ExtRemote.DXUser.getshortcuts({'action': 'getshortcuts'},
+         function (result, event) {
+         if (result.success === true)
+         {
+         Ext.each(result.data, function (record) {
+         // on genere les icones par record
+         record.iconCls = record.module + '-shortcut';
+         });
+         record = result.data;
+         me.addShortcut(record);
+         }
+         }
+         );*/
     },
     searchShortcut: function (module) {
         var store = Ext.data.StoreManager.lookup('shortcutsStore');
         var result = store.findRecord('module', module);
         return result;
     },
-    removeShortcut: function (module) {
+    removeShortcut: function (records) {
+        console.log ('removeshortcut:',records)
         var store = Ext.data.StoreManager.lookup('shortcutsStore');
-        var result = store.findRecord('module', module);
-        store.remove(result);
-    },
-    addShortcut: function (record) {
-        var store = Ext.data.StoreManager.lookup('shortcutsStore');
-
-        // on verifie si le raccourci n'existe pas deja
-        record.forEach(function (entry) {
-            var result = store.findRecord('module', entry.module);
-            if (!result) {
-            store.add(entry);
+        console.log("shortcutsStore",store)
+        //var result = store.findRecord('module', module);
+        shortcutsToRemove = [];
+        records.forEach(function (entry) {
+            var result = store.findRecord('module', entry);
+            console.log ('entry',entry);
+            
+            if (result) {
+                shortcutsToRemove.push(result);
+                console.log(result);
             }
         });
+        store.remove(shortcutsToRemove);
+        //store.remove(result);
+    },
+    addShortcuts: function (records) {
+        var me = this;
+        var store = Ext.data.StoreManager.lookup('shortcutsStore');
+        shortcutsToAdd = [];
+        // on verifie si le raccourci n'existe pas deja
+        records.forEach(function (entry) {
+            var result = store.findRecord('module', entry.module);
+            if (!result) {
+                shortcutsToAdd.push(entry);
+            }
+        });
+        store.add(shortcutsToAdd);
+    },
+    registerShortcut: function (record, register) {
+        // si register = false, le raccourci est supprimé sinon il est ajouté
+        var me = this;
+        var module;
+        //console.log(this);
+        //console.log(this.desktop.app.session.userinfo.id);
+        //console.log ('this.desktop.app.session.modules',this.session.modules)
+        //me.addShortcuts([record]);
+        //console.log('modules:', this.modules);
+        //console.log('record:', record);
+        this.modules.forEach(function (entry) {
+            if (record.module == entry.id) {
+                //console.log(entry.$className);
+                module = entry.$className;
+            }
+
+        });
+        ExtRemote.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
+        function (result) {
+            me.addShortcuts([record]);
+            // Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
+
+        });
+
+    },
+    unregisterShortcut: function (record) {
+        console.log('unregister:',record)
+        console.log('this.modules:',this.modules)
+        var me = this;
+        var module;
+        //console.log(this);
+        //console.log(this.desktop.app.session.userinfo.id);
+        //console.log ('this.desktop.app.session.modules',this.session.modules)
+        //me.addShortcuts([record]);
+        //console.log('modules:', this.modules);
+        //console.log('record:', record);
+        this.modules.forEach(function (entry) {
+            if (record == entry.id) {
+                //console.log(entry.$className);
+                module = entry.$className;
+            }
+
+        });
+        console.log(module);
+        ExtRemote.DXModules.removemodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
+        function (result) {
+            me.removeShortcut([record]);
+            // Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
+
+        });
+
     },
     getDesktopConfig: function () {
         var me = this, cfg = {
@@ -550,6 +649,7 @@ Ext.define('Ext.ux.desktop.App', {
         this.session = new Object();
         this.session.userinfo = obj.userinfo;
         this.session.modules = obj.modules;
+        //console.log ('this.session.modules',this.session.modules)
     },
     onReady: function (fn, scope) {
         if (this.isReady) {

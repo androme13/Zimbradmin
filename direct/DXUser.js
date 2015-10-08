@@ -37,7 +37,6 @@ var DXUser = {
                 return;
             }
             console.log(params);
-//          log.infos(params);
             var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
 
             connection.query(query, function (err, rows) {
@@ -70,9 +69,10 @@ var DXUser = {
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
+            //if(availPoolCnx==false)return;
             //console.log('connected as id ' + connection.threadId);
             var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
-
+            
             connection.query(query, function (err, rows) {
                 connection.release();
                 if (!err) {
@@ -110,6 +110,49 @@ var DXUser = {
     },
     // operations sur les raccourcis ////////////////////////////////
     getshortcuts: function (params, callback, sessionID, request, response) {
+        
+        
+        /*pool.getConnection(function (err, connection) {
+            console.log ('params:',params);
+            if (err) {
+                connection.release();
+                //res.json({"code": 100, "status": "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            }
+            //if(availPoolCnx==false)return;
+            //console.log('connected as id ' + connection.threadId);
+                        var query = "SELECT * FROM users " +
+                    "INNER JOIN usersshortcut " +
+                    "ON modules.id=usersshortcuts.userid " +
+                    "INNER JOIN modules " +
+                    "ON modules.id=usersmodules.moduleid " +
+                    "WHERE users.id=" + params.id;
+            
+            connection.query(query, function (err, rows) {
+                connection.release();
+                if (!err) {
+                    if (rows.length !== 0) {
+                        success = true;
+                        data = rows;
+                    }
+                    callback({
+                        success: success,
+                        message: "getshortcuts",
+                        data: data
+                    });
+                }
+            });
+
+            connection.on('error', function (err) {
+                //res.json({"code" : 100, "status" : "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            });
+        });*/
+        
+        
+        
         response.header('My-Custom-Header ', '1234567890');
         var data = new Object();
         var success = true;
@@ -118,7 +161,6 @@ var DXUser = {
             {name: 'param', module: 'zmsettings-win'},
             {name: 'Notepad', module: 'notepad'},
             {name: 'System Status', module: 'systemstatus-win'}];
-        log.info('shortcuts', data);
         callback({
             success: success,
             message: 'getshortcuts',
@@ -134,7 +176,7 @@ var DXUser = {
                 return;
             }
             //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT module FROM users " +
+            var query = "SELECT moduleid,module,hasshortcut FROM users " +
                     "INNER JOIN usersmodules " +
                     "ON users.id=usersmodules.userid " +
                     "INNER JOIN modules " +
@@ -191,6 +233,22 @@ var DXUser = {
 
 
 // fonctions sur les wallpapaers ////////////////////////////////
+
+function availPoolCnx() {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            connection.release();
+            //res.json({"code": 100, "status": "Error in connection database"});
+            log.warn("Error connecting database ... \n\n");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    });
+}
+
 function child(img) {
     return {qtip: img, text: getTextOfWallpaper(img), iconCls: '', leaf: true};
 }
