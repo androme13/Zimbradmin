@@ -1,10 +1,3 @@
-/*
- * File: client/modules/common/paginggrid.js
- *
- * VIEW vue des erreurs de log postfix du loganalyzer
- */
-
-
 
 Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
@@ -18,7 +11,23 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         if (this.rowEditing === true) {
             this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
                 clicksToMoveEditor: 1,
-                autoCancel: true,
+                autoCancel: false,
+                listeners: {
+                    edit: function (editor, e, opt) {
+                        editor.grid.store.sync();
+
+                        /*me.up().fireEvent('entryAdd', {
+                         editor: editor,
+                         e: e,
+                         opt: opt
+                         });*/
+                    },
+                    canceledit: function (editor, e, opt) {
+                        // si il n'y a pas de champ id,
+                        //  c'est que c'est un ajout annulé
+                        if (!e.record.data.id) editor.grid.store.removeAt(0);
+                    },
+                }
             });
         }
         // on crée le store pour le choix du nombre d'elements à afficher
@@ -181,11 +190,14 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             clickEvent: 'mousedown',
                             action: 'add',
                             handler: function () {
-                                //me.up().fireEvent('entryAdd', this.up('grid'));
+                                //console.log('+:',this.up())
+                                /*me.up().fireEvent('entryAdd', {
+                                 grid: this.up('grid'),
+                                 });*/
                                 var grid = this.up('grid');
                                 var newEntry = Ext.create(grid.store.model.modelName, {
                                 });
-                                console.log(grid.store.model.modelName);
+                                //console.log(newEntry);
                                 grid.store.insert(0, newEntry);
                                 grid.rowEditing.startEdit(0, 0);
                             }
@@ -203,18 +215,18 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             handler: function () {
                                 var grid = this.up('grid');
                                 var rows = grid.getSelectionModel().getSelection();
-                                var itemsList="";
+                                var itemsList = "";
                                 rows.forEach(function (entry) {
                                     var str = entry.data;
                                     Ext.iterate(str, function (key, value) {
-                                        itemsList+=value+'|';
+                                        itemsList += value + '|';
                                     });
-                                    itemsList+="<br>";
+                                    itemsList += "<br>";
                                 });
                                 //console.log(Object.keys(rows))
                                 var msg = Ext.Msg.show({
                                     title: 'Confirmer la suppression',
-                                    msg: 'Veuillez confirmer la suppression des éléments suivants :<br>'+itemsList,
+                                    msg: 'Veuillez confirmer la suppression des éléments suivants :<br>' + itemsList,
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     modal: true,
@@ -222,15 +234,13 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                         if (btn === 'yes') {
                                             grid.store.remove(rows);
                                             grid.store.sync();
-                                            Ext.infoMsg.msg("supprimées","ok","orange");
+                                            Ext.infoMsg.msg("supprimées", "ok", "orange");
                                         }
                                     }
                                 });
                                 Ext.defer(function () {
                                     msg.toFront();
                                 }, 50);
-                                //console.log (row);
-                                //me.up().fireEvent('entryRemove', this.up('grid'));
                             }
                         },
                         {

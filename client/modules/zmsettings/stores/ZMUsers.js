@@ -5,7 +5,7 @@ Ext.define('MyDesktop.modules.zmsettings.stores.ZMUsers', {
     proxy: {
         type: 'direct',
         api: {
-            //create: 'Server.Demo.Todo.create',
+            create: 'ExtRemote.DXUser.addusers',
             read: 'ExtRemote.DXUser.getusers',
             update: 'ExtRemote.DXUser.updateusers',
             destroy: 'ExtRemote.DXUser.destroyusers'

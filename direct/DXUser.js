@@ -28,6 +28,43 @@ var DXUser = {
 
 
     // operations sur les user ////////////////////////////////
+    addusers: function (params, callback, sessionID, request, response) {
+        pool.getConnection(function (err, connection) {
+            console.log(params);
+            if (err) {
+                connection.release();
+                //res.json({"code": 100, "status": "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            }
+            var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
+
+            connection.query(query, function (err, rows) {
+                connection.release();
+                if (!err) {
+                    if (rows.length !== 0) {
+                        success = true;
+                        data = rows;
+                    }
+                    callback({
+                        success: false,
+                        message: "addusers",
+                        data: data
+                    });
+                }
+            });
+
+            connection.on('error', function (err) {
+                //res.json({"code" : 100, "status" : "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            });
+        });
+        
+
+    },
+    
+    
     destroyusers: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {

@@ -1,24 +1,24 @@
 
-Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
+Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
-        'MyDesktop.modules.zmsettings.stores.ZMUsers',
+        'MyDesktop.modules.mailtransport.stores.MailTransport',
         'Ext.data.TreeStore',
         'Ext.layout.container.Accordion',
         'Ext.toolbar.Spacer',
         'Ext.tree.Panel'
     ],
-    id: 'zmsettings-win',
+    id: 'mailtransport-win',
     init: function () {
         var me = this;
         // on charge le fichier css du module
         var idCSS = '' + Math.floor(Math.random() * 100);
         Ext.util.CSS.createStyleSheet('', idCSS);
-        Ext.util.CSS.swapStyleSheet(idCSS, 'modules/zmsettings/rsc/style.css');
+        Ext.util.CSS.swapStyleSheet(idCSS, 'modules/mailtransport/rsc/style.css');
         this.launcher = {
             menu: 'Settings',
-            text: 'Parametres de Zimbradmin',
-            title: 'Gestion des Parametres ZimbrAdmin',
+            text: 'Transport des emails',
+            title: 'Gestion du transport des emails',
             iconCls: this.id + '-icon',
             shortcutCls: this.id + '-shortcut',
         };
@@ -31,26 +31,18 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
         if (!win) {
             //tab zmusers
             //var refer=refer;
-            var ZMUsersGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMUsers');
+            console.log('creation mailtropsportstore');
+            var MailTransportGridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
             cfg = {
-                store: ZMUsersGridStore,
+                store: MailTransportGridStore,
                 rowEditing: true,
-                title: 'Uilisateurs',
+                title: 'transport de mails',
                 multiSelect: true,
             };
-            var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
-            //var ZMUsersGrid = Ext.create('MyDesktop.modules.zmsettings.views.UsersGrid', {store: ZMUsersGridStore});
+            var MailTransportGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
+            //var MailTransportGrid = Ext.create('MyDesktop.modules.mailtransport.views.UsersGrid', {store: MailTransportGridStore});
 
 
-            //tab ZMmodules            
-            var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
-            cfg = {
-                store: ZMModulesGridStore,
-                rowEditing: true,
-                title: 'Modules',
-                multiSelect: true,
-            };          
-            var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -61,24 +53,11 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 //constrainHeader: true,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',
-                /*tools: [{
-                        type: 'pin',
-                        tooltip: 'creer un raccrouci du module sur le bureau',
-                        handler: function (event, toolEl, panel) {
-                            // refresh logic
-                            //var item=new object();
-                            var item= {name:me.launcher.text,  module:me.id,  iconCls:me.launcher.shortcutCls};
-                            //console.log (me,me.launcher);
-                            refer.addShortcut(item);                            
-                            //console.log(MyDesktop.App());
-                        }
-                    }],*/
-                //tools:[],
                 items: {
                     xtype: 'tabpanel',
                     listeners: {
                         afterrender: function () {
-                            ZMUsersGridStore.load();
+                           MailTransportGridStore.load();
                         },
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)
@@ -102,11 +81,9 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                     },
                     //tabPosition:'left',
                     items: [{
-                            xtype: ZMUsersGrid,
-                            
-                        }, {
-                            xtype: ZMModulesGrid,
-                        },
+                            xtype: MailTransportGrid,
+                            //xtype: MailTransportGrid, 
+                        }
                     ]},
                 //fonctions
 

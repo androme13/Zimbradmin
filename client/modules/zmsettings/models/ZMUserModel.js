@@ -88,6 +88,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             name: 'username',
             editor: {
                 editable: true,
+                allowBlank:false
             },
             type: 'string'
         },
@@ -95,6 +96,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             name: 'firstname',
             editor: {
                 editable: true,
+                allowBlank:false
             },
             type: 'string'
         },
@@ -102,6 +104,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             name: 'lastname',
             editor: {
                 editable: true,
+                allowBlank:false
             },
             type: 'string'
         },

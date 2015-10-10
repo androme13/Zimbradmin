@@ -192,7 +192,6 @@ Ext.define('Ext.ux.desktop.Desktop', {
                     iconCls: 'star',
                     text: 'Supprimer le raccourci',
                     handler: function () {
-                        //me.app.removeShortcut([record.data.module]);
                         me.app.unregisterShortcut([record.data.module]);
                     }
                 })]

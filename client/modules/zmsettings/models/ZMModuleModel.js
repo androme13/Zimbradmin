@@ -5,18 +5,24 @@
  * http://www.sencha.com/license
  */
 
-Ext.define('MyDesktop.modules.zmsettings.models.ZMModule', {
+Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id'
+        {name: 'id', hidden: true
         },
-        {name: 'module'
+        {name: 'module',
+            editor: {
+                allowBlank: false,
+                //blankText: 'Le champ est obligatoire.',
+            },
+            type: 'string'
         },
         {name: 'comment',
             editor: {
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
             },
+            type: 'string'
         },
     ]
 });

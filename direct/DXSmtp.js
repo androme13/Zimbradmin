@@ -5,7 +5,7 @@
  */
 var fs = require('fs');
 var MySQLConfig = global.MySQLConfig;
-var log = global.log.child({widget_type: 'DXModules'});
+var log = global.log.child({widget_type: 'DXSmtp'});
 var pool = mysql.createPool({
     connectionLimit: 100,
     host: MySQLConfig.host,
@@ -15,7 +15,7 @@ var pool = mysql.createPool({
     debug: false
 });
 
-var DXModules = {
+var DXSmtp = {
     // method signature has 5 parameters
     /**
      *
@@ -26,17 +26,18 @@ var DXModules = {
      * @param response only if "appendRequestResponseObjects" enabled
      */
 
-    addmodules: function (params, callback, sessionID, request, response) {
+
+    // operations sur les user ////////////////////////////////
+    addusers: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
+            console.log(params);
             if (err) {
                 connection.release();
                 //res.json({"code": 100, "status": "Error in connection database"});
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
-            //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT * FROM modules "
-
+            var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
 
             connection.query(query, function (err, rows) {
                 connection.release();
@@ -45,10 +46,46 @@ var DXModules = {
                         success = true;
                         data = rows;
                     }
-
                     callback({
-                        success: success,
-                        message: "getmodules",
+                        success: false,
+                        message: "addusers",
+                        data: data
+                    });
+                }
+            });
+
+            connection.on('error', function (err) {
+                //res.json({"code" : 100, "status" : "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            });
+        });
+        
+
+    },
+    
+    
+    destroyusers: function (params, callback, sessionID, request, response) {
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                connection.release();
+                //res.json({"code": 100, "status": "Error in connection database"});
+                log.warn("Error connecting database ... \n\n");
+                return;
+            }
+            console.log(params);
+            var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
+
+            connection.query(query, function (err, rows) {
+                connection.release();
+                if (!err) {
+                    if (rows.length !== 0) {
+                        success = true;
+                        data = rows;
+                    }
+                    callback({
+                        success: false,
+                        message: "getuserslist",
                         data: data
                     });
                 }
@@ -61,7 +98,7 @@ var DXModules = {
             });
         });
     },
-    getmodules: function (params, callback, sessionID, request, response) {
+    get: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
                 connection.release();
@@ -69,10 +106,11 @@ var DXModules = {
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
+            //if(availPoolCnx==false)return;
             //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT * FROM modules "
-
-
+            var query = "SELECT * FROM transport";
+            //var query = "SELECT * FROM transport LIMIT "+params.limit;
+            
             connection.query(query, function (err, rows) {
                 connection.release();
                 if (!err) {
@@ -80,10 +118,9 @@ var DXModules = {
                         success = true;
                         data = rows;
                     }
-
                     callback({
                         success: success,
-                        message: "getmodules",
+                        message: "getsmtp",
                         data: data
                     });
                 }
@@ -96,7 +133,7 @@ var DXModules = {
             });
         });
     },
-    addmodulesshortcut: function (params, callback, sessionID, request, response) {
+    updateusers: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
                 connection.release();
@@ -104,100 +141,14 @@ var DXModules = {
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
-            //console.log('connected as id ' + connection.threadId);
-            //var query = "SELECT * FROM modules ";
-            //var query = 'UPDATE modules SET hasshortcut=1 WHERE id=1';
-
-            var query = "UPDATE usersmodules " +
-                    "INNER JOIN users " +
-                    "ON users.id=usersmodules.userid " +
-                    "INNER JOIN modules " +
-                    "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-                    "SET usersmodules.hasshortcut=1 " +
-                    "WHERE usersmodules.userid=" + params.id;
-
-            /*var query = "SELECT userid,moduleid,hasshortcut FROM usersmodules " +
-             "INNER JOIN users " +
-             "ON users.id=usersmodules.userid " +
-             "INNER JOIN modules " +
-             "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-             "WHERE usersmodules.userid=" + params.id;*/
-
-
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-
-                    callback({
-                        success: success,
-                        message: "getmodules",
-                        data: data
-                    });
-                }
-            });
-
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
+            console.log(params);
+            //log.infos(params);
         });
     },
-    removemodulesshortcut: function (params, callback, sessionID, request, response) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            //console.log('connected as id ' + connection.threadId);
-            //var query = "SELECT * FROM modules ";
-            //var query = 'UPDATE modules SET hasshortcut=1 WHERE id=1';
-
-            var query = "UPDATE usersmodules " +
-                    "INNER JOIN users " +
-                    "ON users.id=usersmodules.userid " +
-                    "INNER JOIN modules " +
-                    "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-                    "SET usersmodules.hasshortcut=0 " +
-                    "WHERE usersmodules.userid=" + params.id;
-
-            /*var query = "SELECT userid,moduleid,hasshortcut FROM usersmodules " +
-             "INNER JOIN users " +
-             "ON users.id=usersmodules.userid " +
-             "INNER JOIN modules " +
-             "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-             "WHERE usersmodules.userid=" + params.id;*/
-
-
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-
-                    callback({
-                        success: success,
-                        message: "getmodules",
-                        data: data
-                    });
-                }
-            });
-
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });
-    }
 };
 
-module.exports = DXModules;
+
+
+
+
+module.exports = DXSmtp;

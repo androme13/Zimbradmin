@@ -396,22 +396,17 @@ Ext.define('Ext.ux.desktop.App', {
         return result;
     },
     removeShortcut: function (records) {
-        console.log ('removeshortcut:',records)
         var store = Ext.data.StoreManager.lookup('shortcutsStore');
-        console.log("shortcutsStore",store)
         //var result = store.findRecord('module', module);
         shortcutsToRemove = [];
         records.forEach(function (entry) {
-            var result = store.findRecord('module', entry);
-            console.log ('entry',entry);
-            
+            var result = store.findRecord('module', entry);        
             if (result) {
                 shortcutsToRemove.push(result);
                 console.log(result);
             }
         });
         store.remove(shortcutsToRemove);
-        //store.remove(result);
     },
     addShortcuts: function (records) {
         var me = this;
@@ -426,19 +421,12 @@ Ext.define('Ext.ux.desktop.App', {
         });
         store.add(shortcutsToAdd);
     },
-    registerShortcut: function (record, register) {
+    registerShortcut: function (record) {
         // si register = false, le raccourci est supprimé sinon il est ajouté
         var me = this;
         var module;
-        //console.log(this);
-        //console.log(this.desktop.app.session.userinfo.id);
-        //console.log ('this.desktop.app.session.modules',this.session.modules)
-        //me.addShortcuts([record]);
-        //console.log('modules:', this.modules);
-        //console.log('record:', record);
         this.modules.forEach(function (entry) {
             if (record.module == entry.id) {
-                //console.log(entry.$className);
                 module = entry.$className;
             }
 
@@ -446,35 +434,20 @@ Ext.define('Ext.ux.desktop.App', {
         ExtRemote.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
         function (result) {
             me.addShortcuts([record]);
-            // Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
-
         });
-
     },
     unregisterShortcut: function (record) {
-        console.log('unregister:',record)
-        console.log('this.modules:',this.modules)
         var me = this;
         var module;
-        //console.log(this);
-        //console.log(this.desktop.app.session.userinfo.id);
-        //console.log ('this.desktop.app.session.modules',this.session.modules)
-        //me.addShortcuts([record]);
-        //console.log('modules:', this.modules);
-        //console.log('record:', record);
         this.modules.forEach(function (entry) {
             if (record == entry.id) {
-                //console.log(entry.$className);
                 module = entry.$className;
             }
-
         });
         console.log(module);
         ExtRemote.DXModules.removemodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
         function (result) {
             me.removeShortcut([record]);
-            // Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
-
         });
 
     },
