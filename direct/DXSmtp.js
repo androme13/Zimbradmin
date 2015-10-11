@@ -60,11 +60,7 @@ var DXSmtp = {
                 return;
             });
         });
-        
-
     },
-    
-    
     destroyusers: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -106,23 +102,39 @@ var DXSmtp = {
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
-            //if(availPoolCnx==false)return;
-            //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT * FROM transport";
-            //var query = "SELECT * FROM transport LIMIT "+params.limit;
-            
-            connection.query(query, function (err, rows) {
-                connection.release();
+            var query = "SELECT * FROM transport LIMIT " + params.start + ',' + params.limit;
+            connection.query(query, function (err, rows, fields) {
                 if (!err) {
                     if (rows.length !== 0) {
                         success = true;
                         data = rows;
+                        // on cherche maintenant le nombre total
+                        // d'entrées pour le paging
+                        var query = "SELECT COUNT(*) AS totalCount FROM transport";
+                        connection.query(query, function (err, rows, fields) {
+                            connection.release();
+                            //console.log(fields);
+                            if (!err) {
+                                //console.log('totalcount', rows[0].totalCount);
+                            }
+                            callback({
+                                success: success,
+                                totalCount: rows[0].totalCount,
+                                message: "getsmtp",
+                                data: data
+                            });
+                        })
+
+
+
+
+
+
+
+
+
+
                     }
-                    callback({
-                        success: success,
-                        message: "getsmtp",
-                        data: data
-                    });
                 }
             });
 

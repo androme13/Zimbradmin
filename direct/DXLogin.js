@@ -50,6 +50,7 @@ var DXLogin = {
                         message = 'Login successful';
                         data.userinfo = rows[0];
                         request.session.userinfo = data.userinfo;
+                        console.log(request.session.userinfo);
                         log.info('Login of ' + request.session.userinfo.username);
                     }
 

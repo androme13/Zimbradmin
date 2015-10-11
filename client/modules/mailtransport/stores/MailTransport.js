@@ -12,7 +12,8 @@ Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
             //destroy: 'ExtRemote.DXUser.destroyusers'
         },
         reader: {
-            root: 'data'
+            root: 'data',
+            totalProperty: 'totalCount'
         },
     }
 });
