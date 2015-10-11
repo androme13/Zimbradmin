@@ -50,7 +50,7 @@ Ext.define('MyDesktop.modules.login.Login', {
                         bodyPadding: 10,
                         fieldDefaults: {
                             //labelWidth: 125,
-                            msgTarget: 'side',
+                            //msgTarget: 'side',
                             autoFitErrors: false
                         },
                         items: [{
