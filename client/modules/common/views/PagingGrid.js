@@ -105,7 +105,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     {
                         xtype: 'combobox',
                         value: "50", //App.Constants.gridPageSize.toString(),
-                        maxWidth: 50,
+                        maxWidth: 70,
+                        minxWidth: 70,
                         regex: /^\d+$/,
                         forceSelection: true,
                         maxLength: 3,
