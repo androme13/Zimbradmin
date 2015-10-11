@@ -1,3 +1,4 @@
+//
 Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
     extend: 'Ext.data.Store',
     model: 'MyDesktop.modules.mailtransport.models.MailTransportModel',
