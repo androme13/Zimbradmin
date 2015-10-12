@@ -6,15 +6,11 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     
     customLoadStore: function (search) {
         if (!search || search=='') {
-            //var search = '';
             delete this.store.proxy.extraParams.search;
         } else
         {
             this.store.proxy.setExtraParam("search", search);
         }
-        console.log('this',this);
-        console.log('search', search);
-        //this.getGrid().getStore().getProxy().setExtraParam("search", search);
         this.store.loadPage(1);
     },
     searchKeyPress: function (field, e, options) {
@@ -37,12 +33,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 listeners: {
                     edit: function (editor, e, opt) {
                         editor.grid.store.sync();
-
-                        /*me.up().fireEvent('entryAdd', {
-                         editor: editor,
-                         e: e,
-                         opt: opt
-                         });*/
                     },
                     canceledit: function (editor, e, opt) {
                         // si il n'y a pas de champ id,
