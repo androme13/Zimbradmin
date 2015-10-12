@@ -18,7 +18,9 @@ Ext.infoMsg = function () {
         return '<div class="msg"><h3><font color="' + c + '">&#9632;</font><CENTER><U>' + t + '</U></CENTER></h3><p>' + s + '</p></div>';
     }
     return {
-        msg: function (title, format, color) {
+        msg: function (title, format, delay, color) {
+            if (!delay || delay==0)
+                delay = 500;
             if (!color)
                 color = "blue";
             if (!msgCt) {
@@ -27,7 +29,7 @@ Ext.infoMsg = function () {
             var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1));
             var m = Ext.DomHelper.append(msgCt, createBox(title, s, color), true);
             m.hide();
-            m.slideIn('t').ghost("t", {delay: 1000, remove: true});
+            m.slideIn('t').ghost("t", {delay: delay, remove: true});
         },
         init: function () {
             if (!msgCt) {
