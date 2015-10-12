@@ -7,14 +7,15 @@ Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
         type: 'direct',
         api: {
             //create: 'ExtRemote.DXUser.addusers',
-            read: 'ExtRemote.DXSmtp.get',
+            read: 'ExtRemote.DXTransport.get',
             //read: 'ExtRemote.DXUser.getusers',
             //update: 'ExtRemote.DXUser.updateusers',
             //destroy: 'ExtRemote.DXUser.destroyusers'
         },
         reader: {
             root: 'data',
-            totalProperty: 'totalCount'
+            totalProperty: 'totalCount',
+            messageProperty: 'message'
         },
     }
 });
