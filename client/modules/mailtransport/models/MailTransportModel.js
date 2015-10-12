@@ -5,13 +5,22 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
         {name: 'id'},
         {name: 'domain',
             //text: 'domain',
-            type: 'string'
+            type: 'string',
+            editor: {
+                vtype:'email',
+                allowBlank: false,
+                //blankText: 'Le champ est obligatoire.',
+            },
         },
         {name: 'transport',
             //text: 'Transport',
-            type: 'string'
+            type: 'string',
+            editor: {
+                allowBlank: false,
+                //blankText: 'Le champ est obligatoire.',
+            },
         },
-{name: 'created_date', type: 'date', text: 'Crée le',
+        {name: 'created_date', type: 'date', text: 'Crée le',
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
                 var nameCreator = 'inconnu';
                 var idCreator = record.get('created_by');
