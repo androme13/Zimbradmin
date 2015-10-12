@@ -109,7 +109,6 @@ var DXUser = {
             //if(availPoolCnx==false)return;
             //console.log('connected as id ' + connection.threadId);
             var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
-            
             connection.query(query, function (err, rows) {
                 connection.release();
                 if (!err) {
