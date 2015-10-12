@@ -24,14 +24,11 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
         };
     },
     createWindow: function (refer) {
-        var me=this;
+        var me = this;
         var cfg = {};
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
-            //tab zmusers
-            //var refer=refer;
-            console.log('creation mailtropsportstore');
             var MailTransportGridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
             cfg = {
                 store: MailTransportGridStore,
@@ -40,9 +37,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                 multiSelect: true,
             };
             var MailTransportGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
-            //var MailTransportGrid = Ext.create('MyDesktop.modules.mailtransport.views.UsersGrid', {store: MailTransportGridStore});
-
-
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -57,7 +51,14 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                     xtype: 'tabpanel',
                     listeners: {
                         afterrender: function () {
-                           MailTransportGridStore.load();
+                            MailTransportGridStore.load(
+                                //scope: this,
+                                function (records, operation, success) {
+                                    if (success == false) {
+                                        Ext.infoMsg.msg(operation.error.code, operation.error.message, 5000, 'red');
+                                    }
+                                }
+                            );
                         },
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)
@@ -82,13 +83,12 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                     //tabPosition:'left',
                     items: [{
                             xtype: MailTransportGrid,
-                            //xtype: MailTransportGrid, 
                         }
                     ]},
                 //fonctions
 
                 entryAdd: function (params) {
-                    console.log('entryadd:',params);
+                    console.log('entryadd:', params);
                 },
                 entryRemove: function (grid) {
                     console.log(grid.getSelectionModel().getSelection());
