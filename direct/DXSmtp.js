@@ -95,6 +95,8 @@ var DXSmtp = {
         });
     },
     get: function (params, callback, sessionID, request, response) {
+        var query,extraQuery;
+        if (params.search) extraQuery="WHERE domain LIKE '%"+params.search+"%'";
         pool.getConnection(function (err, connection) {
             if (err) {
                 connection.release();
@@ -102,15 +104,15 @@ var DXSmtp = {
                 log.warn("Error connecting database ... \n\n");
                 return;
             }
-            var query = "SELECT * FROM transport LIMIT " + params.start + ',' + params.limit;
+            query = "SELECT * FROM transport "+extraQuery+" LIMIT " + params.start + ',' + params.limit;
             connection.query(query, function (err, rows, fields) {
                 if (!err) {
                     if (rows.length !== 0) {
                         success = true;
                         data = rows;
                         // on cherche maintenant le nombre total
-                        // d'entrées pour le paging
-                        var query = "SELECT COUNT(*) AS totalCount FROM transport";
+                        // d'entrées dans la table pour le paging
+                        query = "SELECT COUNT(*) AS totalCount FROM transport "+extraQuery;
                         connection.query(query, function (err, rows, fields) {
                             connection.release();
                             //console.log(fields);
@@ -124,16 +126,6 @@ var DXSmtp = {
                                 data: data
                             });
                         })
-
-
-
-
-
-
-
-
-
-
                     }
                 }
             });
