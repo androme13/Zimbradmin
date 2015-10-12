@@ -3,10 +3,32 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
+    
+    customLoadStore: function (search) {
+        if (!search || search=='') {
+            //var search = '';
+            delete this.store.proxy.extraParams.search;
+        } else
+        {
+            this.store.proxy.setExtraParam("search", search);
+        }
+        console.log('this',this);
+        console.log('search', search);
+        //this.getGrid().getStore().getProxy().setExtraParam("search", search);
+        this.store.loadPage(1);
+    },
+    searchKeyPress: function (field, e, options) {
+        //console.log('keypress', field.value);
+        //console.log(this.up('grid'));
+        this.up('grid').customLoadStore(field.value);
+    },
     initComponent: function () {
         var columns = [];
         var config = {};
         var me = this;
+        var test = function(){
+          console;log('test')  ;
+        };
         // configuration du mode edition
         if (this.rowEditing === true) {
             this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
@@ -25,7 +47,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     canceledit: function (editor, e, opt) {
                         // si il n'y a pas de champ id,
                         //  c'est que c'est un ajout annulé
-                        if (!e.record.data.id) editor.grid.store.removeAt(0);
+                        if (!e.record.data.id)
+                            editor.grid.store.removeAt(0);
                     },
                 }
             });
@@ -178,8 +201,16 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             emptyText: 'Recherche ...',
                             enableKeyEvents: true,
                             action: 'keypress',
+                            listeners: {
+                                keypress: {
+                                    fn: this.searchKeyPress,
+                                    buffer: 500
+                                }
+                            },
                             onTriggerClick: function () {
-                                this.fireEvent('ontriggerclick', this);
+                                //console.log('ontriggerclick',this);
+                                this.setValue('');
+                                this.up('grid').customLoadStore();
                             }
                         },
                         '-',
