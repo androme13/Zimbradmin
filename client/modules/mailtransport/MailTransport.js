@@ -37,6 +37,18 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                 multiSelect: true,
             };
             var MailTransportGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
+            MailTransportGrid.store.on({
+                load: function (store, records, success) {
+                    if (success == false) {
+                        var operation = store.getProxy().getReader().rawData.message;
+                        var title = operation.code;
+                        title += ' (' + operation.errno + ') - ';
+                        title += operation.sqlState;
+                        Ext.infoMsg.msg(title, operation.message, 5000, 'red');
+                    }
+                },
+                scope: this
+            });
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -51,14 +63,7 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                     xtype: 'tabpanel',
                     listeners: {
                         afterrender: function () {
-                            MailTransportGridStore.load(
-                                //scope: this,
-                                function (records, operation, success) {
-                                    if (success == false) {
-                                        Ext.infoMsg.msg(operation.error.code, operation.error.message, 5000, 'red');
-                                    }
-                                }
-                            );
+                            MailTransportGridStore.load();
                         },
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)

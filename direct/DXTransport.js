@@ -25,7 +25,41 @@ var DXTransport = {
      * @param request only if "appendRequestResponseObjects" enabled
      * @param response only if "appendRequestResponseObjects" enabled
      */
-    
+
+
+    add: function (params, callback, sessionID, request, response) {
+        var query;
+        console.log(params);
+        pool.getConnection(function (err, connection) {
+            // gestion des erreurs non attendues sur event
+            connection.on('error', function (err) {
+                sendError(err, callback);
+            });
+            ////////////////////////////////////////////////
+            if (err) {
+                sendError(err, callback);
+            }
+            else
+            {
+                var date = new Date().getTime();
+                console.log(date);
+                query = "SELECT * FROM transport ";
+                connection.query(query, function (err, rows, fields) {
+                    var total;
+                    if (!err) {
+                        data = rows;
+                        success = true;
+                        total = rows[0].totalCount;
+                        sendSuccess(rows[0].totalCount, data, callback);
+                    }
+                    else
+                    {
+                        sendError(err, callback);
+                    }
+                });
+            }
+        });
+    },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
         if (params.search)
@@ -41,28 +75,26 @@ var DXTransport = {
             }
             else
             {
-                query = "SELECT * FROM transport1 " + extraQuery + " LIMIT " + params.start + ',' + params.limit;
+                query = "SELECT * FROM transport " + extraQuery + " LIMIT " + params.start + ',' + params.limit;
                 connection.query(query, function (err, rows, fields) {
                     var total;
                     if (!err) {
-                        if (rows.length !== 0) {
-                            data = rows;
-                            // on cherche maintenant le nombre total
-                            // d'entrées dans la table pour le paging
-                            query = "SELECT COUNT(*) AS totalCount FROM transport " + extraQuery;
-                            connection.query(query, function (err, rows, fields) {
-                                connection.release();
-                                if (!err) {
-                                    success = true;
-                                    total = rows[0].totalCount;
-                                    sendSuccess(rows[0].totalCount,data,callback)
-                                }
-                                else
-                                {
-                                    sendError(err, callback);
-                                }
-                            })
-                        }
+                        data = rows;
+                        // on cherche maintenant le nombre total
+                        // d'entrées dans la table pour le paging
+                        query = "SELECT COUNT(*) AS totalCount FROM transport " + extraQuery;
+                        connection.query(query, function (err, rows, fields) {
+                            connection.release();
+                            if (!err) {
+                                success = true;
+                                total = rows[0].totalCount;
+                                sendSuccess(rows[0].totalCount, data, callback)
+                            }
+                            else
+                            {
+                                sendError(err, callback);
+                            }
+                        })
                     }
                     else
                     {
@@ -72,7 +104,6 @@ var DXTransport = {
             }
         });
     },
-   
 };
 
 function sendError(err, callback) {

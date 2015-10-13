@@ -6,9 +6,8 @@ Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
     proxy: {
         type: 'direct',
         api: {
-            //create: 'ExtRemote.DXUser.addusers',
+            create: 'ExtRemote.DXTransport.add',
             read: 'ExtRemote.DXTransport.get',
-            //read: 'ExtRemote.DXUser.getusers',
             //update: 'ExtRemote.DXUser.updateusers',
             //destroy: 'ExtRemote.DXUser.destroyusers'
         },
