@@ -17,4 +17,5 @@ Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
             messageProperty: 'message'
         },
     }
+
 });
