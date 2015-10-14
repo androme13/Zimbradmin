@@ -50,7 +50,7 @@ var DXLogin = {
                         message = 'Login successful';
                         data.userinfo = rows[0];
                         request.session.userinfo = data.userinfo;
-                        console.log(request.session.userinfo);
+                        //console.log(request.session.userinfo);
                         log.info('Login of ' + request.session.userinfo.username);
                     }
 
@@ -63,7 +63,6 @@ var DXLogin = {
             });
 
             connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
                 log.warn("Error connecting database ... \n\n");
                 return;
             });
@@ -100,10 +99,7 @@ var DXLogin = {
         var data;
         response.header('My-Custom-Header ', '1234567890');
         request.session.userinfo = null;
-        //request.session=null;
         delete request.session.userinfo;
-        //delete request.session;
-        //console.log(request.session);
         callback({
             success: true,
             message: 'logout',
