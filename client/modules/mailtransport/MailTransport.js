@@ -16,7 +16,7 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
         Ext.util.CSS.createStyleSheet('', idCSS);
         Ext.util.CSS.swapStyleSheet(idCSS, 'modules/mailtransport/rsc/style.css');
         this.launcher = {
-            menu: 'Settings',
+            menu: 'Smtp',
             text: 'Transport des emails',
             title: 'Gestion du transport des emails',
             iconCls: this.id + '-icon',
@@ -29,7 +29,32 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
+            // configuration et création du store
             var MailTransportGridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
+            MailTransportGridStore.on({
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    if (record.dirty == false)
+                        store.reload();
+                },
+                scope: this
+            });
+            MailTransportGridStore.proxy.on({
+                exception: function (proxy, response, operation) {
+                    //var operation = store.getProxy().getReader().rawData.message;
+                    var error = operation.error;
+                    var title = error.code;
+                    title += ' (' + error.errno + ') - ';
+                    title += error.sqlState;
+                    Ext.infoMsg.msg(title, error.message, 5000, 'red');
+                    if (operation.action != 'read')
+                    {
+                        Ext.data.StoreManager.get('mailtransport').reload();
+                    }
+
+                },
+                scope: this
+            });
+            // configuration et création du grid
             cfg = {
                 store: MailTransportGridStore,
                 rowEditing: true,
@@ -37,18 +62,7 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                 multiSelect: true,
             };
             var MailTransportGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
-            MailTransportGrid.store.on({
-                load: function (store, records, success) {
-                    if (success == false) {
-                        var operation = store.getProxy().getReader().rawData.message;
-                        var title = operation.code;
-                        title += ' (' + operation.errno + ') - ';
-                        title += operation.sqlState;
-                        Ext.infoMsg.msg(title, operation.message, 5000, 'red');
-                    }
-                },
-                scope: this
-            });
+
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
