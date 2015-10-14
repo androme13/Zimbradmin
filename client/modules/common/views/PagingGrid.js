@@ -3,9 +3,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
-    
     customLoadStore: function (search) {
-        if (!search || search=='') {
+        if (!search || search == '') {
             delete this.store.proxy.extraParams.search;
         } else
         {
@@ -22,8 +21,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         var columns = [];
         var config = {};
         var me = this;
-        var test = function(){
-          console;log('test')  ;
+        var test = function () {
+            console;
+            log('test');
         };
         // configuration du mode edition
         if (this.rowEditing === true) {
@@ -213,18 +213,20 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             clickEvent: 'mousedown',
                             action: 'add',
                             handler: function () {
-                                //console.log('+:',this.up())
-                                /*me.up().fireEvent('entryAdd', {
-                                 grid: this.up('grid'),
-                                 });*/
                                 var grid = this.up('grid');
                                 var newEntry = Ext.create(grid.store.model.modelName, {
+                                });                             
+                                // on cherche le premier champ editable 
+                                // pour s'y positionner
+                                var start = 0;
+                                grid.store.model.getFields().every(function (entry) {
+                                    console.log('every',entry);
+                                    if (!entry.editor) {start++;return false;}
+                                    return true;
                                 });
-                                //console.log(newEntry);
                                 grid.store.insert(0, newEntry);
-                                grid.rowEditing.startEdit(0, 0);
+                                grid.rowEditing.startEdit(0, start);
                             }
-
                         },
                         {
                             iconCls: 'remove',
