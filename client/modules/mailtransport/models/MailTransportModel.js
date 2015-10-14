@@ -2,7 +2,8 @@
 Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id'},
+        {name: 'id',hidden: true
+        },
         {name: 'domain',
             //text: 'domain',
             type: 'string',
