@@ -13,18 +13,12 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         this.store.loadPage(1);
     },
     searchKeyPress: function (field, e, options) {
-        //console.log('keypress', field.value);
-        //console.log(this.up('grid'));
         this.up('grid').customLoadStore(field.value);
     },
     initComponent: function () {
         var columns = [];
         var config = {};
         var me = this;
-        var test = function () {
-            console;
-            log('test');
-        };
         // configuration du mode edition
         if (this.rowEditing === true) {
             this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
@@ -82,12 +76,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     colCFG.renderer = i.renderer;
                 }
                 ;
-                /*var colCFG=i;
-                 console.log (colCFG);
-                 colCFG.header= i.name;
-                 colCFG.dataIndex= i.name;
-                 colCFG.flex= 1;*/
-
                 columns.push(colCFG);
             }
         });
@@ -220,7 +208,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                 // pour s'y positionner
                                 var start = 0;
                                 grid.store.model.getFields().every(function (entry) {
-                                    console.log('every',entry);
                                     if (!entry.editor) {start++;return false;}
                                     return true;
                                 });
@@ -248,7 +235,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                     });
                                     itemsList += "<br>";
                                 });
-                                //console.log(Object.keys(rows))
                                 var msg = Ext.Msg.show({
                                     title: 'Confirmer la suppression',
                                     msg: 'Veuillez confirmer la suppression des éléments suivants :<br>' + itemsList,
