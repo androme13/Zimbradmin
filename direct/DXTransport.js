@@ -30,6 +30,7 @@ var DXTransport = {
     add: function (params, callback, sessionID, request, response) {
         var query;
         console.log(params);
+        console.log(global.session);
         pool.getConnection(function (err, connection) {
             // gestion des erreurs non attendues sur event
             connection.on('error', function (err) {
@@ -41,16 +42,17 @@ var DXTransport = {
             }
             else
             {
-                var date = new Date().getTime();
-                console.log(date);
-                query = "SELECT * FROM transport ";
+                console.log (params);
+                var id=request.session.userinfo.id;
+                query = "INSERT INTO transport (domain, transport, created_by, created_date) VALUES ('"+params.domain+"','"+params.transport+"','"+id+"', NOW())";
+                console.log (query);
                 connection.query(query, function (err, rows, fields) {
                     var total;
+                    console.log(rows);
                     if (!err) {
                         data = rows;
                         success = true;
-                        total = rows[0].totalCount;
-                        sendSuccess(rows[0].totalCount, data, callback);
+                        sendSuccess(rows.length, data, callback);
                     }
                     else
                     {
@@ -117,11 +119,13 @@ function sendError(err, callback) {
     });
 }
 
-function sendSuccess(totalCount, data, callback) {
+function sendSuccess(totalCount, data, callback, message) {
+    var msg='';
+    if (message) msg = message;
     callback({
         success: true,
         totalCount: totalCount,
-        message: '',
+        message: msg,
         data: data
     });
 }
