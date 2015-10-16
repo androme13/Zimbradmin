@@ -69,8 +69,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                 width: 500,
                 height: 400,
                 iconCls: this.launcher.iconCls,
-                //animCollapse: false,
-                //constrainHeader: true,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',
                 items: {
@@ -99,13 +97,11 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                             this.up().entryRemove(grid);
                         }
                     },
-                    //tabPosition:'left',
                     items: [{
                             xtype: MailTransportGrid,
                         }
-                    ]},
+                    ]},               
                 //fonctions
-
                 entryAdd: function (params) {
                     console.log('entryadd:', params);
                 },
@@ -115,7 +111,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                 ////////////////////////////////
             });
         }
-
         win.down('tabpanel').setActiveTab(0);
         return win;
     }
