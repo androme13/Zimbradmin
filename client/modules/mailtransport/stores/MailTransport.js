@@ -8,7 +8,7 @@ Ext.define('MyDesktop.modules.mailtransport.stores.MailTransport', {
         api: {
             create: 'ExtRemote.DXTransport.add',
             read: 'ExtRemote.DXTransport.get',
-            //update: 'ExtRemote.DXUser.updateusers',
+            update: 'ExtRemote.DXTransport.update',
             //destroy: 'ExtRemote.DXUser.destroyusers'
         },
         reader: {
