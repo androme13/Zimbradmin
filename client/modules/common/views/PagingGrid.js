@@ -55,7 +55,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     "name": "200"
                 }]
         });
-        // création des colonnes par rapport au store       
+        // création des colonnes par rapport au modele       
         this.store.model.getFields().forEach(function (i)
         {
             if (i.binded != false) {
@@ -81,8 +81,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         });
         // definiton de la config de la grille
         config = {
-            // store: this.store,
-
             defaults: {
                 sortable: true
             },
@@ -194,7 +192,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         '-',
                         {
                             iconCls: 'add',
-                            //id: 'addappuser',
                             width: 24,
                             height: 24,
                             tooltip: '<b>Aide</b><br/>Ajouter une entrée<br>',
@@ -217,7 +214,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         },
                         {
                             iconCls: 'remove',
-                            //id: 'removeappuser',
                             disabled: true,
                             width: 24,
                             height: 24,
@@ -276,5 +272,4 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         Ext.applyIf(me, config);
         me.callParent(arguments);
     }
-
 });
