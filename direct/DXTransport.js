@@ -29,8 +29,6 @@ var DXTransport = {
 
     add: function (params, callback, sessionID, request, response) {
         var query;
-        console.log(params);
-        console.log(global.session);
         pool.getConnection(function (err, connection) {
             // gestion des erreurs non attendues sur event
             connection.on('error', function (err) {
@@ -42,13 +40,9 @@ var DXTransport = {
             }
             else
             {
-                console.log (params);
                 var id=request.session.userinfo.id;
-                query = "INSERT INTO transport (domain, transport, created_by, created_date) VALUES ('"+params.domain+"','"+params.transport+"','"+id+"', NOW())";
-                console.log (query);
+                query = "INSERT INTO transport (domain, transport, created_by) VALUES ('"+params.domain+"','"+params.transport+"','"+id+"')";
                 connection.query(query, function (err, rows, fields) {
-                    var total;
-                    console.log(rows);
                     if (!err) {
                         data = rows;
                         success = true;
@@ -106,7 +100,39 @@ var DXTransport = {
             }
         });
     },
+    update: function (params, callback, sessionID, request, response) {
+        var query;
+        pool.getConnection(function (err, connection) {
+            // gestion des erreurs non attendues sur event
+            connection.on('error', function (err) {
+                sendError(err, callback);
+            });
+            ////////////////////////////////////////////////
+            if (err) {
+                sendError(err, callback);
+            }
+            else
+            {
+                console.log(params);
+                var id=request.session.userinfo.id;
+                query ="UPDATE transport SET domain='"+params.domain+"', transport='"+params.transport+"', modified_by="+id+" WHERE id="+params.id;
+                //query = "SELECT * FROM transport";
+                connection.query(query, function (err, rows, fields) {
+                    if (!err) {
+                        data = rows;
+                        success = true;
+                        sendSuccess(rows.length, data, callback);
+                    }
+                    else
+                    {
+                        sendError(err, callback);
+                    }
+                });
+            }
+        });
+    },
 };
+
 
 function sendError(err, callback) {
     var error = {code: err.code, errno: err.errno, sqlState: err.sqlState, message: err.toString()};
