@@ -15,8 +15,8 @@ Ext.define('MyDesktop.modules.login.Login', {
         this.launcher = {
             startmenu: false,
             text: 'Login Window',
-            title: 'Authentification requise',            
-            iconCls: this.id+'-icon',
+            title: 'Authentification requise',
+            iconCls: this.id + '-icon',
         };
         this.firstLaunch = true;
     },
@@ -90,17 +90,23 @@ Ext.define('MyDesktop.modules.login.Login', {
                                         form.setLoading("Veuillez patienter");
                                         ExtRemote.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
-                                                    var target = Ext.getCmp('logincomment');
-                                                    target.update(result.message);
-                                                    if (result.success === true)
-                                                    {
-                                                        target.getEl().setStyle("color", "green");
-                                                        desktop.app.fireEvent('processlogin', result);
-                                                    } else
-                                                    {
-                                                        form.setLoading(false);
-                                                        target.getEl().setStyle("color", "red");
+                                                    //var target = Ext.getCmp('logincomment');
+                                                    //console.log('login:', btn.up('form').down('label'), me, result, event);
+                                                    if (result) {
+                                                        var target=btn.up('form').down('label')
+                                                        target.update(result.message);
+                                                        if (result.success === true)
+                                                        {
+                                                            target.getEl().setStyle("color", "green");
+                                                            desktop.app.fireEvent('processlogin', result);
+                                                        } else
+                                                        {
+                                                            form.setLoading(false);
+                                                            target.getEl().setStyle("color", "red");
+                                                        }
                                                     }
+                                                    else
+                                                    Ext.infoMsg.msg("Erreur", event.message, 10000, 'red');    
                                                 }
                                         );
                                     }
