@@ -42,34 +42,25 @@ var app = express();
 // on lance les middleware de facon async afin d'accelerer
 // le traitement fait par le serveur node.
 function parallel(middlewares) {
-  return function (req, res, next) {
-    async.each(middlewares, function (mw, cb) {
-      mw(req, res, cb);
-    }, next);
-  };
-};
-//app.use('/static', express.static('public'));
+    return function (req, res, next) {
+        async.each(middlewares, function (mw, cb) {
+            mw(req, res, cb);
+        }, next);
+    };
+}
+;
 app.use(parallel([
-//    '/client',
-//express.static('client'),
-express.static(__dirname + '/client'),
-        //compression(),
-        bodyParser.json(),
-        cookieParser(),
-        session({
-            secret: ServerConfig.sessionSecret,
-            resave: false,
-            saveUninitialized: false,
-            cookie: {maxAge: ServerConfig.sessionMaxAge, secret: ServerConfig.sessionSecret}
-        }),
-        /*function (req, res, next) {
-            if (!req.session) {
-                console.log(req._parsedOriginalUrl);
-                console.log("pas de session");
-               
-            }
-            next(); // otherwise continue 
-        }*/
+    express.static(__dirname + '/client'),
+    //compression(),
+    bodyParser.json(),
+    cookieParser(),
+    session({
+        secret: ServerConfig.sessionSecret,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {maxAge: ServerConfig.sessionMaxAge, secret: ServerConfig.sessionSecret},
+        rolling:true
+    }),
 ]));
 
 // on charge la page par defaut
@@ -93,12 +84,12 @@ app.get(ExtDirectConfig.classPath, function (request, response) {
 
 // POST request process route and calls class
 app.post(ExtDirectConfig.classPath, function (request, response) {
-    if (request.session.userinfo || request.body.action==="DXLogin"){
+    if (request.session.userinfo || request.body.action === "DXLogin") {
         extdirect.processRoute(request, response, ExtDirectConfig);
     } else
     {
-    response.writeHead(401, {'Content-Type': 'application/json'});
-    response.end(JSON.stringify({success: false, msg: 'Please Login before'}));
+        response.writeHead(401, {'Content-Type': 'application/json'});
+        response.end(JSON.stringify({success: false, msg: 'Please Login before'}));
     }
 });
 
