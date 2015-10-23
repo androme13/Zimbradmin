@@ -3,6 +3,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
+    me : this,
     customLoadStore: function (search) {
         if (!search || search == '') {
             delete this.store.proxy.extraParams.search;
@@ -94,6 +95,28 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         removeBtn.setDisabled(false);
                     }
                     ;
+                },
+                itemcontextmenu: function (record, item, index, e, eOpts) {
+                    //
+                    var xy = eOpts.getXY();
+                    var menu = Ext.create('Ext.menu.Menu');
+                    var item;
+                    removeBtn = this.down('toolbar').down('button[action="remove"]');
+                    if (removeBtn.disabled == false) {
+                        item = new Ext.menu.Item({
+                            text: "supprimer",
+                            //value: rec.data.VALUE_FIELD,
+                            iconCls: removeBtn.iconCls,
+                            handler: function (item) {
+                                me.removeRow(record);
+                            }
+                        });
+                        menu.add(item);
+                    }
+                    menu.showAt(xy);
+                },
+                cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                    e.stopEvent();
                 }
             },
             bbar: Ext.create('Ext.PagingToolbar', {
@@ -197,12 +220,15 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             handler: function () {
                                 var grid = this.up('grid');
                                 var newEntry = Ext.create(grid.store.model.modelName, {
-                                });                             
+                                });
                                 // on cherche le premier champ editable 
                                 // pour s'y positionner
                                 var start = 0;
                                 grid.store.model.getFields().every(function (entry) {
-                                    if (!entry.editor) {start++;return false;}
+                                    if (!entry.editor) {
+                                        start++;
+                                        return false;
+                                    }
                                     return true;
                                 });
                                 grid.store.insert(0, newEntry);
@@ -267,5 +293,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         }
         Ext.applyIf(me, config);
         me.callParent(arguments);
+    },
+    removeRow: function (row){
+        console.log('removerow');
     }
 });
