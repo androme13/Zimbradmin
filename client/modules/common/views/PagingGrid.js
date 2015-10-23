@@ -1,3 +1,8 @@
+/* 
+ * MailTransport STORE
+ * (C) Androme 2015
+ * 
+ */
 
 Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
