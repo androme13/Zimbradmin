@@ -1,24 +1,29 @@
 ZM TypeCode (ZMTypeCode) : "DX"
 ZM ErrorCodes (ZMErrorCode)
 
-
-Type DX : 
+/////////////////////////////////////////////////////
+ZMErrorCode : 
 
 type add:
 100 : add ok
-101 : add error
+101 : add fatal error
+102 : add error
 
 
 type destroy:
 200 : destroy ok
-201 : destroy error
-202 : no row deleted
-203 : not all rows deleted
+201 : destroy fatal error
+202 : destroy error
+203 : no row deleted
+204 : not all rows deleted
 
 type read : 
 300 : read ok
-301 : read error
+301 : read fatal error
+302 : read error
 
 type update :
 400 : update ok
-401 : update error
+401 : update fatal error
+402 : update error
+/////////////////////////////////////////////////////
