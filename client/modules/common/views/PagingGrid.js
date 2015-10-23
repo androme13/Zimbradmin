@@ -5,7 +5,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     loadMask: true,
     me: this,
     customLoadStore: function (search) {
-        if (!search || search == '') {
+        if (!search || search === '') {
             delete this.store.proxy.extraParams.search;
         } else
         {
@@ -90,10 +90,27 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 afterrender: function () {
                     var menu = this.headerCt.getMenu();
                     menu.add([{
-                            text: 'Custom Item',
+                            iconCls: 'favorite16',
+                            text: 'Chercher dans cette colonne',
                             handler: function () {
+                                var grid = this.up('grid');
                                 var columnDataIndex = menu.activeHeader.dataIndex;
-                                alert('custom item for column "' + columnDataIndex + '" was pressed');
+                                var extraParams = grid.store.proxy.extraParams;
+                                // on supprime l'ancien marqueur
+                                if (extraParams.col) {
+                                    grid.columns.every(function (entry) {
+                                     if (entry.dataIndex===extraParams.col) {                        
+                                         entry.setText(entry.dataIndex);
+                                     return false;
+                                     }
+                                     return true;
+                                     });
+                                }
+                                // on ajoute le marqueur visuel sur le titre de la colonne.
+                                menu.activeHeader.setText(columnDataIndex + " (*)");
+                                grid.store.proxy.setExtraParam("col", columnDataIndex);
+                                if (extraParams.search && extraParams.search != '')
+                                    grid.store.reload();
                             }
                         }]);
                 },
