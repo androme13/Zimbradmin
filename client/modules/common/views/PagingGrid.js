@@ -3,7 +3,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
-    me : this,
+    me: this,
     customLoadStore: function (search) {
         if (!search || search == '') {
             delete this.store.proxy.extraParams.search;
@@ -100,15 +100,29 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     //
                     var xy = eOpts.getXY();
                     var menu = Ext.create('Ext.menu.Menu');
-                    var item;
-                    removeBtn = this.down('toolbar').down('button[action="remove"]');
-                    if (removeBtn.disabled == false) {
+                    var item,btn;
+                    
+                    // ajout des menus liés à la toolbar
+                    //////ajout
+                    btn = this.down('toolbar').down('button[action="add"]');
+                    item = new Ext.menu.Item({
+                        text: "Ajouter une entrée",
+                        //value: rec.data.VALUE_FIELD,
+                        iconCls: btn.iconCls,
+                        handler: function (item) {
+                            me.addRow();
+                        }
+                    });
+                    menu.add(item);
+                    //////suppression
+                    btn = this.down('toolbar').down('button[action="remove"]');
+                    if (btn.disabled == false) {
                         item = new Ext.menu.Item({
                             text: "supprimer",
                             //value: rec.data.VALUE_FIELD,
-                            iconCls: removeBtn.iconCls,
+                            iconCls: btn.iconCls,
                             handler: function (item) {
-                                me.removeRow(record);
+                                me.removeRow();
                             }
                         });
                         menu.add(item);
@@ -163,7 +177,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                             bbarItem.pageSize = parseInt(newValue);
                                             this.pageSize = parseInt(newValue);
                                             //App.Constants.gridPageSize = this.pageSize;
-
                                             Ext.apply({params: {start: 0, limit: newValue}});
                                             this.store.pageSize = this.pageSize;
                                             this.store.load({params: {start: 0, limit: newValue}});
@@ -218,21 +231,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             clickEvent: 'mousedown',
                             action: 'add',
                             handler: function () {
-                                var grid = this.up('grid');
-                                var newEntry = Ext.create(grid.store.model.modelName, {
-                                });
-                                // on cherche le premier champ editable 
-                                // pour s'y positionner
-                                var start = 0;
-                                grid.store.model.getFields().every(function (entry) {
-                                    if (!entry.editor) {
-                                        start++;
-                                        return false;
-                                    }
-                                    return true;
-                                });
-                                grid.store.insert(0, newEntry);
-                                grid.rowEditing.startEdit(0, start);
+                                me.addRow();
                             }
                         },
                         {
@@ -244,32 +243,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             clickEvent: 'mousedown',
                             action: 'remove',
                             handler: function () {
-                                var grid = this.up('grid');
-                                var rows = grid.getSelectionModel().getSelection();
-                                var itemsList = "";
-                                rows.forEach(function (entry) {
-                                    var str = entry.data;
-                                    Ext.iterate(str, function (key, value) {
-                                        itemsList += value + '|';
-                                    });
-                                    itemsList += "<br>";
-                                });
-                                var msg = Ext.Msg.show({
-                                    title: 'Confirmer la suppression',
-                                    msg: 'Veuillez confirmer la suppression des éléments suivants :<br>' + itemsList,
-                                    buttons: Ext.Msg.YESNO,
-                                    icon: Ext.Msg.QUESTION,
-                                    modal: true,
-                                    fn: function (btn) {
-                                        if (btn === 'yes') {
-                                            grid.store.remove(rows);
-                                            grid.store.sync();
-                                        }
-                                    }
-                                });
-                                Ext.defer(function () {
-                                    msg.toFront();
-                                }, 50);
+                                me.removeRow();
                             }
                         },
                         {
@@ -294,7 +268,50 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         Ext.applyIf(me, config);
         me.callParent(arguments);
     },
-    removeRow: function (row){
-        console.log('removerow');
+    removeRow: function () {
+        var grid = this.up('window').down('grid');
+        var rows = grid.getSelectionModel().getSelection();
+        var itemsList = "";
+        rows.forEach(function (entry) {
+            var str = entry.data;
+            Ext.iterate(str, function (key, value) {
+                itemsList += value + '|';
+            });
+            itemsList += "<br>";
+        });
+        var msg = Ext.Msg.show({
+            title: 'Confirmer la suppression',
+            msg: 'Veuillez confirmer la suppression des éléments suivants :<br>' + itemsList,
+            buttons: Ext.Msg.YESNO,
+            icon: Ext.Msg.QUESTION,
+            modal: true,
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    grid.store.remove(rows);
+                    grid.store.sync();
+                }
+            }
+        });
+        Ext.defer(function () {
+            msg.toFront();
+        }, 50);
+    },
+    // fonctions ////////////////////////////////
+    addRow: function () {
+        var grid = this.up('window').down('grid');
+        var newEntry = Ext.create(grid.store.model.modelName, {
+        });
+        // on cherche le premier champ editable 
+        // pour s'y positionner
+        var start = 0;
+        grid.store.model.getFields().every(function (entry) {
+            if (!entry.editor) {
+                start++;
+                return false;
+            }
+            return true;
+        });
+        grid.store.insert(0, newEntry);
+        grid.rowEditing.startEdit(0, start);
     }
 });
