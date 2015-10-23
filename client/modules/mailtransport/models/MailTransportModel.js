@@ -2,6 +2,7 @@
 Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
     extend: 'Ext.data.Model',
     fields: [
+        // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
         {name: 'id',hidden: true
         },
         {name: 'domain',
@@ -20,6 +21,9 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
             },
+            renderer: function (value, metaData, record, rowIndex, colIndex, store) {
+                return value.replace("smtp:", "");
+            },
         },
         {name: 'created_date', type: 'date', text: 'Crée le',
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
@@ -31,7 +35,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
                     nameCreator = st.getAt(index).get('username');
                 if (value == null)
                     value = 'Inconnu';
-                return 'le : <i>' + value + '</i><br>par: <i>' + nameCreator + '</i></br>';
+                return 'le : <i>' + value + '</i><br>par: <i>' + idCreator + '</i></br>';
             },
         },
         {name: 'created_by', binded: false},
@@ -43,13 +47,13 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
                 var index = st.find('id', idModifier);
                 if (index >= 0)
                     nameModifier = st.getAt(index).get('username');
-                if (record.data.modified_date = record.data.created_date)
+                if (record.data.modified_date == record.data.created_date)
                 {
                     return 'non modifié';
                 }
                 else
                 {
-                    return 'le : <i>' + value + '</i><br>par: <i>' + nameModifier + '</i></br>';
+                    return 'le : <i>' + value + '</i><br>par: <i>' + idModifier + '</i></br>';
                 }
             }
         },
