@@ -19,8 +19,8 @@ Ext.infoMsg = function () {
     }
     return {
         msg: function (title, format, delay, color) {
-            if (!delay || delay==0)
-                delay = 500;
+            if (!delay || delay == 0)
+                delay = 1000;
             if (!color)
                 color = "blue";
             if (!msgCt) {
@@ -91,9 +91,16 @@ Ext.define('Ext.ux.desktop.App', {
         var me = this;
         // on defini les exceptions des appels DIRECT
         Ext.Direct.on("exception", function (event) {
-            if (event.xhr.status === 401)
-            {
-                me.onLogin(me.session.userinfo.username);
+            console.log('exception XHR:', event);
+            if (event.xhr) {
+                if (event.xhr.status == 401)
+                {
+                    me.onLogin(me.session.userinfo.username);
+                }
+                else
+                {
+                    Ext.infoMsg.msg("Erreur Serveur", event.message);
+                }
             }
         });
         // on defini la tache du polling de session
@@ -102,14 +109,15 @@ Ext.define('Ext.ux.desktop.App', {
                 ExtRemote.DXLogin.isvalidsession({'action': 'isvalidsession'},
                 function (result, event) {
                     //si la session existe cote serveur
-                    if (result.success === false)
-                    {
-                        //me.stopSessionPollTask();
-                        me.onLogin(me.session.userinfo.username);
+                    if (result) {
+                        if (result.success === false)
+                        {
+                            me.onLogin(me.session.userinfo.username);
+                        }
                     }
                 });
             },
-            interval: 30000 // toutes les 30 secondes
+            interval: 60000 // toutes les 60 secondes
         };
         me.addEvents(
                 'ready',
@@ -402,7 +410,7 @@ Ext.define('Ext.ux.desktop.App', {
         //var result = store.findRecord('module', module);
         shortcutsToRemove = [];
         records.forEach(function (entry) {
-            var result = store.findRecord('module', entry);        
+            var result = store.findRecord('module', entry);
             if (result) {
                 shortcutsToRemove.push(result);
                 console.log(result);
