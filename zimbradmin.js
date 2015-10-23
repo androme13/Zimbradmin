@@ -19,6 +19,15 @@ global.mysql = require('mysql');
 var async = require('async');
 var server; // serveur web
 
+global.pool = mysql.createPool({
+    connectionLimit: 100,
+    host: MySQLConfig.host,
+    user: MySQLConfig.user,
+    password: MySQLConfig.password,
+    database: MySQLConfig.database,
+    debug: false
+});
+
 monitor.init(nconf.get("Monitor"));
 var notFound = function (req, res) {
     res.setHeader('Content-Type', 'text/plain');
