@@ -1,24 +1,26 @@
 'use strict';
 // Chargement des modules de Node.js
 global.bcrypt = require('bcrypt-nodejs');
-var nconf = require('nconf');
-nconf.env().file({file: 'server-config.json'});
+var ZMConf = require('nconf');
+ZMConf.env().file({file: 'server-config.json'});
 var bunyan = require('bunyan');
 global.log = bunyan.createLogger({name: 'ZM'});
 var monitor = require('./ZMModules/monitor.js')
-var ServerConfig = nconf.get("ServerConfig");
-var ExtDirectConfig = nconf.get("ExtDirectConfig");
-global.MySQLConfig = nconf.get("MySQLConfig");
+var ServerConfig = ZMConf.get("ServerConfig");
+var ExtDirectConfig = ZMConf.get("ExtDirectConfig");
+global.MySQLConfig = ZMConf.get("MySQLConfig"); //a supprimer par la suite
+var MySQLConfig = ZMConf.get("MySQLConfig");
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser')
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var extdirect = require('extdirect');
-global.mysql = require('mysql');
+global.mysql = require('mysql');//a supprimer par la suite
+var mysql = require('mysql');
+
 var async = require('async');
 var server; // serveur web
-
 global.pool = mysql.createPool({
     connectionLimit: 100,
     host: MySQLConfig.host,
@@ -27,8 +29,7 @@ global.pool = mysql.createPool({
     database: MySQLConfig.database,
     debug: false
 });
-
-monitor.init(nconf.get("Monitor"));
+monitor.init(ZMConf.get("Monitor"));
 var notFound = function (req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.status(404).send('Page introuvable !');
@@ -41,13 +42,11 @@ var notFound = function (req, res) {
 var startPage = function (req, res) {
     res.sendFile('/client/desktop.html', {root: __dirname});
 };
-// définition des variables d'intialisation
-
+// définition des variables d'initialisation
 var port = 8080; // port d'ecoute
 // création d'une application Express
 var app = express();
 // Configurations de l'application Express
-
 // on lance les middleware de facon async afin d'accelerer
 // le traitement fait par le serveur node.
 function parallel(middlewares) {
@@ -108,9 +107,13 @@ server = app.listen(
             log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
         }
 );
-// Écoute du signal SIGINT
 
+// Écoute du signal SIGINT
 process.on('SIGINT', function () {
-    server.close();
+    
+    
+    
     log.info('Stopping Zimbradmin...');
+    server.close();
+    process.exit();
 });
