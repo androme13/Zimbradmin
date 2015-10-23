@@ -10,7 +10,7 @@
         "enableSessions": true,
         "secret": "vdW3F6y3506h",
         "sessionSecret": "vdW3F6y3506h",
-        "sessionMaxAge": 60000,
+        "sessionMaxAge": 600000,
         "enableCORS": true,
         "AccessControlAllowOrigin": "*",
         "AccessControlAllowMethods": "GET,PUT,POST,DELETE,OPTIONS",
