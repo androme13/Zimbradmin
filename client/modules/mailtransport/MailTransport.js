@@ -37,7 +37,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
             var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
             gridStore.on({
                 refresh: function (store, eOpts) {
-                    console.log('refreshdetail', store.proxy.reader.jsonData, eOpts);
                     message = store.proxy.reader.jsonData;
                     // on gère les messages de retour
                     // se reporter à DOC/ZMErrorCodes

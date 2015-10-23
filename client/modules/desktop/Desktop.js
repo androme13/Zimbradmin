@@ -185,8 +185,8 @@ Ext.define('Ext.ux.desktop.Desktop', {
          }*/
     },
     onItemContextClick: function (item, record, item, index, e, eOpts) {
-        e.stopEvent();
-        var me=this;
+        // e.stopEvent();
+        var me = this;
         Ext.create('Ext.menu.Menu', {
             items: [Ext.create('Ext.Action', {
                     iconCls: 'star',

@@ -87,28 +87,30 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             },
             columns: columns,
             listeners: {
-                select: function (rowModel, record, index, eOpts)
-                {
-                    // on active le bouton supprimer si une ligne est selectionnée
-                    removeBtn = this.down('toolbar').down('button[action="remove"]');
-                    if (removeBtn.disabled == true) {
-                        removeBtn.setDisabled(false);
-                    }
-                    ;
+                afterrender: function () {
+                    var menu = this.headerCt.getMenu();
+                    menu.add([{
+                            text: 'Custom Item',
+                            handler: function () {
+                                var columnDataIndex = menu.activeHeader.dataIndex;
+                                alert('custom item for column "' + columnDataIndex + '" was pressed');
+                            }
+                        }]);
+                },
+                cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                    e.stopEvent();
                 },
                 itemcontextmenu: function (record, item, index, e, eOpts) {
-                    //
                     var xy = eOpts.getXY();
                     var menu = Ext.create('Ext.menu.Menu');
-                    var item,btn;
-                    
+                    var item, btn;
                     // ajout des menus liés à la toolbar
                     //////ajout
                     btn = this.down('toolbar').down('button[action="add"]');
                     item = new Ext.menu.Item({
                         text: "Ajouter une entrée",
                         //value: rec.data.VALUE_FIELD,
-                        iconCls: btn.iconCls,
+                        iconCls: btn1.iconCls,
                         handler: function (item) {
                             me.addRow();
                         }
@@ -129,9 +131,15 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     }
                     menu.showAt(xy);
                 },
-                cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                    e.stopEvent();
-                }
+                select: function (rowModel, record, index, eOpts)
+                {
+                    // on active le bouton supprimer si une ligne est selectionnée
+                    var btn = this.down('toolbar').down('button[action="remove"]');
+                    if (btn.disabled == true) {
+                        btn.setDisabled(false);
+                    }
+                    ;
+                },
             },
             bbar: Ext.create('Ext.PagingToolbar', {
                 store: this.store,
@@ -224,7 +232,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         },
                         '-',
                         {
-                            iconCls: 'add',
+                            iconCls: 'add16',
                             width: 24,
                             height: 24,
                             tooltip: '<b>Aide</b><br/>Ajouter une entrée<br>',
@@ -235,7 +243,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             }
                         },
                         {
-                            iconCls: 'remove',
+                            iconCls: 'remove16',
                             disabled: true,
                             width: 24,
                             height: 24,
