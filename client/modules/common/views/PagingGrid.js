@@ -141,9 +141,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                             this.pageSize = parseInt(newValue);
                                             //App.Constants.gridPageSize = this.pageSize;
 
-                                            Ext.apply({params: {start: 0, limit: newValue}}, {
-                                                //myNewParam: true
-                                            });
+                                            Ext.apply({params: {start: 0, limit: newValue}});
                                             this.store.pageSize = this.pageSize;
                                             this.store.load({params: {start: 0, limit: newValue}});
                                         }
@@ -173,7 +171,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     items: [{
                             xtype: 'trigger',
                             triggerCls: 'x-form-clear-trigger',
-                            //id: 'searchappuser',
                             emptyText: 'Recherche ...',
                             enableKeyEvents: true,
                             action: 'keypress',
@@ -241,7 +238,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                         if (btn === 'yes') {
                                             grid.store.remove(rows);
                                             grid.store.sync();
-                                            Ext.infoMsg.msg("supprimées", "ok", "orange");
                                         }
                                     }
                                 });
