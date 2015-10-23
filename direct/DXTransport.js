@@ -1,5 +1,5 @@
 /* 
- * DX Transport
+ * DXTransport
  * (C) Androme 2015
  * 
  */
@@ -108,9 +108,9 @@ var DXTransport = {
                                 ZMTypeCode: 'DX',
                                 ZMErrorCode: 203,
                             };
-                           // sendSuccess(rows.length, rows, callback, message);
+                            // sendSuccess(rows.length, rows, callback, message);
                         }
-                        
+
                         sendSuccess(rows.length, rows, callback, message);
                     }
                     else
@@ -129,8 +129,12 @@ var DXTransport = {
     },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
-        if (params.search)
-            extraQuery = "WHERE domain LIKE '%" + params.search + "%'";
+        if (!params.col)
+            params.col = 'domain';
+        if (params.search) {
+            extraQuery = "WHERE " + params.col;
+            extraQuery += " LIKE '%" + params.search + "%'";
+        }
         pool.getConnection(function (err, connection) {
             if (err) {
                 err.ZMTypeCode = 'DX';
@@ -188,7 +192,11 @@ var DXTransport = {
             else
             {
                 var myId = request.session.userinfo.id;
-                query = "UPDATE transport SET domain ='" + params[0].domain + "', transport='" + params[0].transport + "', modified_by=" + myId + " WHERE id=" + params[0].id;
+                query = "UPDATE transport SET domain ='" + params[0].domain;
+                query += "', transport='" + params[0].transport;
+                query += "', modified_by='" + myId;
+                query += "' WHERE id='" + params[0].id + "'";
+                ;
                 connection.query(query, function (err, rows, fields) {
                     if (!err) {
                         var message = {
