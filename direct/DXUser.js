@@ -1,19 +1,19 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * DXUser
+ * (C) Androme 2015
+ * 
  */
-var fs = require('fs');
-var MySQLConfig = global.MySQLConfig;
+//var MySQLConfig = global.MySQLConfig;
 var log = global.log.child({widget_type: 'DXUser'});
-var pool = mysql.createPool({
-    connectionLimit: 100,
-    host: MySQLConfig.host,
-    user: MySQLConfig.user,
-    password: MySQLConfig.password,
-    database: MySQLConfig.database,
-    debug: false
-});
+var pool = global.pool;
+/*var pool = mysql.createPool({
+ connectionLimit: 100,
+ host: MySQLConfig.host,
+ user: MySQLConfig.user,
+ password: MySQLConfig.password,
+ database: MySQLConfig.database,
+ debug: false
+ });*/
 
 var DXUser = {
     // method signature has 5 parameters
@@ -60,11 +60,7 @@ var DXUser = {
                 return;
             });
         });
-        
-
     },
-    
-    
     destroyusers: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -98,97 +94,149 @@ var DXUser = {
             });
         });
     },
-    getusers: function (params, callback, sessionID, request, response) {
+    get: function (params, callback, sessionID, request, response) {
+        var query, extraQuery;
+        if (!params.col)
+            params.col = 'username';
+        if (params.search) {
+            extraQuery = "WHERE " + params.col
+            extraQuery += " LIKE '%" + params.search + "%'";
+        }
         pool.getConnection(function (err, connection) {
             if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 302;
+                err.ZMErrorMsg = String(err)
+                sendError(err, callback);
             }
-            //if(availPoolCnx==false)return;
-            //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-                    callback({
-                        success: success,
-                        message: "getuserslist",
-                        data: data
-                    });
-                }
-            });
+            else
+            {
+                //query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
 
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
+                query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users " + extraQuery;
+                query += " LIMIT " + params.start + ',' + params.limit;
+                connection.query(query, function (err, rows, fields) {
+                    if (!err) {
+                        data = rows;
+                        // on cherche maintenant le nombre total
+                        // d'entrées dans la table pour le paging
+                        query = "SELECT COUNT(*) AS totalCount FROM users " + extraQuery;
+                        connection.query(query, function (err, rows, fields) {
+                            if (!err) {
+                                var message = {
+                                    'ZMTypeCode': 'DX',
+                                    'ZMErrorCode': 300
+                                };
+                                sendSuccess(rows[0].totalCount, data, callback, message);
+                            }
+                            else
+                            {
+                                err.ZMTypeCode = 'DX';
+                                err.ZMErrorCode = 302;
+                                err.ZMErrorMsg = String(err)
+                                sendError(err, callback);
+                            }
+                        })
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 302;
+                        err.ZMErrorMsg = String(err)
+                        sendError(err, callback);
+                    }
+                });
+            }
+            if (connection)
+                connection.release();
         });
     },
-    updateusers: function (params, callback, sessionID, request, response) {
+    update: function (params, callback, sessionID, request, response) {
+        var query;
         pool.getConnection(function (err, connection) {
             if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 402;
+                sendError(err, callback);
             }
-            console.log(params);
-            //log.infos(params);
-        })
-
+            else
+            {
+                var myId = request.session.userinfo.id;
+                //id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by
+                query = "UPDATE users SET level ='" + params[0].level;
+                query += "', state ='" + params[0].state;
+                query += "', username ='" + params[0].username;
+                query += "', firstname ='" + params[0].firstname;
+                query += "', lastname ='" + params[0].lastname;
+                query += "', modified_by ='" + params[0].modified_by;
+                query += "' WHERE id ='" + params[0].id + "'";
+                connection.query(query, function (err, rows, fields) {
+                    if (!err) {
+                        var message = {
+                            'ZMTypeCode': 'DX',
+                            'ZMErrorCode': 400
+                        }
+                        sendSuccess(rows.length, rows, callback, message);
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 402;
+                        err.ZMErrorMsg = String(err);
+                        console.log('erreur', err);
+                        sendError(err, callback);
+                    }
+                });
+            }
+            if (connection)
+                connection.release();
+        });
     },
     // operations sur les raccourcis ////////////////////////////////
     getshortcuts: function (params, callback, sessionID, request, response) {
-        
-        
-        /*pool.getConnection(function (err, connection) {
-            console.log ('params:',params);
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            //if(availPoolCnx==false)return;
-            //console.log('connected as id ' + connection.threadId);
-                        var query = "SELECT * FROM users " +
-                    "INNER JOIN usersshortcut " +
-                    "ON modules.id=usersshortcuts.userid " +
-                    "INNER JOIN modules " +
-                    "ON modules.id=usersmodules.moduleid " +
-                    "WHERE users.id=" + params.id;
-            
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-                    callback({
-                        success: success,
-                        message: "getshortcuts",
-                        data: data
-                    });
-                }
-            });
 
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });*/
-        
-        
-        
+
+        /*pool.getConnection(function (err, connection) {
+         console.log ('params:',params);
+         if (err) {
+         connection.release();
+         //res.json({"code": 100, "status": "Error in connection database"});
+         log.warn("Error connecting database ... \n\n");
+         return;
+         }
+         //if(availPoolCnx==false)return;
+         //console.log('connected as id ' + connection.threadId);
+         var query = "SELECT * FROM users " +
+         "INNER JOIN usersshortcut " +
+         "ON modules.id=usersshortcuts.userid " +
+         "INNER JOIN modules " +
+         "ON modules.id=usersmodules.moduleid " +
+         "WHERE users.id=" + params.id;
+         
+         connection.query(query, function (err, rows) {
+         connection.release();
+         if (!err) {
+         if (rows.length !== 0) {
+         success = true;
+         data = rows;
+         }
+         callback({
+         success: success,
+         message: "getshortcuts",
+         data: data
+         });
+         }
+         });
+         
+         connection.on('error', function (err) {
+         //res.json({"code" : 100, "status" : "Error in connection database"});
+         log.warn("Error connecting database ... \n\n");
+         return;
+         });
+         });*/
+
+
+
         response.header('My-Custom-Header ', '1234567890');
         var data = new Object();
         var success = true;
@@ -301,5 +349,26 @@ function getTextOfWallpaper(path) {
     return text;
 }
 ;
+
+function sendError(err, callback) {
+    log.error(err);
+    callback({
+        success: false,
+        error: err,
+    });
+}
+
+function sendSuccess(totalCount, data, callback, message) {
+    var msg = '';
+    if (message)
+        msg = message;
+    callback({
+        success: true,
+        totalCount: totalCount,
+        error: msg,
+        data: data
+    });
+}
+
 
 module.exports = DXUser;
