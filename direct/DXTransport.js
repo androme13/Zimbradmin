@@ -28,6 +28,7 @@ var DXTransport = {
             }
             else
             {
+                setLanguage(connection,request);
                 var myId = request.session.userinfo.id;
                 query = "INSERT INTO transport (domain, transport, created_by) VALUES ('" + params[0].domain + "','" + params[0].transport + "','" + myId + "')";
                 connection.query(query, function (err, rows, fields) {
@@ -63,6 +64,7 @@ var DXTransport = {
             }
             else
             {
+                setLanguage(connection,request);
                 var id = request.session.userinfo.id;
                 var occur = '';
                 var temp = '';
@@ -144,6 +146,7 @@ var DXTransport = {
             }
             else
             {
+                setLanguage(connection,request);
                 query = "SELECT * FROM transport " + extraQuery + " LIMIT " + params.start + ',' + params.limit;
                 connection.query(query, function (err, rows, fields) {
                     if (!err) {
@@ -191,6 +194,7 @@ var DXTransport = {
             }
             else
             {
+                setLanguage(connection,request);
                 var myId = request.session.userinfo.id;
                 query = "UPDATE transport SET domain ='" + params[0].domain;
                 query += "', transport='" + params[0].transport;
@@ -238,6 +242,20 @@ function sendSuccess(totalCount, data, callback, message) {
         totalCount: totalCount,
         error: msg,
         data: data
+    });
+}
+function setLanguage(connection,request)
+{
+    var lang;
+    if (request.session.userinfo.lang){
+        lang=request.session.userinfo.lang;
+    }
+    else
+    {
+        lang="fr_FR";
+    }
+    var query = "SET lc_messages = '"+lang+"'";
+    connection.query(query, function (err, rows, fields) {
     });
 }
 
