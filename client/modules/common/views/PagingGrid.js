@@ -85,6 +85,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 if (i.searchable) {
                     colCFG.searchable = i.searchable;
                 }
+                if (i.exportable) {
+                    colCFG.exportable = i.exportable;
+                }
                 columns.push(colCFG);
             }
         });
@@ -400,38 +403,46 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         var cols = grid.columns;
         var store = grid.store;
         var data = '';
-
+        var totalExportable = 0;
         var that = this;
         Ext.Array.each(cols, function (col, index) {
-            if (col.hidden != true) {
-                console.log(col);
+            if (col.hidden !== true && col.exportable === true) {
+                totalExportable++;
                 data += that._getFieldTextAndEscape(col.dataIndex) + ',';
             }
         });
-        console.log(data);
+        if (totalExportable>0){
         data += "\n";
-
         store.each(function (record) {
             var entry = record.getData();
-            //console.log(entry);
             Ext.Array.each(cols, function (col, index) {
-                if (col.hidden !== true) {
+                if (col.hidden !== true && col.exportable === true) {
                     var fieldName = col.dataIndex;
                     var text = entry[fieldName];
                     data += that._getFieldTextAndEscape(text) + ',';
-                    //console.log(data);
                 }
             });
             data += "\n";
         });
+        // on lance l'envoi du fichier
 
-        //var arr = data;
         var a = window.document.createElement('a');
         a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
         a.download = "zimbradmin_export.csv";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    }
+    else
+    {
+     Ext.MessageBox.show({
+           title: 'Export Impossible',
+           msg: "Aucune colonne n'est configurée pour l'export",
+           buttons: Ext.MessageBox.OK,
+           //animateTarget: 'mb9',
+           icon: Ext.MessageBox.ERROR
+       });
+    }
     },
     _getFieldTextAndEscape: function (fieldData) {
         var string = this._getFieldText(fieldData);
