@@ -88,25 +88,30 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             name: 'username',
             editor: {
                 editable: true,
-                allowBlank:false
+                allowBlank: false
             },
-            type: 'string'
+            type: 'string',
+            searchable: true
         },
         {
             name: 'firstname',
             editor: {
                 editable: true,
-                allowBlank:false
+                allowBlank: false
             },
-            type: 'string'
+            type: 'string',
+            searchable: true
+
         },
         {
             name: 'lastname',
             editor: {
                 editable: true,
-                allowBlank:false
+                allowBlank: false
             },
-            type: 'string'
+            type: 'string',
+            searchable: true
+
         },
         {name: 'created_date', type: 'date', text: 'Crée le',
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
