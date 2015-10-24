@@ -32,7 +32,11 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 autoCancel: false,
                 listeners: {
                     edit: function (editor, e, opt) {
-                        editor.grid.store.sync();
+                        editor.grid.store.sync({
+                            success: function () {
+                                editor.grid.store.reload();
+                            }
+                        });
                     },
                     canceledit: function (editor, e, opt) {
                         // si il n'y a pas de champ id,
@@ -96,7 +100,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     // definition menu contextuel entête de colonne
                     var menu = this.headerCt.getMenu();
                     menu.on({
-                        beforeshow: function (menu) {                          
+                        beforeshow: function (menu) {
                             var columnDataIndex = menu.activeHeader.dataIndex;
                             this.up('grid').getStore().model.getFields().every(function (entry) {
                                 if (entry.name === columnDataIndex) {
@@ -325,27 +329,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             config.plugins = this.rowEditing;
         }
         Ext.applyIf(me, config);
-        console.log('menu', this);
-        //var mainMenu = this.headerCt.getMenu();
-        /*mainMenu.insert(mainMenu.items.length-2, [{
-         itemId: 'toggleSortMenuItem',
-         text: 'Toggle Sort',
-         handler: function() {
-         //mainMenu.activeHeader.sortable = (mainMenu.activeHeader.sortable) ? false : true;
-         }
-         },{
-         itemId: 'severityIndicatorMenuItem',
-         text: 'Severity Indicator',
-         handler: function() {
-         // JB - Start here...
-         }
-         }]);*/
-
-
-
-
-
-
         me.callParent(arguments);
     },
     removeRow: function () {
