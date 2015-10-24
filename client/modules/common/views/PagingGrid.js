@@ -73,19 +73,18 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 if (i.hidden) {
                     colCFG.hidden = i.hidden;
                 }
-                ;
                 if (i.text) {
                     colCFG.header = i.text;
                 }
-                ;
                 if (i.editor) {
                     colCFG.editor = i.editor;
                 }
-                ;
                 if (i.renderer) {
                     colCFG.renderer = i.renderer;
                 }
-                ;
+                if (i.searchable) {
+                    colCFG.searchable = i.searchable;
+                }
                 columns.push(colCFG);
             }
         });
@@ -122,33 +121,22 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     // on traite les spécificités du menu à l'affichage
                     menu.on({
                         beforeshow: function (menu) {
-                            var columnDataIndex = menu.activeHeader.dataIndex;
-                            this.up('grid').getStore().model.getFields().every(function (entry) {
-                                if (entry.name === columnDataIndex) {
-                                    // on localise le menu contextuel 'cntxSearchMenu'
-                                    for (var i = 0; i < menu.items.items.length; i++) {
-                                        if (menu.items.items[i].itemId == 'cntxSearchMenu') {
-                                            var menuItem = i;
-                                        }
-                                    }
-                                    // on verifie si la colonne possède bien la propriété 'searchable'
-                                    // on affiche ou on cache le menu 'search' le cas écheant
-                                    if (entry.searchable === true) {
-                                        menu.items.items[menuItem].show();
-                                    }
-                                    else
-                                    {
-                                        menu.items.items[menuItem].hide();
-                                    }
-                                    return false
+                            for (var i = 0; i < menu.items.items.length; i++) {
+                                if (menu.items.items[i].itemId == 'cntxSearchMenu') {
+                                    var menuItem = i;
                                 }
-                                return true
-                            });
+                            }
+                            if (menu.activeHeader.searchable === true) {
+                                menu.items.items[menuItem].show();
+                            }
+                            else
+                            {
+                                menu.items.items[menuItem].hide();
+                            }
                         }
                     });
 
                     // definition menu contextuel entête de colonne
-
                     menu.add([{
                             iconCls: 'favorite16',
                             text: 'Chercher dans cette colonne',
@@ -184,18 +172,20 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     var menu = Ext.create('Ext.menu.Menu');
                     var item, btn;
                     // ajout des menus liés à la toolbar
-                    //////ajout
+                    // 
+                    //////bouton ajouter
                     btn = this.down('toolbar').down('button[action="add"]');
                     item = new Ext.menu.Item({
                         text: "Ajouter une entrée",
                         //value: rec.data.VALUE_FIELD,
-                        iconCls: btn1.iconCls,
+                        iconCls: btn.iconCls,
                         handler: function (item) {
                             me.addRow();
                         }
                     });
                     menu.add(item);
-                    //////suppression
+
+                    //////bouton supprimer
                     btn = this.down('toolbar').down('button[action="remove"]');
                     if (btn.disabled == false) {
                         item = new Ext.menu.Item({
@@ -208,6 +198,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         });
                         menu.add(item);
                     }
+
                     menu.showAt(xy);
                 },
                 select: function (rowModel, record, index, eOpts)
@@ -217,7 +208,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     if (btn.disabled == true) {
                         btn.setDisabled(false);
                     }
-                    ;
                 },
             },
             bbar: Ext.create('Ext.PagingToolbar', {
@@ -339,6 +329,10 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         {
                             xtype: 'button',
                             text: 'Exporter',
+                            handler: function () {
+                                //console.log(this.up('grid'));
+                                me.export(this.up('grid'));
+                            },
                             action: 'csvExport'
                         }
                     ]
@@ -400,5 +394,79 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         });
         grid.store.insert(0, newEntry);
         grid.rowEditing.startEdit(0, start);
-    }
+    },
+    export: function (grid) {
+        //grid = this.getPostfixLogGrid();
+        var cols = grid.columns;
+        var store = grid.store;
+        var data = '';
+
+        var that = this;
+        Ext.Array.each(cols, function (col, index) {
+            if (col.hidden != true) {
+                console.log(col);
+                data += that._getFieldTextAndEscape(col.dataIndex) + ',';
+            }
+        });
+        console.log(data);
+        data += "\n";
+
+        store.each(function (record) {
+            var entry = record.getData();
+            //console.log(entry);
+            Ext.Array.each(cols, function (col, index) {
+                if (col.hidden !== true) {
+                    var fieldName = col.dataIndex;
+                    var text = entry[fieldName];
+                    data += that._getFieldTextAndEscape(text) + ',';
+                    //console.log(data);
+                }
+            });
+            data += "\n";
+        });
+
+        //var arr = data;
+        var a = window.document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
+        a.download = "zimbradmin_export.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    },
+    _getFieldTextAndEscape: function (fieldData) {
+        var string = this._getFieldText(fieldData);
+        console.log('_getFieldTextAndEscape', string);
+        return this._escapeForCSV(string);
+    },
+    _getFieldText: function (fieldData) {
+        var text;
+
+        if (fieldData === null || fieldData === undefined) {
+            text = '';
+
+        } else if (fieldData._refObjectName && !fieldData.getMonth) {
+            text = fieldData._refObjectName;
+
+        } else if (fieldData instanceof Date) {
+            text = Ext.Date.format(fieldData, this.dateFormat);
+
+        } else if (!fieldData.match) { // not a string or object we recognize...bank it out
+            text = '';
+
+        } else {
+            text = fieldData;
+        }
+
+        return text;
+    },
+    _escapeForCSV: function (string) {
+        if (string.match(/,/)) {
+            if (!string.match(/"/)) {
+                string = '"' + string + '"';
+            } else {
+                string = string.replace(/,/g, ''); // comma's and quotes-- sorry, just loose the commas
+            }
+        }
+        return string;
+    },
 });
