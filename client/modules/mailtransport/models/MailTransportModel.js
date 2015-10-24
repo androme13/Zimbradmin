@@ -8,6 +8,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
         {name: 'domain',
             //text: 'domain',
             type: 'string',
+            searchable: true,
             editor: {
                 vtype:'email',
                 allowBlank: false,
@@ -17,6 +18,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
         {name: 'transport',
             //text: 'Transport',
             type: 'string',
+            searchable: true,
             editor: {
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
