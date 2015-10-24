@@ -102,7 +102,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     // on affiche le marqueur de colonne de recherche sur la
                     // première colonne disposant de l'attribut 'searchable'
                     // et on genere le params.col
-                    // 
+
                     // on cherche en premier l'attribut dans le modele
                     this.getStore().model.getFields().every(function (entry) {
                         if (entry.searchable === true) {
@@ -187,7 +187,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         }
                     });
                     menu.add(item);
-
                     //////bouton supprimer
                     btn = this.down('toolbar').down('button[action="remove"]');
                     if (btn.disabled == false) {
@@ -201,7 +200,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         });
                         menu.add(item);
                     }
-
                     menu.showAt(xy);
                 },
                 select: function (rowModel, record, index, eOpts)
@@ -323,6 +321,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             clickEvent: 'mousedown',
                             action: 'remove',
                             handler: function () {
+                                //console.log(this.up('grid'));
                                 me.removeRow();
                             }
                         },
@@ -355,30 +354,60 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     removeRow: function () {
         var grid = this.up('window').down('grid');
         var rows = grid.getSelectionModel().getSelection();
-        var itemsList = "";
-        rows.forEach(function (entry) {
-            var str = entry.data;
-            Ext.iterate(str, function (key, value) {
-                itemsList += value + '|';
-            });
-            itemsList += "<br>";
+        var store = Ext.create(grid.store.$className);
+        store.add(rows);
+        var columns = [];
+        grid.columns.forEach(function (entry) {
+            columns.push(Ext.create('Ext.grid.column.Column', entry));
         });
-        var msg = Ext.Msg.show({
-            title: 'Confirmer la suppression',
-            msg: 'Veuillez confirmer la suppression des éléments suivants :<br>' + itemsList,
-            buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.QUESTION,
-            modal: true,
-            fn: function (btn) {
-                if (btn === 'yes') {
-                    grid.store.remove(rows);
-                    grid.store.sync();
-                }
+        var gridDel = Ext.create('Ext.grid.Panel', {
+            store: store,
+            columns: columns,
+            viewConfig: {
+                stripeRows: true
             }
         });
-        Ext.defer(function () {
-            msg.toFront();
-        }, 50);
+        var formPanel = Ext.create('Ext.form.Panel', {
+            title: 'Veuillez confirmer la suppression des éléments suivants',
+            fieldDefaults: {
+                labelAlign: 'top',
+                msgTarget: 'side'
+            },
+            defaults: {
+                border: false,
+                xtype: 'panel',
+                flex: 1,
+                layout: 'anchor'
+            },
+            layout: 'hbox',
+            items: [{
+                    items: [gridDel]
+                }],
+            buttons: ['->', {
+                    text: 'Confirmer',
+                    handler: function () {
+                        grid.store.remove(rows);
+                        grid.store.sync();
+                        this.up('window').close();
+                    }
+                }, {
+                    text: 'Annuler',
+                    handler: function () {
+                        this.up('window').close();
+                    }
+                }]
+        });
+        var winDel = Ext.create("Ext.window.Window", {
+            title: "Confirmation de suppression d'éléments",
+            layout: 'fit',
+            //maximizable: true,
+            width: 512,
+            height: 400,
+            modal: true,
+            items: formPanel
+        });
+        winDel.show();
+
     },
     // fonctions ////////////////////////////////
     addRow: function () {
@@ -410,38 +439,38 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 data += that._getFieldTextAndEscape(col.dataIndex) + ',';
             }
         });
-        if (totalExportable>0){
-        data += "\n";
-        store.each(function (record) {
-            var entry = record.getData();
-            Ext.Array.each(cols, function (col, index) {
-                if (col.hidden !== true && col.exportable === true) {
-                    var fieldName = col.dataIndex;
-                    var text = entry[fieldName];
-                    data += that._getFieldTextAndEscape(text) + ',';
-                }
-            });
+        if (totalExportable > 0) {
             data += "\n";
-        });
-        // on lance l'envoi du fichier
+            store.each(function (record) {
+                var entry = record.getData();
+                Ext.Array.each(cols, function (col, index) {
+                    if (col.hidden !== true && col.exportable === true) {
+                        var fieldName = col.dataIndex;
+                        var text = entry[fieldName];
+                        data += that._getFieldTextAndEscape(text) + ',';
+                    }
+                });
+                data += "\n";
+            });
+            // on lance l'envoi du fichier
 
-        var a = window.document.createElement('a');
-        a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
-        a.download = 'ZimbrAdmin_'+grid.store.storeId+"_export.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-    else
-    {
-     Ext.MessageBox.show({
-           title: 'Export Impossible',
-           msg: "Aucune colonne n'est configurée pour l'export",
-           buttons: Ext.MessageBox.OK,
-           //animateTarget: 'mb9',
-           icon: Ext.MessageBox.ERROR
-       });
-    }
+            var a = window.document.createElement('a');
+            a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
+            a.download = 'ZimbrAdmin_' + grid.store.storeId + "_export.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        else
+        {
+            Ext.MessageBox.show({
+                title: 'Export Impossible',
+                msg: "Aucune colonne n'est configurée pour l'export",
+                buttons: Ext.MessageBox.OK,
+                //animateTarget: 'mb9',
+                icon: Ext.MessageBox.ERROR
+            });
+        }
     },
     _getFieldTextAndEscape: function (fieldData) {
         var string = this._getFieldText(fieldData);
