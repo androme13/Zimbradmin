@@ -94,29 +94,26 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             listeners: {
                 afterrender: function (col) {
                     // definition menu contextuel entête de colonne
-                    var menu = this.headerCt.getMenu();                   
+                    var menu = this.headerCt.getMenu();
                     menu.on({
-                        beforeshow: function (menu) {
-                            // on verifie si la colonne possède bien la propriété 'searchable'
-                            // on affiche ou on cache le menu 'search' le cas écheant
+                        beforeshow: function (menu) {                          
                             var columnDataIndex = menu.activeHeader.dataIndex;
                             this.up('grid').getStore().model.getFields().every(function (entry) {
                                 if (entry.name === columnDataIndex) {
-                                    console.log('entryname', entry.name);
-                                    if (entry.searchable === true) {
-                                        for (var i = 0; i < menu.items.items.length; i++) {
-                                            if (menu.items.items[i].itemId == 'cntxSearchMenu') {
-                                                menu.items.items[i].show();
-                                            }
+                                    // on localise le menu contextuel 'cntxSearchMenu'
+                                    for (var i = 0; i < menu.items.items.length; i++) {
+                                        if (menu.items.items[i].itemId == 'cntxSearchMenu') {
+                                            var menuItem = i;
                                         }
+                                    }
+                                    // on verifie si la colonne possède bien la propriété 'searchable'
+                                    // on affiche ou on cache le menu 'search' le cas écheant
+                                    if (entry.searchable === true) {
+                                        menu.items.items[menuItem].show();
                                     }
                                     else
                                     {
-                                        for (var i = 0; i < menu.items.items.length; i++) {
-                                            if (menu.items.items[i].itemId == 'cntxSearchMenu') {
-                                                menu.items.items[i].hide();
-                                            }
-                                        }
+                                        menu.items.items[menuItem].hide();
                                     }
                                     return false
                                 }
