@@ -92,11 +92,42 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             },
             columns: columns,
             listeners: {
-                afterrender: function () {
-                    var menu = this.headerCt.getMenu();
+                afterrender: function (col) {
+                    // definition menu contextuel entête de colonne
+                    var menu = this.headerCt.getMenu();                   
+                    menu.on({
+                        beforeshow: function (menu) {
+                            // on verifie si la colonne possède bien la propriété 'searchable'
+                            // on affiche ou on cache le menu 'search' le cas écheant
+                            var columnDataIndex = menu.activeHeader.dataIndex;
+                            this.up('grid').getStore().model.getFields().every(function (entry) {
+                                if (entry.name === columnDataIndex) {
+                                    console.log('entryname', entry.name);
+                                    if (entry.searchable === true) {
+                                        for (var i = 0; i < menu.items.items.length; i++) {
+                                            if (menu.items.items[i].itemId == 'cntxSearchMenu') {
+                                                menu.items.items[i].show();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (var i = 0; i < menu.items.items.length; i++) {
+                                            if (menu.items.items[i].itemId == 'cntxSearchMenu') {
+                                                menu.items.items[i].hide();
+                                            }
+                                        }
+                                    }
+                                    return false
+                                }
+                                return true
+                            });
+                        }
+                    });
                     menu.add([{
                             iconCls: 'favorite16',
                             text: 'Chercher dans cette colonne',
+                            itemId: 'cntxSearchMenu',
                             handler: function () {
                                 var grid = this.up('grid');
                                 var columnDataIndex = menu.activeHeader.dataIndex;
@@ -104,12 +135,12 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                 // on supprime l'ancien marqueur
                                 if (extraParams.col) {
                                     grid.columns.every(function (entry) {
-                                     if (entry.dataIndex===extraParams.col) {                        
-                                         entry.setText(entry.dataIndex);
-                                     return false;
-                                     }
-                                     return true;
-                                     });
+                                        if (entry.dataIndex === extraParams.col) {
+                                            entry.setText(entry.dataIndex);
+                                            return false;
+                                        }
+                                        return true;
+                                    });
                                 }
                                 // on ajoute le marqueur visuel sur le titre de la colonne.
                                 menu.activeHeader.setText(columnDataIndex + " (*)");
@@ -118,6 +149,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                     grid.store.reload();
                             }
                         }]);
+
                 },
                 cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     e.stopEvent();
@@ -296,6 +328,27 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             config.plugins = this.rowEditing;
         }
         Ext.applyIf(me, config);
+        console.log('menu', this);
+        //var mainMenu = this.headerCt.getMenu();
+        /*mainMenu.insert(mainMenu.items.length-2, [{
+         itemId: 'toggleSortMenuItem',
+         text: 'Toggle Sort',
+         handler: function() {
+         //mainMenu.activeHeader.sortable = (mainMenu.activeHeader.sortable) ? false : true;
+         }
+         },{
+         itemId: 'severityIndicatorMenuItem',
+         text: 'Severity Indicator',
+         handler: function() {
+         // JB - Start here...
+         }
+         }]);*/
+
+
+
+
+
+
         me.callParent(arguments);
     },
     removeRow: function () {
