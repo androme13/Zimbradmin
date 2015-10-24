@@ -96,9 +96,30 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             },
             columns: columns,
             listeners: {
-                afterrender: function (col) {
-                    // definition menu contextuel entête de colonne
+                afterrender: function (grid) {
+                    // on affiche le marqueur de colonne de recherche sur la
+                    // première colonne disposant de l'attribut 'searchable'
+                    // et on genere le params.col
+                    // 
+                    // on cherche en premier l'attribut dans le modele
+                    this.getStore().model.getFields().every(function (entry) {
+                        if (entry.searchable === true) {
+                            // on cherche ensuite la colonne qui dispose du même nom
+                            grid.columns.every(function (col) {
+                                if (col.dataIndex === entry.name) {
+                                    col.setText(col.text + " (*)");
+                                    grid.store.proxy.setExtraParam("col", col.dataIndex);
+                                    return false;
+                                }
+                                return true;
+                            });
+                            return false;
+                        }
+                        return true;
+                    });
+
                     var menu = this.headerCt.getMenu();
+                    // on traite les spécificités du menu à l'affichage
                     menu.on({
                         beforeshow: function (menu) {
                             var columnDataIndex = menu.activeHeader.dataIndex;
@@ -125,6 +146,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             });
                         }
                     });
+
+                    // definition menu contextuel entête de colonne
+
                     menu.add([{
                             iconCls: 'favorite16',
                             text: 'Chercher dans cette colonne',
