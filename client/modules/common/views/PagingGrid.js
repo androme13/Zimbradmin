@@ -399,7 +399,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         grid.rowEditing.startEdit(0, start);
     },
     export: function (grid) {
-        //grid = this.getPostfixLogGrid();
         var cols = grid.columns;
         var store = grid.store;
         var data = '';
@@ -428,7 +427,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
 
         var a = window.document.createElement('a');
         a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
-        a.download = "zimbradmin_export.csv";
+        a.download = 'ZimbrAdmin_'+grid.store.storeId+"_export.csv";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -446,7 +445,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     },
     _getFieldTextAndEscape: function (fieldData) {
         var string = this._getFieldText(fieldData);
-        console.log('_getFieldTextAndEscape', string);
         return this._escapeForCSV(string);
     },
     _getFieldText: function (fieldData) {
