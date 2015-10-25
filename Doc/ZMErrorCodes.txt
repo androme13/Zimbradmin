@@ -27,3 +27,26 @@ type update :
 401 : update fatal error
 402 : update error
 /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+ZM TypeCode (ZMTypeCode) : "LOGIN"
+ZM ErrorCodes (ZMErrorCode)
+
+/////////////////////////////////////////////////////
+ZMErrorCode : 
+
+type : login
+100 : login ok
+101 : login fatal error
+102 : login error
+103 : login nok
+
+200 : logout ok
+201 : logout fatal error
+202 : logout error
+203 : logout nok
+
+300 : valid session ok
+301 : valid session fatal error
+302 : valid session error
+303 : valid session nok
