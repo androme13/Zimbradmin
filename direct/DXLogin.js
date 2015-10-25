@@ -1,5 +1,5 @@
 /* 
- * DXTransport
+ * DXLogin
  * (C) Androme 2015
  * 
  */
