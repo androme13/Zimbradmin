@@ -30,7 +30,7 @@ var DXTransport = {
             {
                 setLanguage(connection,request);
                 var myId = request.session.userinfo.id;
-                query = "INSERT INTO transport (domain, transport, created_by) VALUES ('" + params[0].domain + "','" + params[0].transport + "','" + myId + "')";
+                query = "INSERT INTO transport (domain, transport, created_by) VALUES ('" + params[0].domain.toLowerCase() + "','" + params[0].transport.toLowerCase() + "','" + myId + "')";
                 connection.query(query, function (err, rows, fields) {
                     if (!err) {
                         var message = {
@@ -91,7 +91,6 @@ var DXTransport = {
                                 ZMTypeCode: 'DX',
                                 ZMErrorCode: 200
                             }
-                            //sendSuccess(rows.length, rows, callback, message);
                         }
                         // si seulement certaines entrées ont ét suprimées
                         if (params.length > rows.affectedRows)
@@ -100,8 +99,7 @@ var DXTransport = {
                             var message = {
                                 ZMTypeCode: 'DX',
                                 ZMErrorCode: 204,
-                            };
-                            //sendSuccess(rows.length, rows, callback, message);
+                            };                            
                         }
                         // si aucune entrée n'a été supprimée
                         if (rows.affectedRows == 0)
@@ -110,9 +108,7 @@ var DXTransport = {
                                 ZMTypeCode: 'DX',
                                 ZMErrorCode: 203,
                             };
-                            // sendSuccess(rows.length, rows, callback, message);
                         }
-
                         sendSuccess(rows.length, rows, callback, message);
                     }
                     else
@@ -196,8 +192,8 @@ var DXTransport = {
             {
                 setLanguage(connection,request);
                 var myId = request.session.userinfo.id;
-                query = "UPDATE transport SET domain ='" + params[0].domain;
-                query += "', transport='" + params[0].transport;
+                query = "UPDATE transport SET domain ='" + params[0].domain.toLowerCase();
+                query += "', transport='" + params[0].transport.toLowerCase();
                 query += "', modified_by='" + myId;
                 query += "' WHERE id='" + params[0].id + "'";
                 ;
@@ -214,7 +210,7 @@ var DXTransport = {
                         err.ZMTypeCode = 'DX';
                         err.ZMErrorCode = 402;
                         err.ZMErrorMsg = String(err);
-                        console.log('erreur', err);
+                        //console.log('erreur', err);
                         sendError(err, callback);
                     }
                 });
@@ -246,15 +242,13 @@ function sendSuccess(totalCount, data, callback, message) {
 }
 function setLanguage(connection,request)
 {
-    var lang;
-    if (request.session.userinfo.lang){
-        lang=request.session.userinfo.lang;
+    var lang = "fr_FR";
+    if (request.session.userinfo) {
+        if (request.session.userinfo.lang) {
+            lang = request.session.userinfo.lang;
+        }
     }
-    else
-    {
-        lang="fr_FR";
-    }
-    var query = "SET lc_messages = '"+lang+"'";
+    var query = "SET lc_messages = '" + lang + "'";
     connection.query(query, function (err, rows, fields) {
     });
 }
