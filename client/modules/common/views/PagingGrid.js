@@ -329,8 +329,11 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             xtype: 'tbfill',
                         },
                         {
-                            xtype: 'button',
+                            xtype: 'splitbutton',
                             text: 'Exporter',
+                            menu: [{
+                                    text: 'Importer'
+                                }],
                             handler: function () {
                                 //console.log(this.up('grid'));
                                 me.export(this.up('grid'));
@@ -368,7 +371,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             }
         });
         var formPanel = Ext.create('Ext.form.Panel', {
-            title: 'Veuillez confirmer la suppression des éléments suivants',
+            title: 'Veuillez confirmer la suppression des éléments suivants (' + store.getCount() + ')',
             fieldDefaults: {
                 labelAlign: 'top',
                 msgTarget: 'side'
@@ -385,6 +388,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 }],
             buttons: ['->', {
                     text: 'Confirmer',
+                    iconCls: 'accept16',
                     handler: function () {
                         grid.store.remove(rows);
                         grid.store.sync();
@@ -392,6 +396,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     }
                 }, {
                     text: 'Annuler',
+                    iconCls: 'cancel16',
                     handler: function () {
                         this.up('window').close();
                     }
@@ -400,13 +405,16 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         var winDel = Ext.create("Ext.window.Window", {
             title: "Confirmation de suppression d'éléments",
             layout: 'fit',
-            //maximizable: true,
+            maximizable: true,
             width: 512,
             height: 400,
             modal: true,
             items: formPanel
         });
         winDel.show();
+        Ext.Function.defer(function () {
+            winDel.toFront();
+        }, 50);
 
     },
     // fonctions ////////////////////////////////
