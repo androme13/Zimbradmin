@@ -260,11 +260,17 @@ div.ux-taskbar div.x-toolbar {
 .application-systemstatus {
     background-image:url( ../images/16x16/application-monitor.png ) !important;
 }
+.accept16 {
+    background-image:url(../images/16x16/accept.png) !important;
+}
 .add16 {
     background-image:url(../images/16x16/add.png) !important;
 }
 .favorite16 {
     background-image:url(../images/16x16/favorite.png) !important;
+}
+.cancel16 {
+    background-image:url(../images/16x16/cancel.png) !important;
 }
 .remove16 {
     background-image:url(../images/16x16/remove.png) !important;
