@@ -96,8 +96,14 @@ var DXUser = {
     },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) var params={};
         if (!params.col)
             params.col = 'username';
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 50;
         if (params.search) {
             extraQuery = "WHERE " + params.col
             extraQuery += " LIKE '%" + params.search + "%'";
@@ -111,8 +117,6 @@ var DXUser = {
             }
             else
             {
-                //query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
-
                 query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users " + extraQuery;
                 query += " LIMIT " + params.start + ',' + params.limit;
                 connection.query(query, function (err, rows, fields) {
