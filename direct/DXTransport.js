@@ -132,6 +132,8 @@ var DXTransport = {
         // on set les parametres par défaut si ils sont absents
         if (!params)
             var params = {};
+        params.extraQuery='';
+        params.table = 'transport';
         if (!params.col)
             params.col = 'domain';
         if (!params.start)
@@ -139,95 +141,33 @@ var DXTransport = {
         if (!params.limit)
             params.limit = 50;
         if (params.search) {
-            extraQuery = "WHERE " + params.col;
-            extraQuery += " LIKE '%" + params.search + "%'";
+            params.extraQuery = " WHERE " + params.col;
+            params.extraQuery += " LIKE '%" + params.search + "%'";
         }
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.ZMTypeCode = 'DX';
-                err.ZMErrorCode = 302;
-                err.ZMErrorMsg = String(err)
-                DXCommon.sendError(err, callback);
-            }
-            else
-            {
-                DXCommon.setLanguage(connection, request);
-                query = "SELECT * FROM transport " + extraQuery + " LIMIT " + params.start + ',' + params.limit;
-                connection.query(query, function (err, rows, fields) {
-                    if (!err) {
-                        data = rows;
-                        // on cherche maintenant le nombre total
-                        // d'entrées dans la table pour le paging
-                        query = "SELECT COUNT(*) AS totalCount FROM transport " + extraQuery;
-                        connection.query(query, function (err, rows, fields) {
-                            if (!err) {
-                                var message = {
-                                    'ZMTypeCode': 'DX',
-                                    'ZMErrorCode': 300
-                                };
-                                DXCommon.sendSuccess(rows[0].totalCount, data, callback, message);
-                            }
-                            else
-                            {
-                                err.ZMTypeCode = 'DX';
-                                err.ZMErrorCode = 302;
-                                err.ZMErrorMsg = String(err)
-                                DXCommon.sendError(err, callback);
-                            }
-                        })
-                    }
-                    else
-                    {
-                        err.ZMTypeCode = 'DX';
-                        err.ZMErrorCode = 302;
-                        err.ZMErrorMsg = String(err)
-                        DXCommon.sendError(err, callback);
-                    }
-                });
-            }
-            if (connection)
-                connection.release();
-        });
+        params.log = log;
+        query = "SELECT * FROM " + params.table + params.extraQuery;
+        query += " LIMIT " + params.start + ',' + params.limit;
+        console.log(query);
+        params.query = query;
+        DXCommon.get(params, callback, sessionID, request, response);
     },
     update: function (params, callback, sessionID, request, response) {
         var query;
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.ZMTypeCode = 'DX';
-                err.ZMErrorCode = 402;
-                DXCommon.sendError(err, callback);
-            }
-            else
-            {
-                DXCommon.setLanguage(connection, request);
-                var myId = request.session.userinfo.id;
-                query = "UPDATE transport SET domain ='" + params[0].domain.toLowerCase();
-                query += "', transport='" + params[0].transport.toLowerCase();
-                query += "', modified_by='" + myId;
-                query += "' WHERE id='" + params[0].id + "'";
-                ;
-                connection.query(query, function (err, rows, fields) {
-                    if (!err) {
-                        var message = {
-                            'ZMTypeCode': 'DX',
-                            'ZMErrorCode': 400
-                        }
-                        DXCommon.sendSuccess(rows.length, rows, callback, message);
-                    }
-                    else
-                    {
-                        err.ZMTypeCode = 'DX';
-                        err.ZMErrorCode = 402;
-                        err.ZMErrorMsg = String(err);
-                        //console.log('erreur', err);
-                        DXCommon.sendError(err, callback);
-                    }
-                });
-            }
-            if (connection)
-                connection.release();
-        });
-    }
+        var myId = request.session.userinfo.id;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) {
+            var params = [];
+            params[0]={};
+        }
+        params[0].table = 'transport';
+        params[0].log = log;
+        query = "UPDATE " + params[0].table + " SET domain='" +params[0].domain.toLowerCase();
+        query += "', transport='" + params[0].transport.toLowerCase();
+        query += "', modified_by='" + myId;
+        query += "' WHERE id='" + params[0].id + "'";
+        params[0].query = query;
+        DXCommon.update(params, callback, sessionID, request, response);
+    },
 };
 
 module.exports = DXTransport;
