@@ -31,6 +31,7 @@ var DXTransport = {
             {
                 DXCommon.setLanguage(connection, request);
                 var myId = request.session.userinfo.id;
+                DXCommon.setLanguage(connection, request);
                 query = "INSERT INTO transport (domain, transport, created_by) VALUES ('" + params[0].domain.toLowerCase() + "','" + params[0].transport.toLowerCase() + "','" + myId + "')";
                 connection.query(query, function (err, rows, fields) {
                     if (!err) {
@@ -129,7 +130,8 @@ var DXTransport = {
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
         // on set les parametres par défaut si ils sont absents
-        if (!params) var params={};
+        if (!params)
+            var params = {};
         if (!params.col)
             params.col = 'domain';
         if (!params.start)
