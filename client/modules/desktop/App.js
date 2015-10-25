@@ -1,20 +1,12 @@
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/* 
+ * Desktop App.js
+ * (C) Androme 2015
+ * 
  */
-
 
 Ext.infoMsg = function () {
     var msgCt;
-
     function createBox(t, s, c) {
-        // return ['<div class="msg">',
-        //         '<div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div>',
-        //         '<div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc"><h3>', t, '</h3>', s, '</div></div></div>',
-        //         '<div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div>',
-        //         '</div>'].join('');
         return '<div class="msg"><h3><font color="' + c + '">&#9632;</font><CENTER><U>' + t + '</U></CENTER></h3><p>' + s + '</p></div>';
     }
     return {
@@ -41,13 +33,10 @@ Ext.infoMsg = function () {
     };
 }();
 
-
 // fix hide submenu (in chrome 43)
 Ext.override(Ext.menu.Menu, {
     onMouseLeave: function (e) {
         var me = this;
-
-
         // BEGIN FIX
         var visibleSubmenu = false;
         me.items.each(function (item) {
@@ -60,16 +49,10 @@ Ext.override(Ext.menu.Menu, {
             return;
         }
         // END FIX
-
-
         me.deactivateActiveItem();
-
-
         if (me.disabled) {
             return;
         }
-
-
         me.fireEvent('mouseleave', me, e);
     }
 });
@@ -139,6 +122,7 @@ Ext.define('Ext.ux.desktop.App', {
                 //si la session existe cote serveur
                 if (resultgetsession.success === true)
                 {
+                    console.log('getsessionok');
                     // on recupere les modules auxquels l'user à le droit
                     ExtRemote.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
                     function (resultgetmodules, event2) {
@@ -182,7 +166,6 @@ Ext.define('Ext.ux.desktop.App', {
                 {
                     console.log('error processlogin');
                 }
-                // you can grab useful info from event
             }
             );
         }
@@ -223,20 +206,6 @@ Ext.define('Ext.ux.desktop.App', {
                         Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
                     }
                 });
-                // puisque c'est un raffraichissement
-                // il faut ajouter le module win-login
-                // à la main sinon il n'est pas chargé.
-                // on donne la valeur true au parametre 
-                // de preparedesktop pour lui
-                // indiquer de l'ajouter.
-                /*me.sessionConfig(result.data);
-                 me.preparedesktop(true);
-                 me.getModule('login-win').firstLaunch = false;
-                 me.finishmenubar();
-                 me.finishtaskbar();
-                 me.loadShortcuts();
-                 // on lance le polltask à la main puisque l'on ne passe pas par le login
-                 me.runSessionPollTask();*/
             } else
                     // sinon c'est un premier login
                     {
@@ -300,9 +269,6 @@ Ext.define('Ext.ux.desktop.App', {
     showModule: function (name) {
         var me = this;
         var module = this.getModule(name).createWindow(this);
-        // correction d'un bug dans ext js 4.2
-
-
         // on customize les fenetres
         if (!module.tools) {
             module.tools = [];
@@ -347,12 +313,7 @@ Ext.define('Ext.ux.desktop.App', {
     loadShortcuts: function (modules) {
         var me = this;
         var record = [];
-        //console.log(modules);
-        //console.log(this.modules[0].$className);
-
         var shortcutsToCreate = [];
-
-
         // on creer en premier un tableau qui contient que les modules
         // qui possèdent un raccourci
         modules.forEach(function (entry) {
@@ -381,24 +342,7 @@ Ext.define('Ext.ux.desktop.App', {
             });
 
         });
-        //console.log(record);
         me.addShortcuts(record);
-
-
-        //console.log('shortcutsToCreate:', shortcutsToCreate);
-        /*ExtRemote.DXUser.getshortcuts({'action': 'getshortcuts'},
-         function (result, event) {
-         if (result.success === true)
-         {
-         Ext.each(result.data, function (record) {
-         // on genere les icones par record
-         record.iconCls = record.module + '-shortcut';
-         });
-         record = result.data;
-         me.addShortcut(record);
-         }
-         }
-         );*/
     },
     searchShortcut: function (module) {
         var store = Ext.data.StoreManager.lookup('shortcutsStore');
@@ -439,7 +383,6 @@ Ext.define('Ext.ux.desktop.App', {
             if (record.module == entry.id) {
                 module = entry.$className;
             }
-
         });
         ExtRemote.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
         function (result) {
@@ -470,9 +413,7 @@ Ext.define('Ext.ux.desktop.App', {
                 trayItems: [
                     {xtype: 'trayclock', flex: 1}
                 ]}
-            //taskbarConfig: me.getTaskbarConfig()
         };
-
         Ext.apply(cfg, me.desktopConfig);
         return cfg;
     },
@@ -498,24 +439,6 @@ Ext.define('Ext.ux.desktop.App', {
         });
         return cfg;
     },
-    /*createWindow: function (module) {
-     console.log("create");
-     var window = module.createWindow();
-     window.show();
-     },*/
-    /**
-     * This method returns the configuration object for the TaskBar. A derived class
-     * can override this method, call the base version to build the config and then
-     * modify the returned object before returning it.
-     */
-    /*finishstartmenu: function () {
-     Ext.each(me.modules, function (module) {
-     launcher = module.launcher;
-     if (launcher) {
-     launcher.handler = launcher.handler || Ext.bind(me.createWindow, me, [module]);
-     }
-     });
-     },*/
     finishmenubar: function () {
         var bypass = false;
         var me = this;
@@ -567,8 +490,6 @@ Ext.define('Ext.ux.desktop.App', {
         me.desktop.taskbar.startMenu.addMenuItem(menu);
     },
     finishtaskbar: function () {
-        //var me = this;
-        //console.log('finishtaskbar', this.session);
         var title = this.session.userinfo.firstname + " " + this.session.userinfo.lastname + " (" + this.session.userinfo.username + ")";
         this.desktop.taskbar.startMenu.setTitle(title);
         this.desktop.taskbar.startMenu.height = 300;
@@ -576,7 +497,6 @@ Ext.define('Ext.ux.desktop.App', {
             {
                 text: 'Mon Compte',
                 iconCls: 'settings16',
-                //handler: this.onSettings,
                 handler: function () {
                     this.showModule('settings-win')
                 },
