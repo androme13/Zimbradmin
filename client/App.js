@@ -1,8 +1,7 @@
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/* 
+ * App.js
+ * (C) Androme 2015
+ * 
  */
 
 Ext.define('MyDesktop.App', {
