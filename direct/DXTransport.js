@@ -28,7 +28,7 @@ var DXTransport = {
             }
             else
             {
-                setLanguage(connection,request);
+                setLanguage(connection, request);
                 var myId = request.session.userinfo.id;
                 query = "INSERT INTO transport (domain, transport, created_by) VALUES ('" + params[0].domain.toLowerCase() + "','" + params[0].transport.toLowerCase() + "','" + myId + "')";
                 connection.query(query, function (err, rows, fields) {
@@ -64,7 +64,7 @@ var DXTransport = {
             }
             else
             {
-                setLanguage(connection,request);
+                setLanguage(connection, request);
                 var id = request.session.userinfo.id;
                 var occur = '';
                 var temp = '';
@@ -99,7 +99,7 @@ var DXTransport = {
                             var message = {
                                 ZMTypeCode: 'DX',
                                 ZMErrorCode: 204,
-                            };                            
+                            };
                         }
                         // si aucune entrée n'a été supprimée
                         if (rows.affectedRows == 0)
@@ -127,8 +127,14 @@ var DXTransport = {
     },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) var params={};
         if (!params.col)
             params.col = 'domain';
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 50;
         if (params.search) {
             extraQuery = "WHERE " + params.col;
             extraQuery += " LIKE '%" + params.search + "%'";
@@ -142,7 +148,7 @@ var DXTransport = {
             }
             else
             {
-                setLanguage(connection,request);
+                setLanguage(connection, request);
                 query = "SELECT * FROM transport " + extraQuery + " LIMIT " + params.start + ',' + params.limit;
                 connection.query(query, function (err, rows, fields) {
                     if (!err) {
@@ -190,7 +196,7 @@ var DXTransport = {
             }
             else
             {
-                setLanguage(connection,request);
+                setLanguage(connection, request);
                 var myId = request.session.userinfo.id;
                 query = "UPDATE transport SET domain ='" + params[0].domain.toLowerCase();
                 query += "', transport='" + params[0].transport.toLowerCase();
@@ -240,7 +246,7 @@ function sendSuccess(totalCount, data, callback, message) {
         data: data
     });
 }
-function setLanguage(connection,request)
+function setLanguage(connection, request)
 {
     var lang = "fr_FR";
     if (request.session.userinfo) {
