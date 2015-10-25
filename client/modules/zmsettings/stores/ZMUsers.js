@@ -14,7 +14,7 @@ Ext.define('MyDesktop.modules.zmsettings.stores.ZMUsers', {
             create: 'ExtRemote.DXUser.addusers',
             read: 'ExtRemote.DXUser.get',
             update: 'ExtRemote.DXUser.update',
-            destroy: 'ExtRemote.DXUser.destroyusers'
+            destroy: 'ExtRemote.DXUser.destroy'
         },
         reader: {
             root: 'data',
