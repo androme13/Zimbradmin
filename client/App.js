@@ -8,31 +8,15 @@
 Ext.define('MyDesktop.App', {
     extend: 'Ext.ux.desktop.App',
     requires: [
-        //'Ext.window.MessageBox',
         'Ext.ux.desktop.ShortcutModel',
         'Ext.direct.*',
         'MyDesktop.modules.directapi.DirectAPI',
         'MyDesktop.modules.login.Login'
-        //'MyDesktop.modules.systemstatus.SystemStatus',
-        //'MyDesktop.modules.videowindow.VideoWindow',
-        //'MyDesktop.modules.gridwindow.GridWindow',
-        //'MyDesktop.modules.tabwindow.TabWindow',
-        //'MyDesktop.modules.accordionwindow.AccordionWindow',
-        //'MyDesktop.modules.notepad.Notepad',
-        //'MyDesktop.modules.bogusmodule.BogusModule',
-        //'MyDesktop.modules.bogusmenumodule.BogusMenuModule',
-        
-//        'MyDesktop.Blockalanche',
-        //'MyDesktop.modules.settings.Settings'
     ],
 
     init: function () {
-        // custom logic before getXYZ methods get called...
         console.log('init ZimbradminApp');
-        //Ext.tip.QuickTipManager.init();
         this.callParent();
-
-        // now ready...
     },
     loadModules: function () {
         var obj = new Array();
@@ -82,19 +66,6 @@ Ext.define('MyDesktop.App', {
         //on renvoit un objet vide car pas encore de login
         return Ext.apply(ret, obj);
     },
-    /*getTaskbarConfig: function () {
-     var ret = this.callParent();
-     
-     return Ext.apply(ret, {
-     /* quickStart: [
-     {name: 'Accordion Window', iconCls: 'accordion', module: 'acc-win'},
-     {name: 'Grid Window', iconCls: 'icon-grid', module: 'grid-win'}
-     ],
-     trayItems: [
-     {xtype: 'trayclock', flex: 1}
-     ]
-     });
-     },*/
     onLogout: function () {
         var me = this;
         Ext.Msg.confirm('Deconnection', 'Etes vous sur de vouloir vous deconnecter ?',
@@ -120,16 +91,9 @@ Ext.define('MyDesktop.App', {
     },
     onTestDirectSession: function () {
         console.log("test direct");
-        ExtRemote.DXUser.getusers(null,
+        ExtRemote.DXUser.get(null,
         function (result, event) {
         }
         );
     },
-    /*onSettings: function () {
-        /*var dlg = new MyDesktop.modules.settings.Settings({
-         desktop: this.desktop
-         });
-         dlg.show();
-        this.showModule('settings-win');
-    }*/
 });
