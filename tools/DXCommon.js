@@ -7,6 +7,93 @@
 // tools.js
 // ========
 module.exports = {
+    add: function (params, callback, sessionID, request, response) {
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 102;
+                err.ZMErrorMsg = String(err);
+                sendError(err, callback, params.log);
+            }
+            else
+            {
+                setLanguage(connection, request);
+                connection.query(params.query, function (err, rows, fields) {
+                    if (!err) {
+                        var message = {
+                            'ZMTypeCode': 'DX',
+                            'ZMErrorCode': 100
+                        };
+                        sendSuccess(rows.length, rows, callback, message);
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 102;
+                        err.ZMErrorMsg = String(err);
+                        sendError(err, callback, params.log);
+                    }
+                });
+            }
+            if (connection)
+                connection.release();
+        });
+
+    },
+    destroy: function (params, callback, sessionID, request, response) {
+        pool.getConnection(function (err, connection) {
+            if (err) {
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 202;
+                err.ZMErrorMsg = String(err);
+                sendError(err, callback, params.log);
+            }
+            else
+            {
+                setLanguage(connection, request);
+                connection.query(params.query, function (err, rows, fields) {
+                    if (!err) {
+                        // si toutes les entrées ont été supprimées
+                        if (params.length === rows.affectedRows)
+                        {
+                            var message = {
+                                ZMTypeCode: 'DX',
+                                ZMErrorCode: 200
+                            };
+                        }
+                        // si seulement certaines entrées ont ét suprimées
+                        if (params.length > rows.affectedRows)
+                        {
+                            //console.log(err, rows);
+                            var message = {
+                                ZMTypeCode: 'DX',
+                                ZMErrorCode: 204
+                            };
+                        }
+                        // si aucune entrée n'a été supprimée
+                        if (rows.affectedRows === 0)
+                        {
+                            var message = {
+                                ZMTypeCode: 'DX',
+                                ZMErrorCode: 203
+                            };
+                        }
+                        sendSuccess(rows.length, rows, callback, message);
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 202;
+                        err.ZMErrorMsg = String(err);
+                        sendError(err, callback, params.log);
+                    }
+                });
+            }
+            if (connection)
+                connection.release();
+        });
+
+    },
     get: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -23,7 +110,7 @@ module.exports = {
                         data = rows;
                         // on cherche maintenant le nombre total
                         // d'entrées dans la table pour le paging
-                        query = "SELECT COUNT(*) AS totalCount FROM "+params.table+" " + params.extraQuery;
+                        query = "SELECT COUNT(*) AS totalCount FROM " + params.table + " " + params.extraQuery;
                         connection.query(query, function (err, rows, fields) {
                             if (!err) {
                                 var message = {
@@ -52,15 +139,15 @@ module.exports = {
             }
             if (connection)
                 connection.release();
-    });
+        });
     },
     update: function (params, callback, sessionID, request, response) {
-        console.log(params[0].query);
         pool.getConnection(function (err, connection) {
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 402;
-                DXCommon.sendError(err, callback);
+                err.ZMErrorMsg = String(err)
+                sendError(err, callback);
             }
             else
             {
@@ -78,7 +165,6 @@ module.exports = {
                         err.ZMTypeCode = 'DX';
                         err.ZMErrorCode = 402;
                         err.ZMErrorMsg = String(err);
-                        //console.log('erreur', err);
                         sendError(err, callback, params[0].log);
                     }
                 });
@@ -90,7 +176,8 @@ module.exports = {
 };
 
 function sendError(err, callback, log) {
-    log.error(err);
+    if (log)
+        log.error(err);
     callback({
         success: false,
         error: err,
@@ -98,7 +185,7 @@ function sendError(err, callback, log) {
 }
 
 function sendSuccess(totalCount, data, callback, message) {
-    var msg = '';
+    var msg={};
     if (message)
         msg = message;
     callback({
