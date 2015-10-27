@@ -8,10 +8,7 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
         'MyDesktop.modules.mailtransport.stores.MailTransport',
-        'Ext.data.TreeStore',
-        'Ext.layout.container.Accordion',
         'Ext.toolbar.Spacer',
-        'Ext.tree.Panel'
     ],
     id: 'mailtransport-win',
     init: function () {
@@ -51,16 +48,19 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                             break;
                         case '2':
                             console.log('destroy');
+                            var nbItems = message.data.affectedRows;
+                            console.log ('store',store,nbItems);
                             switch (message.error.ZMErrorCode.toString()[2]) {
                                 case'0':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "La suppression a bien été effectuée");
+                                    var txtItems="<BR><B>"+nbItems+"</B> élément(s) supprimé(s)";
+                                    Ext.infoMsg.msg("Suppression d'éléments", "La suppression a bien été effectuée"+txtItems);
                                     break;
                                 case'3':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "Aucune entrée n'a été supprimée", 5000, 'orange');
+                                    Ext.infoMsg.msg("Suppression d'éléments", "Aucune entrée n'a été supprimée", 5000, 'red');
                                     store.reload();
                                     break;
                                 case'4':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "Certaines entrées n'ont pas été supprimées", 5000, 'orange');
+                                    Ext.infoMsg.msg("Suppression d'éléments", "Certaines entrées n'ont pas été supprimées"+txtItems, 5000, 'orange');
                                     store.reload();
                                     break;
                             }
@@ -77,7 +77,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                             }
                             break;
                     }
-
                 },
                 scope: this
             });
@@ -88,8 +87,6 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                     title += ' (' + error.errno + ') - ';
                     title += error.sqlState;
                     var message = error.ZMErrorMsg;
-                    //}
-
                     Ext.infoMsg.msg(title, message, 5000, 'red');
                     if (operation.action != 'read')
                     {
