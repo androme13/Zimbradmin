@@ -95,6 +95,7 @@ module.exports = {
 
     },
     get: function (params, callback, sessionID, request, response) {
+        params.log.info('query',params.query);
         pool.getConnection(function (err, connection) {
             if (err) {
                 err.ZMTypeCode = 'DX';
@@ -117,6 +118,7 @@ module.exports = {
                                     'ZMTypeCode': 'DX',
                                     'ZMErrorCode': 300
                                 };
+                                params.log.info('result',data,message);
                                 sendSuccess(rows[0].totalCount, data, callback, message);
                             }
                             else
