@@ -173,7 +173,7 @@ module.exports = {
                 connection.release();
         });
     },
-    sendMsg: function (success, msg, data, callback, totalcount, log) {
+    sendMsg: function (success, msg, data, callback, totalCount, log) {
         if (log)
             log.error(err);
         if (success === true)
@@ -192,7 +192,6 @@ module.exports = {
                 error: msg,
             });
         }
-
     }
 };
 
