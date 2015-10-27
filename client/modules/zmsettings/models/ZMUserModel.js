@@ -1,13 +1,14 @@
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/* 
+ * ZMUser Model
+ * (C) Androme 2015
+ * 
  */
-
+ 
 Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
     extend: 'Ext.data.Model',
     fields: [
+        // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
+
         {name: 'id', hidden: true},
         {name: 'state',
             text: 'Etat',
@@ -135,13 +136,13 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                 var index = st.find('id', idModifier);
                 if (index >= 0)
                     nameModifier = st.getAt(index).get('username');
-                if (record.data.modified_date = record.data.created_date)
+                if (record.data.modified_date === record.data.created_date)
                 {
                     return 'non modifié';
                 }
                 else
                 {
-                    return 'le : <i>' + value + '</i><br>par: <i>' + nameModifier + '</i></br>';
+                    return 'le : <i>' + value + '</i><br>par: <i>' + idModifier + '</i></br>';
                 }
             }
         },
