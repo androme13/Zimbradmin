@@ -18,9 +18,9 @@ var bodyParser = require('body-parser');
 var extdirect = require('extdirect');
 global.mysql = require('mysql');//a supprimer par la suite
 var mysql = require('mysql');
-
 var async = require('async');
 var server; // serveur web
+
 global.pool = mysql.createPool({
     connectionLimit: 100,
     host: MySQLConfig.host,
@@ -110,9 +110,6 @@ server = app.listen(
 
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {
-    
-    
-    
     log.info('Stopping Zimbradmin...');
     server.close();
     process.exit();
