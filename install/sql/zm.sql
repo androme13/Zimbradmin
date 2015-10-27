@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Mar 27 Octobre 2015 à 18:11
+-- Généré le: Mar 27 Octobre 2015 à 18:18
 -- Version du serveur: 5.5.46
 -- Version de PHP: 5.4.45-0+deb7u1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de données: `zm`
@@ -76,15 +70,15 @@ CREATE TABLE IF NOT EXISTS `transport` (
 --
 -- Déclencheurs `transport`
 --
-DROP TRIGGER IF EXISTS `task_creation_timestamp`;
+DROP TRIGGER IF EXISTS `transport_task_creation_timestamp`;
 DELIMITER //
-CREATE TRIGGER `task_creation_timestamp` BEFORE INSERT ON `transport`
+CREATE TRIGGER `transport_task_creation_timestamp` BEFORE INSERT ON `transport`
  FOR EACH ROW SET NEW.created_date = NOW()
 //
 DELIMITER ;
-DROP TRIGGER IF EXISTS `task_update_timestamp`;
+DROP TRIGGER IF EXISTS `transport_task_update_timestamp`;
 DELIMITER //
-CREATE TRIGGER `task_update_timestamp` BEFORE UPDATE ON `transport`
+CREATE TRIGGER `transport_task_update_timestamp` BEFORE UPDATE ON `transport`
  FOR EACH ROW SET NEW.modified_date = NOW()
 //
 DELIMITER ;
@@ -155,7 +149,3 @@ CREATE TABLE IF NOT EXISTS `usersshortcuts` (
   `moduleid` int(11) NOT NULL,
   `name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
