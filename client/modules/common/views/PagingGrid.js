@@ -372,6 +372,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         });
         var formPanel = Ext.create('Ext.form.Panel', {
             title: 'Veuillez confirmer la suppression des éléments suivants (' + store.getCount() + ')',
+            autoScroll: true,
             fieldDefaults: {
                 labelAlign: 'top',
                 msgTarget: 'side'
@@ -402,6 +403,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     }
                 }]
         });
+
         var winDel = Ext.create("Ext.window.Window", {
             title: "Confirmation de suppression d'éléments",
             layout: 'fit',
