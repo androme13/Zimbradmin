@@ -18,6 +18,7 @@ var DXTransport = {
      */
 
     add: function (params, callback, sessionID, request, response) {
+        // mono requete, à voir plus tard pour du multi-requete
         if (!params) {
             var params = [];
             params[0] = {};
@@ -25,11 +26,15 @@ var DXTransport = {
         params[0].table = 'transport';
         params[0].log = log;
         var myId = request.session.userinfo.id;
-        query = "INSERT INTO " + params[0].table + " (domain, transport, created_by) VALUES ('" + params[0].domain.toLowerCase() + "','" + params[0].transport.toLowerCase() + "','" + myId + "')";
+        var query = "INSERT INTO " + params[0].table;
+        query += " (domain, transport, created_by) VALUES ('";
+        query += params[0].domain.toLowerCase() + "','";
+        query += params[0].transport.toLowerCase() + "','" + myId + "')";
         params[0].query = query;
         DXCommon.add(params[0], callback, sessionID, request, response);
     },
     destroy: function (params, callback, sessionID, request, response) {
+        // multi requete
         if (!params) {
             var params = [];
             params[0] = {};
@@ -46,19 +51,20 @@ var DXTransport = {
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
-            temp = "(" + entry.id + ",'" + entry.domain + "','" + entry.transport + "')";
+            temp = "(" + entry.id + ",'";
+            temp += entry.domain + "','";
+            temp += entry.transport + "')";
             if (count < params.length)
             {
                 temp += ',';
             }
             occur += temp;
         });
-        query = "DELETE FROM " + newParams.table + " WHERE (id,domain,transport) IN (" + occur + ")";
+        var query = "DELETE FROM " + newParams.table + " WHERE (id,domain,transport) IN (" + occur + ")";
         newParams.query = query;
         DXCommon.destroy(newParams, callback, sessionID, request, response);
     },
     get: function (params, callback, sessionID, request, response) {
-        var query, extraQuery;
         // on set les parametres par défaut si ils sont absents
         if (!params)
             var params = {};
@@ -75,14 +81,13 @@ var DXTransport = {
             params.extraQuery += " LIKE '%" + params.search + "%'";
         }
         params.log = log;
-        query = "SELECT * FROM " + params.table + params.extraQuery;
+        var query = "SELECT * FROM " + params.table + params.extraQuery;
         query += " LIMIT " + params.start + ',' + params.limit;
-        console.log(query);
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
     },
     update: function (params, callback, sessionID, request, response) {
-        var query;
+        // mono requete, à voir plus tard pour du multi-requete
         var myId = request.session.userinfo.id;
         // on set les parametres par défaut si ils sont absents
         if (!params) {
@@ -91,7 +96,7 @@ var DXTransport = {
         }
         params[0].table = 'transport';
         params[0].log = log;
-        query = "UPDATE " + params[0].table + " SET domain='" + params[0].domain.toLowerCase();
+        var query = "UPDATE " + params[0].table + " SET domain='" + params[0].domain.toLowerCase();
         query += "', transport='" + params[0].transport.toLowerCase();
         query += "', modified_by='" + myId;
         query += "' WHERE id='" + params[0].id + "'";
