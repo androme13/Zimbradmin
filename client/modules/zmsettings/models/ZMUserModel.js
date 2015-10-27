@@ -8,7 +8,6 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
     extend: 'Ext.data.Model',
     fields: [
         // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
-
         {name: 'id', hidden: true},
         {name: 'state',
             text: 'Etat',

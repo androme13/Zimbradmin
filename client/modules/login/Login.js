@@ -1,7 +1,7 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Login
+ * (C) Androme 2015
+ * 
  */
 
 Ext.define('MyDesktop.modules.login.Login', {
@@ -90,7 +90,7 @@ Ext.define('MyDesktop.modules.login.Login', {
                                         form.setLoading("Veuillez patienter");
                                         ExtRemote.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
-                                                        var target = btn.up('form').down('label')
+                                                        var target = btn.up('form').down('label');
                                                         if (result.error.ZMErrorCode === 100)
                                                         {
                                                             target.update('Identifiants corrects');
@@ -99,7 +99,6 @@ Ext.define('MyDesktop.modules.login.Login', {
                                                         }
 
                                                         if (result.error.ZMErrorCode === 103)
-
                                                         {
                                                             target.update('Mauvais identifiants');
                                                             form.setLoading(false);
