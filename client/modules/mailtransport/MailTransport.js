@@ -49,18 +49,18 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
                         case '2':
                             console.log('destroy');
                             var nbItems = message.data.affectedRows;
-                            console.log ('store',store,nbItems);
+                            console.log('store', store, nbItems);
+                            var txtItems = "<BR><B>" + nbItems + "</B> élément(s) supprimé(s)";
                             switch (message.error.ZMErrorCode.toString()[2]) {
                                 case'0':
-                                    var txtItems="<BR><B>"+nbItems+"</B> élément(s) supprimé(s)";
-                                    Ext.infoMsg.msg("Suppression d'éléments", "La suppression a bien été effectuée"+txtItems);
+                                    Ext.infoMsg.msg("Suppression d'éléments", "La suppression a bien été effectuée" + txtItems);
                                     break;
                                 case'3':
                                     Ext.infoMsg.msg("Suppression d'éléments", "Aucune entrée n'a été supprimée", 5000, 'red');
                                     store.reload();
                                     break;
                                 case'4':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "Certaines entrées n'ont pas été supprimées"+txtItems, 5000, 'orange');
+                                    Ext.infoMsg.msg("Suppression d'éléments", "Certaines entrées n'ont pas été supprimées" + txtItems, 5000, 'orange');
                                     store.reload();
                                     break;
                             }
