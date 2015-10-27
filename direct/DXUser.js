@@ -82,6 +82,8 @@ var DXUser = {
         // on set les parametres par défaut si ils sont absents
         if (!params)
             var params = {};
+        if (!params.extraQuery)
+            params.extraQuery = '';
         params.table = 'users';
         if (!params.col)
             params.col = 'username';
@@ -95,7 +97,7 @@ var DXUser = {
         }
         params.log = log;
         var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM "
-        query += params.table + " " + extraQuery;
+        query += params.table + " " + params.extraQuery;
         query += " LIMIT " + params.start + ',' + params.limit;
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
@@ -109,9 +111,9 @@ var DXUser = {
             var params = [];
             params[0] = {};
         }
-        params[0].table = 'transport';
+        params[0].table = 'users';
         params[0].log = log;
-        query = "UPDATE users SET level ='" + params[0].level;
+        query = "UPDATE " + params[0].table + " SET level ='" + params[0].level;
         query += "', state ='" + params[0].state;
         query += "', username ='" + params[0].username;
         query += "', firstname ='" + params[0].firstname;
