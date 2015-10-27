@@ -33,7 +33,7 @@ var DXLogin = {
                 query += params.username + "'";
                 query += " AND password='" + params.password + "'";
                 connection.query(query, function (err, rows, fields) {
-                    var message={};
+                    var message = {};
                     if (!err) {
                         if (rows.length !== 0) {
                             request.session.userinfo = rows[0];
@@ -78,7 +78,7 @@ var DXLogin = {
                 'ZMTypeCode': 'LOGIN',
                 'ZMErrorCode': 300
             }
-            DXCommon.sendMsg(true,message, data, callback);
+            DXCommon.sendMsg(true, message, data, callback);
         }
         else
         {
@@ -87,7 +87,7 @@ var DXLogin = {
                 ZMErrorCode: 303,
                 ZMErrorMsg: null
             }
-            DXCommon.sendMsg(false,message, null,callback);
+            DXCommon.sendMsg(false, message, null, callback);
         }
     },
     isvalidsession: function (params, callback, sessionID, request, response) {
@@ -99,7 +99,7 @@ var DXLogin = {
                 'ZMTypeCode': 'LOGIN',
                 'ZMErrorCode': 300
             }
-            DXCommon.sendSuccess(null, data, callback, message);
+            DXCommon.sendMsg(true, message, null, callback);
         }
         else
         {
@@ -108,21 +108,18 @@ var DXLogin = {
                 ZMErrorCode: 303,
                 ZMErrorMsg: null
             }
-
-            DXCommon.sendError(message, callback);
+            DXCommon.sendMsg(false, message, null, callback);
         }
     },
     logout: function (params, callback, sessionID, request, response) {
-        //var data;
         response.header('My-Custom-Header ', '1234567890');
-        //request.session.userinfo = null;
         if (request.session.userinfo)
             delete request.session.userinfo;
         var message = {
             'ZMTypeCode': 'LOGIN',
-            'ZMErrorCode': 102
+            'ZMErrorCode': 200
         }
-        DXCommon.sendSuccess(null, null, callback, message);
+            DXCommon.sendMsg(true, message, null, callback);
     }
 };
 function setLanguage(connection, request)
