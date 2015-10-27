@@ -6,6 +6,7 @@
 var log = global.log.child({widget_type: 'DXUser'});
 var pool = global.pool;
 var DXCommon = require('../tools/DXCommon.js');
+var fs = require('fs');
 var DXUser = {
     // method signature has 5 parameters
     /**
@@ -16,7 +17,6 @@ var DXUser = {
      * @param request only if "appendRequestResponseObjects" enabled
      * @param response only if "appendRequestResponseObjects" enabled
      */
-
 
     // operations sur les user ////////////////////////////////
     add: function (params, callback, sessionID, request, response) {
@@ -41,7 +41,6 @@ var DXUser = {
         query += myId + "')";
         //var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM ";
         params[0].query = query;
-        console.log (query);
         DXCommon.add(params[0], callback, sessionID, request, response);
     },
     destroy: function (params, callback, sessionID, request, response) {
@@ -63,11 +62,11 @@ var DXUser = {
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
             temp = "(" + entry.id + ",";
-            temp+= entry.level + ",";
-            temp+= entry.state + ",'";
-            temp+= entry.username + "','";
-            temp+= entry.firstname + "','";
-            temp+= entry.lastname + "')";
+            temp += entry.level + ",";
+            temp += entry.state + ",'";
+            temp += entry.username + "','";
+            temp += entry.firstname + "','";
+            temp += entry.lastname + "')";
             if (count < params.length)
             {
                 temp += ',';
@@ -75,7 +74,6 @@ var DXUser = {
             occur += temp;
         });
         var query = "DELETE FROM " + newParams.table + " WHERE (id,level,state,username,firstname,lastname) IN (" + occur + ")";
-        console.log(query);
         newParams.query = query;
         DXCommon.destroy(newParams, callback, sessionID, request, response);
     },
@@ -124,118 +122,64 @@ var DXUser = {
         DXCommon.update(params, callback, sessionID, request, response);
     },
     // operations sur les raccourcis ////////////////////////////////
-    getshortcuts: function (params, callback, sessionID, request, response) {
-
-
-        /*pool.getConnection(function (err, connection) {
-         console.log ('params:',params);
-         if (err) {
-         connection.release();
-         //res.json({"code": 100, "status": "Error in connection database"});
-         log.warn("Error connecting database ... \n\n");
-         return;
-         }
-         //if(availPoolCnx==false)return;
-         //console.log('connected as id ' + connection.threadId);
-         var query = "SELECT * FROM users " +
-         "INNER JOIN usersshortcut " +
-         "ON modules.id=usersshortcuts.userid " +
-         "INNER JOIN modules " +
-         "ON modules.id=usersmodules.moduleid " +
-         "WHERE users.id=" + params.id;
-         
-         connection.query(query, function (err, rows) {
-         connection.release();
-         if (!err) {
-         if (rows.length !== 0) {
-         success = true;
-         data = rows;
-         }
-         callback({
-         success: success,
-         message: "getshortcuts",
-         data: data
-         });
-         }
-         });
-         
-         connection.on('error', function (err) {
-         //res.json({"code" : 100, "status" : "Error in connection database"});
-         log.warn("Error connecting database ... \n\n");
-         return;
-         });
-         });*/
-
-
-
-        response.header('My-Custom-Header ', '1234567890');
-        var data = new Object();
-        var success = true;
-        data = [{name: 'Grid Window', module: 'grid-win'},
-            {name: 'param', module: 'zmsettings-win'},
-            {name: 'Notepad', module: 'notepad'},
-            {name: 'System Status', module: 'systemstatus-win'}];
-        callback({
-            success: success,
-            message: 'getshortcuts',
-            data: data
-        });
-    },
     getmodules: function (params, callback, sessionID, request, response) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            //console.log('connected as id ' + connection.threadId);
-            var query = "SELECT moduleid,module,hasshortcut FROM users " +
-                    "INNER JOIN usersmodules " +
-                    "ON users.id=usersmodules.userid " +
-                    "INNER JOIN modules " +
-                    "ON modules.id=usersmodules.moduleid " +
-                    "WHERE users.id=" + params.id;
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-
-                    callback({
-                        success: success,
-                        message: "getmodules",
-                        data: data
-                    });
-                }
-            });
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });
+        // on set les parametres par défaut si ils sont absents
+        var id;
+        if (!params)
+            var params = {};
+        params.extraQuery = '';
+        params.table = 'transport';
+        if (!params.id) {
+            id = request.session.userinfo.id;
+        }
+        else
+        {
+            id = params.id;
+        }
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 0;
+        params.log = log;
+        //var query = "SELECT * FROM " + params.table + params.extraQuery;
+        //query += " LIMIT " + params.start + ',' + params.limit;
+        var query = "SELECT moduleid,module,hasshortcut FROM users ";
+        query += "INNER JOIN usersmodules ";
+        query += "ON users.id=usersmodules.userid ";
+        query += "INNER JOIN modules ";
+        query += "ON modules.id=usersmodules.moduleid ";
+        query += "WHERE users.id=" + id;
+        params.query = query;
+        DXCommon.get(params, callback, sessionID, request, response);
     },
     // operations sur les wallpapers ////////////////////////////////
     getwallpapers: function (params, callback, sessionID, request, response) {
         response.header('My-Custom-Header ', '1234567890');
+        var success;
         var data = [];
-        var success = false;
+        var message = [];
         // on va cherchez les wallpapaer
         fs.readdir('./client/wallpapers', function (err, files) {
             if (!err) {
-                success = true;
+
                 files.forEach(function (file) {
                     data.push(new child(file));
                 });
+                message = {
+                    'ZMTypeCode': 'DX',
+                    'ZMErrorCode': 300
+                };
+                success = true;
+            } else
+            {
+                message = {
+                    'ZMTypeCode': 'DX',
+                    'ZMErrorCode': 302
+                };
+                success = false;
+
             }
-            callback({
-                success: success,
-                //message: 'getwallpapers',
-                data: data
-            });
+            DXCommon.sendMsg(success, message, data, callback, data.length);
         });
     },
 };
