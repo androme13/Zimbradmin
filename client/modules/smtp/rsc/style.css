@@ -1,0 +1,46 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/ 
+/* 
+    Created on : 2 mai 2015, 12:09:52
+    Author     : thierry
+
+icon : 16x16, shortcut 48x48
+
+*/
+
+.smtp-win-shortcut {
+    background-image: url(img/shortcut.png);
+}
+
+.smtp-win-icon {
+    background-image: url(img/icon.png);
+}
+
+/* 0 : inactif, 1 : bloqué, 2 : actif, 3 : supprimé*/
+.smtp-disabled_entry24{
+background-image:url(img/item_disabled.gif) !important;
+width: auto !important;
+background-position:center  !important;
+background-repeat: no-repeat;
+}
+.smtp-blocked_entry24{
+background-image:url(img/item_blocked.png) !important;
+width: auto !important;
+background-position:center  !important;
+background-repeat: no-repeat;
+}
+.smtp-enabled_entry24{
+background-image:url(img/item_enabled.gif) !important;
+width: auto !important;
+background-position:center  !important;
+background-repeat: no-repeat;
+}
+.smtp-deleted_entry24{
+background-image:url(img/item_deleted.png) !important;
+width: auto !important;
+background-position:center  !important;
+background-repeat: no-repeat;
+}
