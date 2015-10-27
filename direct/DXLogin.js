@@ -5,7 +5,7 @@
  */
 var log = global.log.child({widget_type: 'DXLogin'});
 var pool = global.pool;
-
+var DXCommon = require('../tools/DXCommon.js');
 
 var DXLogin = {
     // method signature has 5 parameters
@@ -18,44 +18,39 @@ var DXLogin = {
      * @param response only if "appendRequestResponseObjects" enabled
      */
     authenticate: function (params, callback, sessionID, request, response) {
-        var success = false;
-        var message = 'Login unsuccessful';
-        var data = new Object();
-
         pool.getConnection(function (err, connection) {
             if (err) {
                 err.ZMTypeCode = 'LOGIN';
                 err.ZMErrorCode = 101;
-                sendError(err, callback);
+                DXCommon.sendError(err, callback);
             }
             else
             {
                 setLanguage(connection, request);
                 connection.escape(params.username);
                 connection.escape(params.password);
-                var query = "SELECT * from users WHERE username='" + params.username + "'";
+                var query = "SELECT id,level,state,username,firstname,lastname from users WHERE username='";
+                query += params.username + "'";
                 query += " AND password='" + params.password + "'";
                 connection.query(query, function (err, rows, fields) {
+                    var message={};
                     if (!err) {
                         if (rows.length !== 0) {
-                            success = true;
-                            message = 'Login successful';
-                            data.userinfo = rows[0];
-                            request.session.userinfo = data.userinfo;
+                            request.session.userinfo = rows[0];
                             log.info('Login of ' + request.session.userinfo.username);
-                            var message = {
+                            message = {
                                 'ZMTypeCode': 'LOGIN',
                                 'ZMErrorCode': 100
-                            }
-                            sendSuccess(rows.length, data, callback, message);
-
-                        } else
+                            };
+                            DXCommon.sendMsg(true, message, null, callback);
+                        }
+                        else
                         {
-                            var message = {
+                            message = {
                                 'ZMTypeCode': 'LOGIN',
                                 'ZMErrorCode': 103
-                            }
-                            sendSuccess(rows.length, null, callback, message);
+                            };
+                            DXCommon.sendMsg(true, message, null, callback);
                         }
                     }
                     else
@@ -63,8 +58,7 @@ var DXLogin = {
                         err.ZMTypeCode = 'LOGIN';
                         err.ZMErrorCode = 102;
                         err.ZMErrorMsg = String(err);
-                        console.log('erreurlogin', err);
-                        sendError(err, callback);
+                        DXCommon.sendError(err, callback);
                     }
                 });
             }
@@ -74,26 +68,26 @@ var DXLogin = {
     },
     getsession: function (params, callback, sessionID, request, response) {
         response.header('My-Custom-Header ', '1234567890');
-        var data = new Object();
-        var success = false;
-        var parentcallback = callback;
+        var data = {};
+        var message = {};
         if (request.session.userinfo) {
-            success = true;
             // on ne fournit que les info utilisateur et pas les autres
             // comme les infos coockies
             data.userinfo = request.session.userinfo;
-            var message = {
+            message = {
                 'ZMTypeCode': 'LOGIN',
                 'ZMErrorCode': 300
             }
-            sendSuccess(null, data, callback, message);
+            DXCommon.sendMsg(true,message, data, callback);
         }
         else
         {
-            err.ZMTypeCode = 'LOGIN';
-            err.ZMErrorCode = 303;
-            err.ZMErrorMsg = null;
-            sendError(err, callback);
+            message = {
+                ZMTypeCode: 'LOGIN',
+                ZMErrorCode: 303,
+                ZMErrorMsg: null
+            }
+            DXCommon.sendMsg(false,message, null,callback);
         }
     },
     isvalidsession: function (params, callback, sessionID, request, response) {
@@ -105,18 +99,18 @@ var DXLogin = {
                 'ZMTypeCode': 'LOGIN',
                 'ZMErrorCode': 300
             }
-            sendSuccess(null, data, callback, message);
+            DXCommon.sendSuccess(null, data, callback, message);
         }
         else
         {
-            err.ZMTypeCode = 'LOGIN';
-            err.ZMErrorCode = 303;
-            err.ZMErrorMsg = null;
-            sendError(err, callback);
+            message = {
+                ZMTypeCode: 'LOGIN',
+                ZMErrorCode: 303,
+                ZMErrorMsg: null
+            }
+
+            DXCommon.sendError(message, callback);
         }
-        /*callback({
-         success: success,
-         });*/
     },
     logout: function (params, callback, sessionID, request, response) {
         //var data;
@@ -128,29 +122,9 @@ var DXLogin = {
             'ZMTypeCode': 'LOGIN',
             'ZMErrorCode': 102
         }
-        sendSuccess(null, null, callback, message);
+        DXCommon.sendSuccess(null, null, callback, message);
     }
 };
-
-function sendError(err, callback) {
-    log.error(err);
-    callback({
-        success: false,
-        error: err,
-    });
-}
-
-function sendSuccess(totalCount, data, callback, message) {
-    var msg = '';
-    if (message)
-        msg = message;
-    callback({
-        success: true,
-        totalCount: totalCount,
-        error: msg,
-        data: data
-    });
-}
 function setLanguage(connection, request)
 {
     var lang = "fr_FR";
@@ -163,6 +137,4 @@ function setLanguage(connection, request)
     connection.query(query, function (err, rows, fields) {
     });
 }
-
-
 module.exports = DXLogin;
