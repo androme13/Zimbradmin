@@ -1,3 +1,8 @@
+/* 
+ * ZMSettings module
+ * (C) Androme 2015
+ * 
+ */
 
 Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
     extend: 'Ext.ux.desktop.Module',
@@ -61,19 +66,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 //constrainHeader: true,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',
-                /*tools: [{
-                        type: 'pin',
-                        tooltip: 'creer un raccrouci du module sur le bureau',
-                        handler: function (event, toolEl, panel) {
-                            // refresh logic
-                            //var item=new object();
-                            var item= {name:me.launcher.text,  module:me.id,  iconCls:me.launcher.shortcutCls};
-                            //console.log (me,me.launcher);
-                            refer.addShortcut(item);                            
-                            //console.log(MyDesktop.App());
-                        }
-                    }],*/
-                //tools:[],
                 items: {
                     xtype: 'tabpanel',
                     listeners: {
