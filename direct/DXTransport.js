@@ -68,7 +68,8 @@ var DXTransport = {
         // on set les parametres par défaut si ils sont absents
         if (!params)
             var params = {};
-        params.extraQuery = '';
+        if (!params.extraQuery)
+            params.extraQuery = '';
         params.table = 'transport';
         if (!params.col)
             params.col = 'domain';
