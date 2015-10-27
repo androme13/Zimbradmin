@@ -172,6 +172,27 @@ module.exports = {
             if (connection)
                 connection.release();
         });
+    },
+    sendMsg: function (success, msg, data, callback, totalcount, log) {
+        if (log)
+            log.error(err);
+        if (success === true)
+        {
+            callback({
+                success: true,
+                totalCount: totalCount,
+                error: msg,
+                data: data
+            });
+        }
+        else
+        {
+            callback({
+                success: false,
+                error: msg,
+            });
+        }
+
     }
 };
 
@@ -185,7 +206,7 @@ function sendError(err, callback, log) {
 }
 
 function sendSuccess(totalCount, data, callback, message) {
-    var msg={};
+    var msg = {};
     if (message)
         msg = message;
     callback({
