@@ -19,110 +19,65 @@ var DXUser = {
 
 
     // operations sur les user ////////////////////////////////
-    addusers: function (params, callback, sessionID, request, response) {
-        pool.getConnection(function (err, connection) {
-            console.log(params);
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM users "
-
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-                    callback({
-                        success: false,
-                        message: "addusers",
-                        data: data
-                    });
-                }
-            });
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });
+    add: function (params, callback, sessionID, request, response) {
+        // mono requete, à voir plus tard pour du multi-requete
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        params[0].table = 'users';
+        params[0].log = log;
+        var myId = request.session.userinfo.id;
+        var query = "INSERT INTO " + params[0].table;
+        query += " (level,state,username,firstname,lastname,created_by) VALUES ('";
+        query += params[0].level + "','";
+        query += params[0].state + "','";
+        query += params[0].username.toLowerCase() + "','";
+        params[0].firstname.toLowerCase();
+        params[0].firstname.charAt(0).toUpperCase();
+        query += params[0].firstname + "','";
+        params[0].firstname.toUpperCase();
+        query += params[0].lastname + "','";
+        query += myId + "')";
+        //var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM ";
+        params[0].query = query;
+        console.log (query);
+        DXCommon.add(params[0], callback, sessionID, request, response);
     },
     destroy: function (params, callback, sessionID, request, response) {
-        var query;
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.ZMTypeCode = 'DX';
-                err.ZMErrorCode = 202;
-                err.ZMErrorMsg = String(err);
-                DXCommon.sendError(err, callback);
-            }
-            else
+        // multi requete
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        var newParams = {};
+        newParams.table = 'users';
+        newParams.log = log;
+        newParams.length = params.length;
+        var occur = '';
+        var temp = '';
+        var count = 0;
+        params.forEach(function (entry) {
+            count++;
+            // test erreur///
+            //if (count == 2)
+            // entry.domain = 'aa' + entry.domain;
+            temp = "(" + entry.id + ",";
+            temp+= entry.level + ",";
+            temp+= entry.state + ",'";
+            temp+= entry.username + "','";
+            temp+= entry.firstname + "','";
+            temp+= entry.lastname + "')";
+            if (count < params.length)
             {
-                DXCommon.setLanguage(connection, request);
-                var id = request.session.userinfo.id;
-                var occur = '';
-                var temp = '';
-                var count = 0;
-                params.forEach(function (entry) {
-                    count++;
-                    temp = "(" + entry.id + ",'";
-                    temp += entry.level + "','";
-                    temp += entry.state + "','";
-                    temp += entry.username + "','";
-                    temp += entry.firstname + "','";
-                    temp += entry.lastname + "')";
-                    if (count < params.length)
-                    {
-                        temp += ',';
-                    }
-                    occur += temp;
-                });
-                query = "DELETE FROM users WHERE (id,level,state,username,firstname,lastname) IN (" + occur + ")";
-                connection.query(query, function (err, rows, fields) {
-                    if (!err) {
-                        // si toutes les entrées ont été supprimées
-                        if (params.length == rows.affectedRows)
-                        {
-                            var message = {
-                                ZMTypeCode: 'DX',
-                                ZMErrorCode: 200
-                            }
-                        }
-                        // si seulement certaines entrées ont ét suprimées
-                        if (params.length > rows.affectedRows)
-                        {
-                            //console.log(err, rows);
-                            var message = {
-                                ZMTypeCode: 'DX',
-                                ZMErrorCode: 204,
-                            };
-                        }
-                        // si aucune entrée n'a été supprimée
-                        if (rows.affectedRows == 0)
-                        {
-                            var message = {
-                                ZMTypeCode: 'DX',
-                                ZMErrorCode: 203,
-                            };
-                        }
-                        DXCommon.sendSuccess(rows.length, rows, callback, message);
-                    }
-                    else
-                    {
-                        err.ZMTypeCode = 'DX';
-                        err.ZMErrorCode = 202;
-                        err.ZMErrorMsg = String(err);
-                        DXCommon.sendError(err, callback);
-                    }
-                });
+                temp += ',';
             }
-            if (connection)
-                connection.release();
+            occur += temp;
         });
+        var query = "DELETE FROM " + newParams.table + " WHERE (id,level,state,username,firstname,lastname) IN (" + occur + ")";
+        console.log(query);
+        newParams.query = query;
+        DXCommon.destroy(newParams, callback, sessionID, request, response);
     },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
@@ -148,45 +103,25 @@ var DXUser = {
         DXCommon.get(params, callback, sessionID, request, response);
     },
     update: function (params, callback, sessionID, request, response) {
+        // mono requete, à voir plus tard pour du multi-requete
         var query;
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                err.ZMTypeCode = 'DX';
-                err.ZMErrorCode = 402;
-                DXCommon.sendError(err, callback);
-            }
-            else
-            {
-                DXCommon.setLanguage(connection, request);
-                var myId = request.session.userinfo.id;
-                //id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by
-                query = "UPDATE users SET level ='" + params[0].level;
-                query += "', state ='" + params[0].state;
-                query += "', username ='" + params[0].username;
-                query += "', firstname ='" + params[0].firstname;
-                query += "', lastname ='" + params[0].lastname;
-                query += "', modified_by ='" + params[0].modified_by;
-                query += "' WHERE id ='" + params[0].id + "'";
-                connection.query(query, function (err, rows, fields) {
-                    if (!err) {
-                        var message = {
-                            'ZMTypeCode': 'DX',
-                            'ZMErrorCode': 400
-                        }
-                        DXCommon.sendSuccess(rows.length, rows, callback, message);
-                    }
-                    else
-                    {
-                        err.ZMTypeCode = 'DX';
-                        err.ZMErrorCode = 402;
-                        err.ZMErrorMsg = String(err);
-                        DXCommon.sendError(err, callback);
-                    }
-                });
-            }
-            if (connection)
-                connection.release();
-        });
+        var myId = request.session.userinfo.id;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        params[0].table = 'transport';
+        params[0].log = log;
+        query = "UPDATE users SET level ='" + params[0].level;
+        query += "', state ='" + params[0].state;
+        query += "', username ='" + params[0].username;
+        query += "', firstname ='" + params[0].firstname;
+        query += "', lastname ='" + params[0].lastname;
+        query += "', modified_by='" + myId;
+        query += "' WHERE id ='" + params[0].id + "'";
+        params[0].query = query;
+        DXCommon.update(params, callback, sessionID, request, response);
     },
     // operations sur les raccourcis ////////////////////////////////
     getshortcuts: function (params, callback, sessionID, request, response) {
