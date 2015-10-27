@@ -1,3 +1,8 @@
+/* 
+ * MailTransport Model
+ * (C) Androme 2015
+ * 
+ */
 
 Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
     extend: 'Ext.data.Model',
@@ -49,7 +54,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
                 var index = st.find('id', idModifier);
                 if (index >= 0)
                     nameModifier = st.getAt(index).get('username');
-                if (record.data.modified_date == record.data.created_date)
+                if (record.data.modified_date === record.data.created_date)
                 {
                     return 'non modifié';
                 }
