@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Mar 27 Octobre 2015 à 18:18
+-- Généré le: Mar 27 Octobre 2015 à 18:28
 -- Version du serveur: 5.5.46
 -- Version de PHP: 5.4.45-0+deb7u1
 
@@ -11,7 +11,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Base de données: `zm`
+-- Base de données: `zm` v0.1.1
 --
 
 -- --------------------------------------------------------
@@ -39,14 +39,31 @@ DROP TABLE IF EXISTS `smtp_servers`;
 CREATE TABLE IF NOT EXISTS `smtp_servers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `state` int(11) NOT NULL DEFAULT '0',
-  `server` text NOT NULL,
-  `comment` text NOT NULL,
+  `server` varchar(128) NOT NULL,
+  `comment` varchar(128) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(11) NOT NULL DEFAULT '0',
   `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `server` (`server`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Déclencheurs `smtp_servers`
+--
+DROP TRIGGER IF EXISTS `smtp_servers_task_creation_timestamp`;
+DELIMITER //
+CREATE TRIGGER `smtp_servers_task_creation_timestamp` BEFORE INSERT ON `smtp_servers`
+ FOR EACH ROW SET NEW.created_date = NOW()
+//
+DELIMITER ;
+DROP TRIGGER IF EXISTS `smtp_servers_task_update_timestamp`;
+DELIMITER //
+CREATE TRIGGER `smtp_servers_task_update_timestamp` BEFORE UPDATE ON `smtp_servers`
+ FOR EACH ROW SET NEW.modified_date = NOW()
+//
+DELIMITER ;
 
 -- --------------------------------------------------------
 
