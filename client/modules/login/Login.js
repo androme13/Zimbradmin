@@ -90,23 +90,21 @@ Ext.define('MyDesktop.modules.login.Login', {
                                         form.setLoading("Veuillez patienter");
                                         ExtRemote.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
-                                                    //var target = Ext.getCmp('logincomment');
-                                                    //console.log('login:', btn.up('form').down('label'), me, result, event);
-                                                    if (result) {
-                                                        var target=btn.up('form').down('label')
-                                                        target.update(result.message);
-                                                        if (result.success === true)
+                                                        var target = btn.up('form').down('label')
+                                                        if (result.error.ZMErrorCode === 100)
                                                         {
+                                                            target.update('Identifiants corrects');
                                                             target.getEl().setStyle("color", "green");
                                                             desktop.app.fireEvent('processlogin', result);
-                                                        } else
+                                                        }
+
+                                                        if (result.error.ZMErrorCode === 103)
+
                                                         {
+                                                            target.update('Mauvais identifiants');
                                                             form.setLoading(false);
                                                             target.getEl().setStyle("color", "red");
                                                         }
-                                                    }
-                                                    else
-                                                    Ext.infoMsg.msg("Erreur", event.message, 10000, 'red');    
                                                 }
                                         );
                                     }
