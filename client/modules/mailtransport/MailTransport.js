@@ -9,6 +9,8 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
     requires: [
         'MyDesktop.modules.mailtransport.stores.MailTransport',
         'Ext.toolbar.Spacer',
+        'MyDesktop.modules.common.gridStoreOn',
+        'MyDesktop.modules.common.proxyOn'
     ],
     id: 'mailtransport-win',
     init: function () {
@@ -30,79 +32,22 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
-            // création et configuration du store
+            // création et configuration du store       
             var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
-            gridStore.on({
-                refresh: function (store, eOpts) {
-                    message = store.proxy.reader.jsonData;
-                    // on gère les messages de retour
-                    // se reporter à DOC/ZMErrorCodes
-                    switch (message.error.ZMErrorCode.toString()[0]) {
-                        case '1':
-                            console.log('add');
-                            switch (message.error.ZMErrorCode.toString()[2]) {
-                                case'0':
-                                    Ext.infoMsg.msg("Ajout d'éléments", "L'entrée a bien été ajoutée");
-                                    break;
-                            }
-                            break;
-                        case '2':
-                            console.log('destroy');
-                            var nbItems = message.data.affectedRows;
-                            console.log('store', store, nbItems);
-                            var txtItems = "<BR><B>" + nbItems + "</B> élément(s) supprimé(s)";
-                            switch (message.error.ZMErrorCode.toString()[2]) {
-                                case'0':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "La suppression a bien été effectuée" + txtItems);
-                                    break;
-                                case'3':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "Aucune entrée n'a été supprimée", 5000, 'red');
-                                    store.reload();
-                                    break;
-                                case'4':
-                                    Ext.infoMsg.msg("Suppression d'éléments", "Certaines entrées n'ont pas été supprimées" + txtItems, 5000, 'orange');
-                                    store.reload();
-                                    break;
-                            }
-                            break;
-                        case '3':
-                            console.log('read');
-                            break;
-                        case '4':
-                            console.log('update');
-                            switch (message.error.ZMErrorCode.toString()[2]) {
-                                case'0':
-                                    Ext.infoMsg.msg("Modification d'éléments", "La modification a bien été effectuée");
-                                    break;
-                            }
-                            break;
-                    }
-                },
-                scope: this
-            });
-            gridStore.proxy.on({
-                exception: function (proxy, response, operation) {
-                    var error = operation.error;
-                    var title = error.code;
-                    title += ' (' + error.errno + ') - ';
-                    title += error.sqlState;
-                    var message = error.ZMErrorMsg;
-                    Ext.infoMsg.msg(title, message, 5000, 'red');
-                    if (operation.action != 'read')
-                    {
-                        Ext.data.StoreManager.get('mailtransport').reload();
-                    }
-                },
-                scope: this
-            });
+            
+            // utilisation des routines génériques pour les listeners
+            var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
+            var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
+            gridStore.on(gridStoreOn.create());
+            gridStore.proxy.on(proxyOn.create(gridStore));
+
             // création et configuration du grid
-            cfg = {
+            var grid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: gridStore,
                 rowEditing: true,
                 title: 'transport de mails',
-                multiSelect: true,
-            };
-            var grid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
+                multiSelect: true
+            });
 
             win = desktop.createWindow({
                 id: this.id,
