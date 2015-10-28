@@ -33,14 +33,12 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
         var win = desktop.getWindow(this.id);
         if (!win) {
             // création et configuration du store       
-            var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
-            
+            var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');           
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
             gridStore.on(gridStoreOn.create());
             gridStore.proxy.on(proxyOn.create(gridStore));
-
             // création et configuration du grid
             var grid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: gridStore,

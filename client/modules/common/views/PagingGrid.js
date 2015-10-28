@@ -43,7 +43,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         //  c'est que c'est un ajout annulé
                         if (!e.record.data.id)
                             editor.grid.store.removeAt(0);
-                    },
+                    }
                 }
             });
         }
@@ -68,8 +68,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         // création des colonnes par rapport au modele       
         this.store.model.getFields().forEach(function (i)
         {
-            if (i.binded != false) {
-                var colCFG = {header: i.name, dataIndex: i.name, flex: 1}
+            if (i.binded !== false) {
+                var colCFG = {header: i.name, dataIndex: i.name, flex: 1};
                 if (i.hidden) {
                     colCFG.hidden = i.hidden;
                 }
@@ -125,7 +125,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     menu.on({
                         beforeshow: function (menu) {
                             for (var i = 0; i < menu.items.items.length; i++) {
-                                if (menu.items.items[i].itemId == 'cntxSearchMenu') {
+                                if (menu.items.items[i].itemId === 'cntxSearchMenu') {
                                     var menuItem = i;
                                 }
                             }
@@ -161,7 +161,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                 // on ajoute le marqueur visuel sur le titre de la colonne.
                                 menu.activeHeader.setText(columnDataIndex + " (*)");
                                 grid.store.proxy.setExtraParam("col", columnDataIndex);
-                                if (extraParams.search && extraParams.search != '')
+                                if (extraParams.search && extraParams.search !== '')
                                     grid.store.reload();
                             }
                         }]);
@@ -189,7 +189,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     menu.add(item);
                     //////bouton supprimer
                     btn = this.down('toolbar').down('button[action="remove"]');
-                    if (btn.disabled == false) {
+                    if (btn.disabled === false) {
                         item = new Ext.menu.Item({
                             text: "supprimer",
                             //value: rec.data.VALUE_FIELD,
@@ -206,10 +206,10 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 {
                     // on active le bouton supprimer si une ligne est selectionnée
                     var btn = this.down('toolbar').down('button[action="remove"]');
-                    if (btn.disabled == true) {
+                    if (btn.disabled === true) {
                         btn.setDisabled(false);
                     }
-                },
+                }
             },
             bbar: Ext.create('Ext.PagingToolbar', {
                 store: this.store,
@@ -225,6 +225,12 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         forceSelection: true,
                         maxLength: 3,
                         enforceMaxLength: true,
+                        store: elementsNumber,
+                        valueField: 'nbr',
+                        displayField: 'nbr',
+                        typeAhead: true,
+                        queryMode: 'local',
+                        allowBlank: false,
                         listeners: {
                             scope: this,
                             buffer: 500,
@@ -241,7 +247,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                             buttons: Ext.Msg.OK,
                                             fn: function (buttonId, text)
                                             {
-                                                if (buttonId == 'ok')
+                                                if (buttonId === 'ok')
                                                 {
                                                     newValue = oldValue;
                                                 }
@@ -268,14 +274,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         width: 112,
                         listConfig: {
                             minWidth: null
-                        },
-                        store: elementsNumber,
-                        valueField: 'nbr',
-                        displayField: 'nbr',
-                        typeAhead: true,
-                        queryMode: 'local',
-                        allowBlank: false,
-                        forceSelection: true
+                        }
                     }
                 ]
             }),
@@ -326,7 +325,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             }
                         },
                         {
-                            xtype: 'tbfill',
+                            xtype: 'tbfill'
                         },
                         {
                             xtype: 'splitbutton',
@@ -345,8 +344,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             viewConfig: {
                 stripeRows: true,
                 enableTextSelection: true,
-                loadingText: 'Veuillez patienter...',
-            },
+                loadingText: 'Veuillez patienter...'
+            }
         };
         if (this.rowEditing !== null) {
             config.plugins = this.rowEditing;
@@ -355,7 +354,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         me.callParent(arguments);
     },
     removeRow: function () {
-        var grid = this.up('window').down('grid');
+        //console.log(this.up('window').down('grid'),this);
+        //var grid = this.up('window').down('grid');
+        var grid = this;
         var rows = grid.getSelectionModel().getSelection();
         var store = Ext.create(grid.store.$className);
         store.add(rows);
@@ -421,7 +422,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     },
     // fonctions ////////////////////////////////
     addRow: function () {
-        var grid = this.up('window').down('grid');
+        var grid = this;
+        //var grid = this.up('window').down('grid');
         var newEntry = Ext.create(grid.store.model.modelName, {
         });
         // on cherche le premier champ editable 
@@ -477,7 +479,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 title: 'Export Impossible',
                 msg: "Aucune colonne n'est configurée pour l'export",
                 buttons: Ext.MessageBox.OK,
-                //animateTarget: 'mb9',
                 icon: Ext.MessageBox.ERROR
             });
         }
@@ -516,5 +517,5 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             }
         }
         return string;
-    },
+    }
 });

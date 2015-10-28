@@ -8,10 +8,9 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
         'MyDesktop.modules.zmsettings.stores.ZMUsers',
-        'Ext.data.TreeStore',
-        'Ext.layout.container.Accordion',
+        'MyDesktop.modules.common.gridStoreOn',
+        'MyDesktop.modules.common.proxyOn',
         'Ext.toolbar.Spacer',
-        'Ext.tree.Panel'
     ],
     id: 'zmsettings-win',
     init: function () {
@@ -28,42 +27,48 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             shortcutCls: this.id + '-shortcut',
         };
     },
-    createWindow: function (refer) {
-        var me=this;
+    createWindow: function () {
+        var me = this;
         var cfg = {};
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
             //tab zmusers
-            //var refer=refer;
+            // création et configuration du store 
             var ZMUsersGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMUsers');
-            cfg = {
+            // utilisation des routines génériques pour les listeners
+            var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
+            var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
+            ZMUsersGridStore.on(gridStoreOn.create());
+            ZMUsersGridStore.proxy.on(proxyOn.create(ZMUsersGridStore));
+            // création et configuration du grid
+            var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMUsersGridStore,
                 rowEditing: true,
                 title: 'Uilisateurs',
                 multiSelect: true,
-            };
-            var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
-            //var ZMUsersGrid = Ext.create('MyDesktop.modules.zmsettings.views.UsersGrid', {store: ZMUsersGridStore});
-
-
-            //tab ZMmodules            
+            });
+            //tab ZMmodules
+            // création et configuration du store 
             var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
-            cfg = {
+            // utilisation des routines génériques pour les listeners
+            var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
+            var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
+            ZMModulesGridStore.on(gridStoreOn.create());
+            ZMModulesGridStore.proxy.on(proxyOn.create(ZMModulesGridStore));
+
+            var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMModulesGridStore,
                 rowEditing: true,
                 title: 'Modules',
                 multiSelect: true,
-            };          
-            var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
+            });
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
                 width: 500,
                 height: 400,
                 iconCls: this.launcher.iconCls,
-                //animCollapse: false,
-                //constrainHeader: true,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',
                 items: {
@@ -95,7 +100,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                     //tabPosition:'left',
                     items: [{
                             xtype: ZMUsersGrid,
-                            
                         }, {
                             xtype: ZMModulesGrid,
                         },
@@ -103,7 +107,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 //fonctions
 
                 entryAdd: function (params) {
-                    console.log('entryadd:',params);
+                    console.log('entryadd:', params);
                 },
                 entryRemove: function (grid) {
                     console.log(grid.getSelectionModel().getSelection());
@@ -111,7 +115,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 ////////////////////////////////
             });
         }
-
         win.down('tabpanel').setActiveTab(0);
         return win;
     }
