@@ -95,12 +95,12 @@ module.exports = {
 
     },
     get: function (params, callback, sessionID, request, response) {
-        params.log.info('query',params.query);
+        //params.log.info('query',params.query);
         pool.getConnection(function (err, connection) {
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 302;
-                err.ZMErrorMsg = String(err)
+                err.ZMErrorMsg = String(err);
                 sendError(err, callback, params.log);
             }
             else
@@ -118,23 +118,23 @@ module.exports = {
                                     'ZMTypeCode': 'DX',
                                     'ZMErrorCode': 300
                                 };
-                                params.log.info('result',data,message);
+                                //params.log.info('result',data,message);
                                 sendSuccess(rows[0].totalCount, data, callback, message);
                             }
                             else
                             {
                                 err.ZMTypeCode = 'DX';
                                 err.ZMErrorCode = 302;
-                                err.ZMErrorMsg = String(err)
+                                err.ZMErrorMsg = String(err);
                                 sendError(err, callback, params.log);
                             }
-                        })
+                        });
                     }
                     else
                     {
                         err.ZMTypeCode = 'DX';
                         err.ZMErrorCode = 302;
-                        err.ZMErrorMsg = String(err)
+                        err.ZMErrorMsg = String(err);
                         sendError(err, callback, params.log);
                     }
                 });
@@ -148,7 +148,7 @@ module.exports = {
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 402;
-                err.ZMErrorMsg = String(err)
+                err.ZMErrorMsg = String(err);
                 sendError(err, callback);
             }
             else
@@ -159,7 +159,7 @@ module.exports = {
                         var message = {
                             'ZMTypeCode': 'DX',
                             'ZMErrorCode': 400
-                        }
+                        };
                         sendSuccess(rows.length, rows, callback, message);
                     }
                     else
@@ -177,7 +177,7 @@ module.exports = {
     },
     sendMsg: function (success, msg, data, callback, totalCount, log) {
         if (log)
-            log.error(err);
+            log.error(msg);
         if (success === true)
         {
             callback({
@@ -191,7 +191,7 @@ module.exports = {
         {
             callback({
                 success: false,
-                error: msg,
+                error: msg
             });
         }
     }
@@ -202,7 +202,7 @@ function sendError(err, callback, log) {
         log.error(err);
     callback({
         success: false,
-        error: err,
+        error: err
     });
 }
 
