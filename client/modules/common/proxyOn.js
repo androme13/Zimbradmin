@@ -1,9 +1,9 @@
 /* 
- * gridStore
+ * proxyOn
  * (C) Androme 2015
  * 
  */
-// fonction générique communes aux modules
+// fonction générique communes aux modules pour le store.proxy
 
 Ext.define('MyDesktop.modules.common.proxyOn', {
     create: function (storeName) {
