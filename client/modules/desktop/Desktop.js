@@ -1,8 +1,7 @@
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/* 
+ * Desktop
+ * (C) Androme 2015
+ * 
  */
 
 /**
@@ -173,16 +172,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
         });
     },
     onShortcutItemClick: function (dataView, record) {
-        //console.log("dekstop.js:", this);
         this.app.showModule(record.data.module);
-
-        /*var me = this, module = me.app.getModule(record.data.module),
-         win = module && module.createWindow(MyDesktop.App);
-         
-         
-         if (win) {
-         me.restoreWindow(win);
-         }*/
     },
     onItemContextClick: function (item, record, item, index, e, eOpts) {
         // e.stopEvent();
