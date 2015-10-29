@@ -40,6 +40,8 @@ type : login
 101 : login fatal error
 102 : login error
 103 : login nok
+105 : account disabled
+106 : account locked
 
 200 : logout ok
 201 : logout fatal error

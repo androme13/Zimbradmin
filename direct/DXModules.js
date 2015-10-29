@@ -128,7 +128,6 @@ var DXModules = {
         // on set les parametres par défaut si ils sont absents
         if (!params) {
             var params = [];
-            //params[0] = {};
         }
         params.table = 'usersmodules';
         params.log = log;
@@ -142,6 +141,5 @@ var DXModules = {
         params.query = query;
         DXCommon.update([params], callback, sessionID, request, response);
     }
-
 };
 module.exports = DXModules;
