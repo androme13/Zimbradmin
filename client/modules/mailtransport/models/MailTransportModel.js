@@ -18,7 +18,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
                 vtype:'email',
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
-            },
+            }
         },
         {name: 'transport',
             type: 'string',
