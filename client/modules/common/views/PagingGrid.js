@@ -138,7 +138,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             }
                         }
                     });
-
                     // definition menu contextuel entête de colonne
                     menu.add([{
                             iconCls: 'favorite16',
@@ -354,90 +353,101 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         me.callParent(arguments);
     },
     removeRow: function () {
-        //console.log(this.up('window').down('grid'),this);
-        //var grid = this.up('window').down('grid');
         var grid = this;
-        var rows = grid.getSelectionModel().getSelection();
-        var store = Ext.create(grid.store.$className);
-        store.add(rows);
-        var columns = [];
-        grid.columns.forEach(function (entry) {
-            columns.push(Ext.create('Ext.grid.column.Column', entry));
-        });
-        var gridDel = Ext.create('Ext.grid.Panel', {
-            store: store,
-            columns: columns,
-            viewConfig: {
-                stripeRows: true
-            }
-        });
-        var formPanel = Ext.create('Ext.form.Panel', {
-            title: 'Veuillez confirmer la suppression des éléments suivants (' + store.getCount() + ')',
-            autoScroll: true,
-            fieldDefaults: {
-                labelAlign: 'top',
-                msgTarget: 'side'
-            },
-            defaults: {
-                border: false,
-                xtype: 'panel',
-                flex: 1,
-                layout: 'anchor'
-            },
-            layout: 'hbox',
-            items: [{
-                    items: [gridDel]
-                }],
-            buttons: ['->', {
-                    text: 'Confirmer',
-                    iconCls: 'accept16',
-                    handler: function () {
-                        grid.store.remove(rows);
-                        grid.store.sync();
-                        this.up('window').close();
-                    }
-                }, {
-                    text: 'Annuler',
-                    iconCls: 'cancel16',
-                    handler: function () {
-                        this.up('window').close();
-                    }
-                }]
-        });
+        if (grid.customRemoveRow)
+        {
+            grid.customRemoveRow(grid);
+        }
+        else
+        {
+            var rows = grid.getSelectionModel().getSelection();
+            var store = Ext.create(grid.store.$className);
+            store.add(rows);
+            var columns = [];
+            grid.columns.forEach(function (entry) {
+                columns.push(Ext.create('Ext.grid.column.Column', entry));
+            });
+            var gridDel = Ext.create('Ext.grid.Panel', {
+                store: store,
+                columns: columns,
+                viewConfig: {
+                    stripeRows: true
+                }
+            });
+            var formPanel = Ext.create('Ext.form.Panel', {
+                title: 'Veuillez confirmer la suppression des éléments suivants (' + store.getCount() + ')',
+                autoScroll: true,
+                fieldDefaults: {
+                    labelAlign: 'top',
+                    msgTarget: 'side'
+                },
+                defaults: {
+                    border: false,
+                    xtype: 'panel',
+                    flex: 1,
+                    layout: 'anchor'
+                },
+                layout: 'hbox',
+                items: [{
+                        items: [gridDel]
+                    }],
+                buttons: ['->', {
+                        text: 'Confirmer',
+                        iconCls: 'accept16',
+                        handler: function () {
+                            grid.store.remove(rows);
+                            grid.store.sync();
+                            this.up('window').close();
+                        }
+                    }, {
+                        text: 'Annuler',
+                        iconCls: 'cancel16',
+                        handler: function () {
+                            this.up('window').close();
+                        }
+                    }]
+            });
 
-        var winDel = Ext.create("Ext.window.Window", {
-            title: "Confirmation de suppression d'éléments",
-            layout: 'fit',
-            maximizable: true,
-            width: 512,
-            height: 400,
-            modal: true,
-            items: formPanel
-        });
-        winDel.show();
-        Ext.Function.defer(function () {
-            winDel.toFront();
-        }, 50);
-
+            var winDel = Ext.create("Ext.window.Window", {
+                title: "Confirmation de suppression d'éléments",
+                layout: 'fit',
+                maximizable: true,
+                width: 512,
+                height: 400,
+                modal: true,
+                items: formPanel
+            });
+            winDel.show();
+            Ext.Function.defer(function () {
+                winDel.toFront();
+            }, 50);
+        }
     },
     // fonctions ////////////////////////////////
     addRow: function () {
         var grid = this;
-        //var grid = this.up('window').down('grid');
-        var newEntry = Ext.create(grid.store.model.modelName, {
-        });
-        // on cherche le premier champ editable 
-        // pour s'y positionner
-        var start = 0;
-        grid.store.model.getFields().every(function (entry) {
-            if (!entry.editor) {
-                start++;
-                return false;
-            }
-            return true;
-        });
-        grid.store.insert(0, newEntry);
-        grid.rowEditing.startEdit(0, start);
+        if (grid.customAddRow)
+        {
+            grid.customAddRow(grid);
+        }
+        else
+        {
+            //var grid = this.up('window').down('grid');
+            var newEntry = Ext.create(grid.store.model.modelName, {
+            });
+            // on cherche le premier champ editable 
+            // pour s'y positionner
+            var start = 0;
+            grid.store.model.getFields().every(function (entry) {
+                if (!entry.editor) {
+                    start++;
+                    return false;
+                }
+                return true;
+            });
+            grid.store.insert(0, newEntry);
+            grid.rowEditing.startEdit(0, start);
+        }
     },
     export: function (grid) {
         var cols = grid.columns;
