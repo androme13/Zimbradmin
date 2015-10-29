@@ -122,7 +122,6 @@ Ext.define('Ext.ux.desktop.App', {
                 //si la session existe cote serveur
                 if (resultgetsession.success === true)
                 {
-                    console.log('getsessionok');
                     // on recupere les modules auxquels l'user à le droit
                     ExtRemote.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
                     function (resultgetmodules, event2) {
@@ -157,7 +156,8 @@ Ext.define('Ext.ux.desktop.App', {
                                         me.restoreWindows();
                                         me.restoreShortcuts();
                                     }
-                            ;
+                            Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
+
                             me.runSessionPollTask();
 
                         }
@@ -321,18 +321,14 @@ Ext.define('Ext.ux.desktop.App', {
                 shortcutsToCreate.push(entry);
             }
         });
-
         // ensuite on va chercher le nom du module chargé pour
         // creer le raccourci
         shortcutsToCreate.forEach(function (entry) {
             // on parcourt les modules chargés pour voir si
             // il y a correspondance dans les noms
             me.modules.forEach(function (loadedModule) {
-                //console.log ('loadedmodules',loadedModules.$className);
-                //console.log ('entrymodules',entry.module);
                 if (entry.module == loadedModule.$className)
                 {
-                    //console.log (loadedModule);
                     record.push({
                         module: loadedModule.id,
                         name: loadedModule.launcher.text,
