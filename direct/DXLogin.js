@@ -32,17 +32,30 @@ var DXLogin = {
                 var query = "SELECT id,level,state,username,firstname,lastname from users WHERE username='";
                 query += params.username + "'";
                 query += " AND password='" + params.password + "'";
-                query += " AND state= 2";
+                //query += " AND state= 2";
                 connection.query(query, function (err, rows, fields) {
                     var message = {};
                     if (!err) {
                         if (rows.length !== 0) {
                             request.session.userinfo = rows[0];
-                            log.info('Login of ' + request.session.userinfo.username);
-                            message = {
-                                'ZMTypeCode': 'LOGIN',
-                                'ZMErrorCode': 100
-                            };
+                            var message = {};
+                            switch (rows[0].state) {
+                                case 0:
+                                    log.info('Login try of disabled account ' + request.session.userinfo.username);
+                                    message.ZMTypeCode = 'LOGIN';
+                                    message.ZMErrorCode = 105;
+                                    break;
+                                case 1:
+                                    log.info('Login try of locked account ' + request.session.userinfo.username);
+                                    message.ZMTypeCode = 'LOGIN';
+                                    message.ZMErrorCode = 106;
+                                    break;
+                                case 2:
+                                    log.info('Login of ' + request.session.userinfo.username);
+                                    message.ZMTypeCode = 'LOGIN';
+                                    message.ZMErrorCode = 100;
+                                    break;
+                            }
                             DXCommon.sendMsg(true, message, null, callback);
                         }
                         else
@@ -65,7 +78,8 @@ var DXLogin = {
             }
             if (connection)
                 connection.release();
-        });
+        }
+        );
     },
     getsession: function (params, callback, sessionID, request, response) {
         response.header('My-Custom-Header ', '1234567890');
@@ -120,7 +134,7 @@ var DXLogin = {
             'ZMTypeCode': 'LOGIN',
             'ZMErrorCode': 200
         }
-            DXCommon.sendMsg(true, message, null, callback);
+        DXCommon.sendMsg(true, message, null, callback);
     }
 };
 function setLanguage(connection, request)
