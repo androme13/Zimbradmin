@@ -164,7 +164,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                     grid.store.reload();
                             }
                         }]);
-
                 },
                 cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     e.stopEvent();
