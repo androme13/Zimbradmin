@@ -105,82 +105,43 @@ var DXModules = {
         DXCommon.update(params, callback, sessionID, request, response);
     },
     addmodulesshortcut: function (params, callback, sessionID, request, response) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            var query = "UPDATE usersmodules " +
-                    "INNER JOIN users " +
-                    "ON users.id=usersmodules.userid " +
-                    "INNER JOIN modules " +
-                    "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-                    "SET usersmodules.hasshortcut=1 " +
-                    "WHERE usersmodules.userid=" + params.id;
-
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-
-                    callback({
-                        success: success,
-                        message: "getmodules",
-                        data: data
-                    });
-                }
-            });
-
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });
+        // mono requete, à voir plus tard pour du multi-requete
+        var myId = request.session.userinfo.id;
+        // on set les parametres par défaut si ils sont absents
+        if (!params)
+            var params = {};
+        params.table = 'usersmodules';
+        params.log = log;
+        var query = "UPDATE usersmodules " +
+                "INNER JOIN users " +
+                "ON users.id=usersmodules.userid " +
+                "INNER JOIN modules " +
+                "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
+                "SET usersmodules.hasshortcut=1 " +
+                "WHERE usersmodules.userid=" + myId;
+        params.query = query;
+        DXCommon.update([params], callback, sessionID, request, response);
     },
     removemodulesshortcut: function (params, callback, sessionID, request, response) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                //res.json({"code": 100, "status": "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            }
-            var query = "UPDATE usersmodules " +
-                    "INNER JOIN users " +
-                    "ON users.id=usersmodules.userid " +
-                    "INNER JOIN modules " +
-                    "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
-                    "SET usersmodules.hasshortcut=0 " +
-                    "WHERE usersmodules.userid=" + params.id;
-
-            connection.query(query, function (err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length !== 0) {
-                        success = true;
-                        data = rows;
-                    }
-
-                    callback({
-                        success: success,
-                        message: "getmodules",
-                        data: data
-                    });
-                }
-            });
-
-            connection.on('error', function (err) {
-                //res.json({"code" : 100, "status" : "Error in connection database"});
-                log.warn("Error connecting database ... \n\n");
-                return;
-            });
-        });
+        // mono requete, à voir plus tard pour du multi-requete
+        var myId = request.session.userinfo.id;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) {
+            var params = [];
+            //params[0] = {};
+        }
+        params.table = 'usersmodules';
+        params.log = log;
+        var query = "UPDATE usersmodules " +
+                "INNER JOIN users " +
+                "ON users.id=usersmodules.userid " +
+                "INNER JOIN modules " +
+                "ON (modules.id=usersmodules.moduleid AND modules.module='" + params.module + "') " +
+                "SET usersmodules.hasshortcut=0 " +
+                "WHERE usersmodules.userid=" + myId;
+        params.query = query;
+        DXCommon.update([params], callback, sessionID, request, response);
     }
+
 };
 module.exports = DXModules;
