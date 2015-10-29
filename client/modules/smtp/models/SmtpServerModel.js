@@ -1,9 +1,9 @@
 /* 
- * ZMUser Model
+ * SmtpServer Model
  * (C) Androme 2015
  * 
  */
- 
+
 Ext.define('MyDesktop.modules.smtp.models.SmtpServerModel', {
     extend: 'Ext.data.Model',
     fields: [
@@ -45,7 +45,9 @@ Ext.define('MyDesktop.modules.smtp.models.SmtpServerModel', {
             name: 'server',
             editor: {
                 editable: true,
-                allowBlank: false
+                allowBlank: false,
+                regex: /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
+                regexText: 'Veuillez saisir une adresse de serveur valide'
             },
             type: 'string',
             searchable: true
