@@ -34,16 +34,25 @@ Ext.define('MyDesktop.modules.router.Router', {
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
             relayDomainsStore.on(gridStoreOn.create());
             relayDomainsStore.proxy.on(proxyOn.create(relayDomainsStore));
-            cfg = {
-                store: relayDomainsStore,
-                rowEditing: true,
-                title: 'Serveurs SMTP',
-                multiSelect: true,
-            };
+
             var relayDomainsgrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: relayDomainsStore,
                 rowEditing: true,
-                title: 'Domaines acceptés',
+                title: 'relays_domain',
+                multiSelect: true,
+            });
+
+            var myNetworksStore = Ext.create('MyDesktop.modules.router.stores.MyNetworks');
+            // utilisation des routines génériques pour les listeners
+            var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
+            var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
+            myNetworksStore.on(gridStoreOn.create());
+            myNetworksStore.proxy.on(proxyOn.create(myNetworksStore));
+
+            var myNetworksgrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+                store: myNetworksStore,
+                rowEditing: true,
+                title: 'my_networks',
                 multiSelect: true,
             });
 
@@ -81,8 +90,12 @@ Ext.define('MyDesktop.modules.router.Router', {
                         }
                     },
                     //tabPosition:'left',
-                    items: [{
-                            xtype: relayDomainsgrid,
+                    items: [
+                        {
+                            xtype: relayDomainsgrid
+                        },
+                        {
+                            xtype: myNetworksgrid
                         }
                     ]},
                 //fonctions
