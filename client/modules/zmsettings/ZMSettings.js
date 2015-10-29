@@ -10,7 +10,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
         'MyDesktop.modules.zmsettings.stores.ZMUsers',
         'MyDesktop.modules.common.gridStoreOn',
         'MyDesktop.modules.common.proxyOn',
-        'Ext.toolbar.Spacer',
+        'Ext.toolbar.Spacer'
     ],
     id: 'zmsettings-win',
     init: function () {
@@ -24,7 +24,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             text: 'Parametres de Zimbradmin',
             title: 'Gestion des Parametres ZimbrAdmin',
             iconCls: this.id + '-icon',
-            shortcutCls: this.id + '-shortcut',
+            shortcutCls: this.id + '-shortcut'
         };
     },
     createWindow: function () {
@@ -46,7 +46,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 store: ZMUsersGridStore,
                 rowEditing: true,
                 title: 'Uilisateurs',
-                multiSelect: true,
+                multiSelect: true
             });
             //tab ZMmodules
             // création et configuration du store 
@@ -61,7 +61,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 store: ZMModulesGridStore,
                 rowEditing: true,
                 title: 'Modules',
-                multiSelect: true,
+                multiSelect: true
             });
             win = desktop.createWindow({
                 id: this.id,
@@ -80,11 +80,10 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)
                             {
-                                if (newTab.store.getCount() == 0)
+                                if (newTab.store.getCount() === 0)
                                     newTab.store.load();
                             }
                             console.log(newTab);
-                            //tabPanel.setSize(200, 400);
                         },
                         activate: function (tab, eOpts) {
                             console.log(tab);
@@ -97,7 +96,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                             this.up().entryRemove(grid);
                         }
                     },
-                    //tabPosition:'left',
                     items: [{
                             xtype: ZMUsersGrid,
                         }, {
@@ -105,7 +103,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                         },
                     ]},
                 //fonctions
-
                 entryAdd: function (params) {
                     console.log('entryadd:', params);
                 },
