@@ -35,7 +35,24 @@ var DXRouter = {
         query += params[0].domain.toLowerCase() + "','";
         query += params[0].comment+ "','";
         query += myId + "')";
-        //var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM ";
+        params[0].query = query;
+        DXCommon.add(params[0], callback, sessionID, request, response);
+    },
+    addMyNetworks: function (params, callback, sessionID, request, response) {
+        // mono requete, à voir plus tard pour du multi-requete
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        params[0].table = 'mynetworks';
+        params[0].log = log;
+        var myId = request.session.userinfo.id;
+        var query = "INSERT INTO " + params[0].table;
+        query += " (state,network,comment,created_by) VALUES (";
+        query += params[0].state + ",'";
+        query += params[0].network+ "','";
+        query += params[0].comment+ "','";
+        query += myId + "')";
         params[0].query = query;
         DXCommon.add(params[0], callback, sessionID, request, response);
     },
@@ -71,6 +88,38 @@ var DXRouter = {
         newParams.query = query;
         DXCommon.destroy(newParams, callback, sessionID, request, response);
     },
+    destroyMyNetworks: function (params, callback, sessionID, request, response) {
+        // multi requete
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        var newParams = {};
+        newParams.table = 'mynetworks';
+        newParams.log = log;
+        newParams.length = params.length;
+        var occur = '';
+        var temp = '';
+        var count = 0;
+        params.forEach(function (entry) {
+            count++;
+            // test erreur///
+            //if (count == 2)
+            // entry.domain = 'aa' + entry.domain;
+            temp = "(" + entry.id + ",";
+            temp += entry.state + ",'";
+            temp += entry.network + "','";
+            temp += entry.comment + "')";
+            if (count < params.length)
+            {
+                temp += ',';
+            }
+            occur += temp;
+        });
+        var query = "DELETE FROM " + newParams.table + " WHERE (id,state,network,comment) IN (" + occur + ")";
+        newParams.query = query;
+        DXCommon.destroy(newParams, callback, sessionID, request, response);
+    },
     getRelayDomains: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
         // on set les parametres par défaut si ils sont absents
@@ -81,6 +130,30 @@ var DXRouter = {
         params.table = 'relay_domains';
         if (!params.col)
             params.col = 'domain';
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 50;
+        if (params.search) {
+            params.extraQuery = " WHERE " + params.col;
+            params.extraQuery += " LIKE '%" + params.search + "%'";
+        }
+        params.log = log;
+        var query = "SELECT * FROM " + params.table + params.extraQuery;
+        query += " LIMIT " + params.start + ',' + params.limit;
+        params.query = query;
+        DXCommon.get(params, callback, sessionID, request, response);
+    },
+    getMyNetworks: function (params, callback, sessionID, request, response) {
+        var query, extraQuery;
+        // on set les parametres par défaut si ils sont absents
+        if (!params)
+            var params = {};
+        if (!params.extraQuery)
+            params.extraQuery = '';
+        params.table = 'mynetworks';
+        if (!params.col)
+            params.col = 'network';
         if (!params.start)
             params.start = 0;
         if (!params.limit)
@@ -108,6 +181,25 @@ var DXRouter = {
         params[0].log = log;
         query = "UPDATE " + params[0].table + " SET state =" + params[0].state;
         query += ", domain ='" + params[0].domain;
+        query += "', comment ='" + params[0].comment;
+        query += "', modified_by='" + myId;
+        query += "' WHERE id ='" + params[0].id + "'";
+        params[0].query = query;
+        DXCommon.update(params, callback, sessionID, request, response);
+    },
+    updateMyNetworks: function (params, callback, sessionID, request, response) {
+        // mono requete, à voir plus tard pour du multi-requete
+        var query;
+        var myId = request.session.userinfo.id;
+        // on set les parametres par défaut si ils sont absents
+        if (!params) {
+            var params = [];
+            params[0] = {};
+        }
+        params[0].table = 'mynetworks';
+        params[0].log = log;
+        query = "UPDATE " + params[0].table + " SET state =" + params[0].state;
+        query += ", network ='" + params[0].network;
         query += "', comment ='" + params[0].comment;
         query += "', modified_by='" + myId;
         query += "' WHERE id ='" + params[0].id + "'";
