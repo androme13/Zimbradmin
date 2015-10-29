@@ -32,6 +32,7 @@ var DXLogin = {
                 var query = "SELECT id,level,state,username,firstname,lastname from users WHERE username='";
                 query += params.username + "'";
                 query += " AND password='" + params.password + "'";
+                query += " AND state= 2";
                 connection.query(query, function (err, rows, fields) {
                     var message = {};
                     if (!err) {
