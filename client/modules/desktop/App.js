@@ -11,7 +11,7 @@ Ext.infoMsg = function () {
     }
     return {
         msg: function (title, format, delay, color) {
-            if (!delay || delay == 0)
+            if (!delay || delay === 0)
                 delay = 1000;
             if (!color)
                 color = "blue";
@@ -43,7 +43,7 @@ Ext.override(Ext.menu.Menu, {
             if (item.menu && item.menu.isVisible()) {
                 visibleSubmenu = true;
             }
-        })
+        });
         if (visibleSubmenu) {
             //console.log('apply fix hide submenu');
             return;
@@ -76,7 +76,7 @@ Ext.define('Ext.ux.desktop.App', {
         Ext.Direct.on("exception", function (event) {
             console.log('exception XHR:', event);
             if (event.xhr) {
-                if (event.xhr.status == 401)
+                if (event.xhr.status === 401)
                 {
                     me.onLogin(me.session.userinfo.username);
                 }
@@ -149,7 +149,7 @@ Ext.define('Ext.ux.desktop.App', {
                                 me.restoreShortcuts();
                             }
                             else
-                                    //sinon c'est que la session arrive à sa fin et qu'il faut la renouveller
+                                    //sinon c'est que la session a été renouvellée
                                     {
                                         me.loginwindow.close();
                                         me.desktop.taskbar.show();
@@ -157,7 +157,6 @@ Ext.define('Ext.ux.desktop.App', {
                                         me.restoreShortcuts();
                                     }
                             Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
-
                             me.runSessionPollTask();
 
                         }
@@ -327,12 +326,12 @@ Ext.define('Ext.ux.desktop.App', {
             // on parcourt les modules chargés pour voir si
             // il y a correspondance dans les noms
             me.modules.forEach(function (loadedModule) {
-                if (entry.module == loadedModule.$className)
+                if (entry.module === loadedModule.$className)
                 {
                     record.push({
                         module: loadedModule.id,
                         name: loadedModule.launcher.text,
-                        iconCls: loadedModule.id + '-shortcut',
+                        iconCls: loadedModule.id + '-shortcut'
                     });
                 }
             });
@@ -376,7 +375,7 @@ Ext.define('Ext.ux.desktop.App', {
         var me = this;
         var module;
         this.modules.forEach(function (entry) {
-            if (record.module == entry.id) {
+            if (record.module === entry.id) {
                 module = entry.$className;
             }
         });
@@ -389,7 +388,7 @@ Ext.define('Ext.ux.desktop.App', {
         var me = this;
         var module;
         this.modules.forEach(function (entry) {
-            if (record == entry.id) {
+            if (record === entry.id) {
                 module = entry.$className;
             }
         });
@@ -449,7 +448,7 @@ Ext.define('Ext.ux.desktop.App', {
                         handler: function () {
                             me.showModule(module.id);
                         },
-                        scope: me,
+                        scope: me
                     };
                     if (myModule.launcher.menu) {
                         var item = {
@@ -494,7 +493,7 @@ Ext.define('Ext.ux.desktop.App', {
                 text: 'Mon Compte',
                 iconCls: 'settings16',
                 handler: function () {
-                    this.showModule('settings-win')
+                    this.showModule('settings-win');
                 },
                 scope: this
             },
@@ -517,7 +516,7 @@ Ext.define('Ext.ux.desktop.App', {
                 iconCls: 'logout',
                 handler: this.onLogout,
                 scope: this
-            },
+            }
         ]);
 
     },
@@ -531,7 +530,7 @@ Ext.define('Ext.ux.desktop.App', {
         var ms = this.modules;
         for (var i = 0, len = ms.length; i < len; i++) {
             var m = ms[i];
-            if (m.id == name || m.appType == name) {
+            if (m.id === name || m.appType === name) {
                 return m;
             }
         }
@@ -548,7 +547,6 @@ Ext.define('Ext.ux.desktop.App', {
         this.session = new Object();
         this.session.userinfo = obj.userinfo;
         this.session.modules = obj.modules;
-        //console.log ('this.session.modules',this.session.modules)
     },
     onReady: function (fn, scope) {
         if (this.isReady) {
