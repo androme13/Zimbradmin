@@ -3,7 +3,7 @@
  * (C) Androme 2015
  * 
  */
- 
+
 Ext.define('MyDesktop.modules.router.models.RelayDomainModel', {
     extend: 'Ext.data.Model',
     fields: [
@@ -38,7 +38,9 @@ Ext.define('MyDesktop.modules.router.models.RelayDomainModel', {
             name: 'domain',
             editor: {
                 editable: true,
-                allowBlank: false
+                allowBlank: false,
+                regex: /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
+                regexText: 'Veuillez saisir une adresse de domaine valide'
             },
             type: 'string',
             searchable: true
