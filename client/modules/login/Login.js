@@ -24,7 +24,6 @@ Ext.define('MyDesktop.modules.login.Login', {
         var me = this;
         var desktop = this.app.getDesktop();
         Ext.QuickTips.init();
-        //var desktop = scope.desktop.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
             win = desktop.createWindow({
@@ -90,7 +89,6 @@ Ext.define('MyDesktop.modules.login.Login', {
                                         form.setLoading("Veuillez patienter");
                                         ExtRemote.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
-                                                    console.log('retour login', result);
                                                     var target = btn.up('form').down('label');
                                                     switch (result.error.ZMErrorCode) {
                                                         case 100:
@@ -123,7 +121,6 @@ Ext.define('MyDesktop.modules.login.Login', {
                             afterRender: function (thisForm, options) {
                                 this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {
                                     enter: function () {
-                                        //desktop.app.fireEvent('processlogin', form.getForm().getValues());
                                         var form = win.down('form');
                                         var button = form.down('button#Login');
                                         if (form.getForm().isValid())
