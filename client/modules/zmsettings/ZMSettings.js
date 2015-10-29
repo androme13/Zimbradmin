@@ -7,6 +7,7 @@
 Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
+        'MyDesktop.modules.zmsettings.views.NewUser',
         'MyDesktop.modules.zmsettings.stores.ZMUsers',
         'MyDesktop.modules.common.gridStoreOn',
         'MyDesktop.modules.common.proxyOn',
@@ -45,9 +46,16 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMUsersGridStore,
                 rowEditing: true,
-                title: 'Uilisateurs',
-                multiSelect: true
+                //title: 'Uilisateurs',
+                multiSelect: true,
+                customAddRow: function (grid) {
+                    console.log('customadd', grid,this.up('panel'));
+                    this.up('panel').getLayout().setActiveItem(1);
+                }
             });
+            var createUserPanel = Ext.create('MyDesktop.modules.zmsettings.views.NewUser');
+
+
             //tab ZMmodules
             // création et configuration du store 
             var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
@@ -97,7 +105,11 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                         }
                     },
                     items: [{
-                            xtype: ZMUsersGrid,
+                            layout: 'card',
+                            activeItem: 0,
+                            title: 'Uilisateurs',
+                            items: [ZMUsersGrid, createUserPanel.create()],
+                            //xtype: ZMUsersGrid,
                         }, {
                             xtype: ZMModulesGrid,
                         },

@@ -14,6 +14,10 @@ Ext.define('MyDesktop.modules.router.Router', {
         var idCSS = '' + Math.floor(Math.random() * 100);
         Ext.util.CSS.createStyleSheet('', idCSS);
         Ext.util.CSS.swapStyleSheet(idCSS, 'modules/router/rsc/style.css');
+        this.ACL = {
+          r : 2, // read minimum level
+          w : 4, // write minimum level
+        },
         this.launcher = {
             menu: 'Smtp',
             text: 'Gestion du routeur',
