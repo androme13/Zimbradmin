@@ -90,20 +90,30 @@ Ext.define('MyDesktop.modules.login.Login', {
                                         form.setLoading("Veuillez patienter");
                                         ExtRemote.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
-                                                        var target = btn.up('form').down('label');
-                                                        if (result.error.ZMErrorCode === 100)
-                                                        {
+                                                    console.log('retour login', result);
+                                                    var target = btn.up('form').down('label');
+                                                    switch (result.error.ZMErrorCode) {
+                                                        case 100:
                                                             target.update('Identifiants corrects');
                                                             target.getEl().setStyle("color", "green");
                                                             desktop.app.fireEvent('processlogin', result);
-                                                        }
-
-                                                        if (result.error.ZMErrorCode === 103)
-                                                        {
+                                                            break;
+                                                        case 103:
                                                             target.update('Mauvais identifiants');
                                                             form.setLoading(false);
                                                             target.getEl().setStyle("color", "red");
-                                                        }
+                                                            break;
+                                                        case 105:
+                                                            target.update('Compte désactivé');
+                                                            form.setLoading(false);
+                                                            target.getEl().setStyle("color", "red");
+                                                            break;
+                                                        case 106:
+                                                            target.update('Compte bloqué');
+                                                            form.setLoading(false);
+                                                            target.getEl().setStyle("color", "red");
+                                                            break;
+                                                    }
                                                 }
                                         );
                                     }
