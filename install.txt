@@ -8,6 +8,14 @@
 # installation des paquets pour les prerequis
 apt-get install -y openssh-server mysql-server curl
 
+
+#--------------------------------------------------------------------------
+# creation sertificat autosigné
+openssl req -new -x509 -days 365 -nodes -out /opt/zimbradmin/ssl/certif-crt.pem -keyout /opt/zimbradmin/ssl/certif.key
+
+
+
+
 #--------------------------------------------------------------------------
 # creation structure zimbradmin
 mkdir /opt/zimbradmin
