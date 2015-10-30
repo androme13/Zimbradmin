@@ -9,7 +9,6 @@ global.log = bunyan.createLogger({name: 'ZM'});
 var monitor = require('./ZMModules/monitor.js')
 var ServerConfig = ZMConf.get("ServerConfig");
 var ExtDirectConfig = ZMConf.get("ExtDirectConfig");
-global.MySQLConfig = ZMConf.get("MySQLConfig"); //a supprimer par la suite
 var MySQLConfig = ZMConf.get("MySQLConfig");
 var express = require('express');
 var https = require('https');
@@ -22,7 +21,8 @@ var extdirect = require('extdirect');
 global.mysql = require('mysql');//a supprimer par la suite
 var mysql = require('mysql');
 var async = require('async');
-var server; // serveur web
+var HTTPServer; // serveur web http
+var HTTPSServer; // serveur web https
 var sslOpts = {
     key: fs.readFileSync('./ssl/certif.key'),
     cert: fs.readFileSync('./ssl/certif-crt.pem')
@@ -45,7 +45,6 @@ var notFound = function (req, res) {
     console.log('------------------------------------');
     //next();
 };
-
 var startPage = function (req, res) {
     res.sendFile('/client/desktop.html', {root: __dirname});
 };
@@ -77,7 +76,6 @@ app.use(parallel([
         rolling: true
     }),
 ]));
-
 // on charge la page par defaut
 app.get('/', startPage);
 
@@ -87,22 +85,20 @@ var directRouter = extdirect.initRouter(ExtDirectConfig);
 app.get(ExtDirectConfig.apiUrl, function (req, res) {
     try {
         directApi.getAPI(
-            function(api){
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(api);
-            }, req, res
-        );
+                function (api) {
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(api);
+                }, req, res
+                );
     } catch (e) {
         console.log(e);
     }
 });
-
 // on ignore les GET requests sur le class path de extdirect
-app.get(ExtDirectConfig.classRouteUrl, function(req, res) {
+app.get(ExtDirectConfig.classRouteUrl, function (req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({success:false, msg:'Unsupported method. Use POST instead.'}));
+    res.end(JSON.stringify({success: false, msg: 'Unsupported method. Use POST instead.'}));
 });
-
 // POST request process route and calls class
 app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
     if (req.session.userinfo || req.body.action === "core.DXLogin") {
@@ -113,15 +109,22 @@ app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
         res.end(JSON.stringify({success: false, msg: 'Please Login before'}));
     }
 });
-server = https.createServer(sslOpts, app).listen(ServerConfig.port);
+//création serveur http et redirection vers https
+HTTPServer=http.createServer(function(req, res) {
+  res.writeHead(301, {
+    Location: "https://"+ServerConfig.host+":"+ServerConfig.HTTPSPort.toString()
+  });
+  res.end();
+}).listen(81);
 
-
-log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.port, app.settings.env);
+// creation serveur https
+HTTPSServer = https.createServer(sslOpts, app).listen(ServerConfig.HTTPSPort);
+log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.HTTPSPort, app.settings.env);
 log.info('Node Version: ' + process.version);
-
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {
     log.info('Stopping Zimbradmin...');
-    server.close();
+    HTTPServer.close();
+    HTTPSServer.close();
     process.exit();
 });

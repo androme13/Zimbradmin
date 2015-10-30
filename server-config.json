@@ -1,6 +1,8 @@
 {
     "ServerConfig": {
-        "port": 443,
+        "host": "10.0.0.19",
+        "HTTPport": 81,
+        "HTTPSPort": 443,
         "logger": "dev",
         "enableUpload": true,
         "enableCompression": true,
