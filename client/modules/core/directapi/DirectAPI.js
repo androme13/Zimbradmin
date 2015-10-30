@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-Ext.define('MyDesktop.modules.directapi.DirectAPI', {
+Ext.define('MyDesktop.modules.core.directapi.DirectAPI', {
     /*
      Require Ext.Direct classes
      */
