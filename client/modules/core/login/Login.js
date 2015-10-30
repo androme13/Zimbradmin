@@ -4,14 +4,14 @@
  * 
  */
 
-Ext.define('MyDesktop.modules.login.Login', {
+Ext.define('MyDesktop.modules.core.login.Login', {
     extend: 'Ext.ux.desktop.Module',
     id: 'login-win',
     init: function () {
         // on charge le fichier css du module
         var idCSS = '' + Math.floor(Math.random() * 100);
         Ext.util.CSS.createStyleSheet('', idCSS);
-        Ext.util.CSS.swapStyleSheet(idCSS, 'modules/login/rsc/style.css');
+        Ext.util.CSS.swapStyleSheet(idCSS, 'modules/core/login/rsc/style.css');
         this.launcher = {
             startmenu: false,
             text: 'Login Window',
@@ -58,6 +58,7 @@ Ext.define('MyDesktop.modules.login.Login', {
                                 name: 'username',
                                 fieldLabel: 'Nom utilisateur',
                                 allowBlank: false,
+                                tabIndex: 1,
                                 //tooltip: "Veuillez saisir votre nom d'utilisateur"                               
                             }, {
                                 xtype: 'textfield',
@@ -66,6 +67,7 @@ Ext.define('MyDesktop.modules.login.Login', {
                                 inputType: 'password',
                                 fieldLabel: 'Mot de passe',
                                 allowBlank: false,
+                                tabIndex: 2,
                                 //tooltip: "Veuillez saisir votre mot de passe"
                             },
                             {
@@ -133,7 +135,7 @@ Ext.define('MyDesktop.modules.login.Login', {
                             }
                         }
                     }
-                ],
+                ]
             });
         }
         var field = win.down('form').getForm().findField('username');
@@ -142,6 +144,7 @@ Ext.define('MyDesktop.modules.login.Login', {
             field.readOnly = true;
             field = win.down('form').getForm().findField('password');
         }
+        field = win.down('form').getForm().findField('username');
         field.focus(false, 1000);
         return win;
     },

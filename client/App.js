@@ -10,7 +10,7 @@ Ext.define('MyDesktop.App', {
         'Ext.ux.desktop.ShortcutModel',
         'Ext.direct.*',
         'MyDesktop.modules.directapi.DirectAPI',
-        'MyDesktop.modules.login.Login'
+        'MyDesktop.modules.core.login.Login'
     ],
 
     init: function () {
@@ -39,7 +39,7 @@ Ext.define('MyDesktop.App', {
         else
         {
             // sinon on pousse que le module login
-            obj.push(new MyDesktop.modules.login.Login()); // fenetre login
+            obj.push(new MyDesktop.modules.core.login.Login()); // fenetre login
         }
         return obj;
     },
