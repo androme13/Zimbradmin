@@ -81,15 +81,6 @@ app.use(parallel([
 // on charge la page par defaut
 app.get('/', startPage);
 
-/*app.get(ExtDirectConfig.coreApiPath, function (request, response) {
-    try {
-        var api = extdirect.getAPI(ExtDirectConfig);
-        response.writeHead(200, {'Content-Type': 'application/json'});
-        response.end(api);
-    } catch (e) {
-        console.log(e);
-    }
-});*/
 var directApi = extdirect.initApi(ExtDirectConfig);
 var directRouter = extdirect.initRouter(ExtDirectConfig);
 
@@ -125,13 +116,6 @@ app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
 server = https.createServer(sslOpts, app).listen(ServerConfig.port);
 
 log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.port, app.settings.env);
-
-/*server = app.listen(
- ServerConfig.port,
- function () {
- log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
- }
- );*/
 
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {
