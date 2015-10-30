@@ -1,7 +1,7 @@
 {
     
         "ServerConfig": {
-        "port": 8080,
+        "port": 443,
         "logger": "dev",
         "enableUpload": true,
         "enableCompression": true,
@@ -35,7 +35,7 @@
         "classPath": "/direct",
         "classPrefix": "DX",
         "server": "10.0.0.19",
-        "port": "8080",
+        "port": "443",
         "protocol": "https",
         "relativeUrl": false,
         "appendRequestResponseObjects": true,
