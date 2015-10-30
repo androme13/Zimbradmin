@@ -123,7 +123,7 @@ Ext.define('Ext.ux.desktop.App', {
                 if (resultgetsession.success === true)
                 {
                     // on recupere les modules auxquels l'user à le droit
-                    ExtRemote.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
+                    ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
                     function (resultgetmodules, event2) {
                         if (resultgetmodules.success === true) {
                             resultgetsession.data.modules = resultgetmodules.data;
@@ -185,7 +185,7 @@ Ext.define('Ext.ux.desktop.App', {
             if (resultgetsession.success === true)
             {
                 // on recupere les modules auxquels l'user à le droit
-                ExtRemote.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
+                ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
                 function (resultgetmodules, event2) {
                     if (resultgetmodules.success === true) {
                         resultgetsession.data.modules = resultgetmodules.data;

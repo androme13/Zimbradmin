@@ -90,7 +90,7 @@ Ext.define('MyDesktop.App', {
     },
     onTestDirectSession: function () {
         console.log("test direct");
-        ExtRemote.DXUser.get(null,
+        ExtRemote.core.DXUser.get(null,
         function (result, event) {
         }
         );

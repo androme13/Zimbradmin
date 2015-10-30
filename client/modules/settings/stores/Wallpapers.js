@@ -4,7 +4,7 @@ Ext.define('MyDesktop.modules.settings.stores.Wallpapers', {
     storeId:"wallpapers",
     proxy:{
         type:'direct',
-        directFn:'ExtRemote.DXUser.getwallpapers',
+        directFn:'ExtRemote.core.DXUser.getwallpapers',
         reader:{
             root:'data'
         }

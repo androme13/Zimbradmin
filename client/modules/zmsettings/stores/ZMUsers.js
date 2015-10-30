@@ -11,10 +11,10 @@ Ext.define('MyDesktop.modules.zmsettings.stores.ZMUsers', {
     proxy: {
         type: 'direct',
         api: {
-            create: 'ExtRemote.DXUser.add',
-            read: 'ExtRemote.DXUser.get',
-            update: 'ExtRemote.DXUser.update',
-            destroy: 'ExtRemote.DXUser.destroy'
+            create: 'ExtRemote.core.DXUser.add',
+            read: 'ExtRemote.core.DXUser.get',
+            update: 'ExtRemote.core.DXUser.update',
+            destroy: 'ExtRemote.core.DXUser.destroy'
         },
         reader: {
             root: 'data',

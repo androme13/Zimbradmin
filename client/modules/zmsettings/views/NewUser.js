@@ -25,18 +25,21 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                     defaults: {anchor: '100%'},
                     items: [
                         {
-                            xtype: 'username',
+                            xtype: 'textfield',
                             fieldLabel: 'Nom utilisateur',
+                            maxLength: 64,
                             allowBlank: false
                         },
                         {
                             xtype: 'textfield',
                             fieldLabel: 'prénom',
+                            maxLength: 64,
                             allowBlank: false
                         },
                         {
                             xtype: 'textfield',
                             fieldLabel: 'Nom',
+                            maxLength: 64,
                             allowBlank: false
                         }
                     ],
