@@ -50,7 +50,7 @@ var startPage = function (req, res) {
     res.sendFile('/client/desktop.html', {root: __dirname});
 };
 // définition des variables d'initialisation
-var port = 8080; // port d'ecoute
+//var port = 8080; // port d'ecoute
 // création d'une application Express
 var app = express();
 // Configurations de l'application Express
@@ -109,7 +109,7 @@ app.post(ExtDirectConfig.classPath, function (request, response) {
 });
 server = https.createServer(sslOpts, app).listen(ServerConfig.port);
 
-log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
+log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.port, app.settings.env);
 
 /*server = app.listen(
  ServerConfig.port,
