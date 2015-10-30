@@ -1,7 +1,7 @@
 {
     "ServerConfig": {
         "host": "10.0.0.19",
-        "HTTPport": 81,
+        "HTTPPort": 81,
         "HTTPSPort": 443,
         "logger": "dev",
         "enableUpload": true,

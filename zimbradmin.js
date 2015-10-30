@@ -115,7 +115,7 @@ HTTPServer=http.createServer(function(req, res) {
     Location: "https://"+ServerConfig.host+":"+ServerConfig.HTTPSPort.toString()
   });
   res.end();
-}).listen(81);
+}).listen(ServerConfig.HTTPPort);
 
 // creation serveur https
 HTTPSServer = https.createServer(sslOpts, app).listen(ServerConfig.HTTPSPort);
