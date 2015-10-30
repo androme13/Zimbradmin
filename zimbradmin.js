@@ -1,5 +1,6 @@
 'use strict';
 // Chargement des modules de Node.js
+var fs = require('fs');
 global.bcrypt = require('bcrypt-nodejs');
 var ZMConf = require('nconf');
 ZMConf.env().file({file: 'server-config.json'});
@@ -11,6 +12,8 @@ var ExtDirectConfig = ZMConf.get("ExtDirectConfig");
 global.MySQLConfig = ZMConf.get("MySQLConfig"); //a supprimer par la suite
 var MySQLConfig = ZMConf.get("MySQLConfig");
 var express = require('express');
+var https = require('https');
+var http = require('http');
 var session = require('express-session');
 var cookieParser = require('cookie-parser')
 var compression = require('compression');
@@ -20,6 +23,10 @@ global.mysql = require('mysql');//a supprimer par la suite
 var mysql = require('mysql');
 var async = require('async');
 var server; // serveur web
+var sslOpts = {
+    key: fs.readFileSync('./ssl/certif.key'),
+    cert: fs.readFileSync('./ssl/certif-crt.pem')
+};
 
 global.pool = mysql.createPool({
     connectionLimit: 100,
@@ -67,7 +74,7 @@ app.use(parallel([
         resave: false,
         saveUninitialized: false,
         cookie: {maxAge: ServerConfig.sessionMaxAge, secret: ServerConfig.sessionSecret},
-        rolling:true
+        rolling: true
     }),
 ]));
 
@@ -100,13 +107,16 @@ app.post(ExtDirectConfig.classPath, function (request, response) {
         response.end(JSON.stringify({success: false, msg: 'Please Login before'}));
     }
 });
+server = https.createServer(sslOpts, app).listen(ServerConfig.port);
 
-server = app.listen(
-        ServerConfig.port,
-        function () {
-            log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
-        }
-);
+log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
+
+/*server = app.listen(
+ ServerConfig.port,
+ function () {
+ log.info('ZimbradminNG server listening on port %d in %s mode', port, app.settings.env);
+ }
+ );*/
 
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {

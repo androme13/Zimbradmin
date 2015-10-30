@@ -36,7 +36,7 @@
         "classPrefix": "DX",
         "server": "10.0.0.19",
         "port": "8080",
-        "protocol": "http",
+        "protocol": "https",
         "relativeUrl": false,
         "appendRequestResponseObjects": true,
         "appendRequestRequestObjects": true

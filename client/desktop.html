@@ -1,49 +1,40 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
-<meta charset="UTF-8">
-<title>ZimbradminNG</title>  
-<link rel="shortcut icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="css/desktop.css" />
+    <head>
+        <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
+        <meta charset="UTF-8">
+        <title>ZimbradminNG</title>  
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="css/desktop.css" />
+        <!-- GC -->
+        <!-- <x-compile> -->
+        <!-- <x-bootstrap> -->
+        <!--<script type="text/javascript" src="extjs/bootstrap.js"></script>-->
+        <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-neptune.css" />
+        <script type="text/javascript" src="extjs/ext-all-dev.js"></script>
+        <script type="text/javascript" src="extjs/ext-theme-neptune.js"></script>
+        <script type="text/javascript" src="extjs/locale/ext-lang-fr.js" charset="UTF-8"></script>
+        <!-- </x-bootstrap> -->
+        <script>
+            Ext.Loader.setConfig({
+                enabled: true
+            });
+        </script>
+        <script type="text/javascript">
+            Ext.Loader.setPath({
+                'Ext.ux.desktop': 'modules/desktop',
+                MyDesktop: ''
+            });
 
-    <!-- GC -->
-    <!-- <x-compile> -->
-    <!-- <x-bootstrap> -->
-    <!--<script type="text/javascript" src="extjs/bootstrap.js"></script>-->
-    <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-neptune.css" />
-    <script type="text/javascript" src="extjs/ext-all-dev.js"></script>
-    <script type="text/javascript" src="extjs/ext-theme-neptune.js"></script>
-    <script type="text/javascript" src="extjs/locale/ext-lang-fr.js" charset="UTF-8"></script>
+            Ext.require('MyDesktop.App');
 
-
-    <!--<script type="text/javascript" src="tools/include-ext.js"></script>-->
-    <!--<script type="text/javascript" src="tools/options-toolbar.js"></script>-->
-    <!-- </x-bootstrap> -->
-      <script>
-        Ext.Loader.setConfig({
-                        enabled: true
-        });
-    </script>
-    <script type="text/javascript">
-        Ext.Loader.setPath({
-            'Ext.ux.desktop': 'modules/desktop',
-            MyDesktop: ''
-        });
-
-        Ext.require('MyDesktop.App');
-
-        var myDesktopApp;
-        Ext.onReady(function () {
-            myDesktopApp = new MyDesktop.App();
-        });
-    </script>
-    <!-- </x-compile> -->
-</head>
-
-<body>
-
-   
-
-</body>
+            var myDesktopApp;
+            Ext.onReady(function () {
+                myDesktopApp = new MyDesktop.App();
+            });
+        </script>
+        <!-- </x-compile> -->
+    </head>
+    <body>
+    </body>
 </html>
