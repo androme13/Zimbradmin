@@ -17,7 +17,7 @@ cd /opt/zimbradmin
 
 #--------------------------------------------------------------------------
 # creation sertificat autosigné
-openssl req -new -x509 -days 365 -nodes -out /opt/zimbradmin/ssl/certif-crt.pem -keyout /opt/zimbradmin/ssl/certif.key
+openssl req -new -x509 -sha256 -days 365 -nodes -out /opt/zimbradmin/ssl/certif-crt.pem -keyout /opt/zimbradmin/ssl/certif.key
 
 
 #--------------------------------------------------------------------------
