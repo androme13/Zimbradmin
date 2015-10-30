@@ -115,8 +115,9 @@ app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
 });
 server = https.createServer(sslOpts, app).listen(ServerConfig.port);
 
-console.log('Node Version: ' + process.version);
+
 log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.port, app.settings.env);
+log.info('Node Version: ' + process.version);
 
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {
