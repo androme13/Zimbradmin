@@ -74,7 +74,7 @@ Ext.define('Ext.ux.desktop.App', {
         var me = this;
         // on defini les exceptions des appels DIRECT
         Ext.Direct.on("exception", function (event) {
-            console.log('exception XHR:', event);
+            //console.log('exception XHR:', event);
             if (event.xhr) {
                 if (event.xhr.status === 401)
                 {
@@ -89,7 +89,7 @@ Ext.define('Ext.ux.desktop.App', {
         // on defini la tache du polling de session
         me.task = {
             run: function () {
-                ExtRemote.DXLogin.isvalidsession({'action': 'isvalidsession'},
+                ExtRemote.core.DXLogin.isvalidsession({'action': 'isvalidsession'},
                 function (result, event) {
                     //si la session existe cote serveur
                     if (result) {
@@ -117,7 +117,7 @@ Ext.define('Ext.ux.desktop.App', {
     listeners: {
         processlogin: function (obj) {
             var me = this;
-            ExtRemote.DXLogin.getsession({'action': 'getsession'},
+            ExtRemote.core.DXLogin.getsession({'action': 'getsession'},
             function (resultgetsession, event) {
                 //si la session existe cote serveur
                 if (resultgetsession.success === true)
@@ -176,7 +176,8 @@ Ext.define('Ext.ux.desktop.App', {
             Ext.QuickTips.init();
         }
         // on demande au serveur si la session existe
-        ExtRemote.DXLogin.getsession({'action': 'getsession'},
+        console.log('extremote',ExtRemote);
+        ExtRemote.core.DXLogin.getsession({'action': 'getsession'},
         function (resultgetsession, event) {
             // si une session existe c'est que l'user
             // a juste raffraichi son navigateur donc on
@@ -295,7 +296,7 @@ Ext.define('Ext.ux.desktop.App', {
         var me = this, desktopCfg;
         me.modules = me.loadModules();
         if (login) {
-            me.modules.push(new MyDesktop.modules.login.Login());
+            me.modules.push(new MyDesktop.modules.core.login.Login());
         }
         ;
         me.initModules(me.modules);

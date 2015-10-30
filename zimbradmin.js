@@ -81,7 +81,7 @@ app.use(parallel([
 // on charge la page par defaut
 app.get('/', startPage);
 
-app.get(ExtDirectConfig.apiPath, function (request, response) {
+/*app.get(ExtDirectConfig.coreApiPath, function (request, response) {
     try {
         var api = extdirect.getAPI(ExtDirectConfig);
         response.writeHead(200, {'Content-Type': 'application/json'});
@@ -89,22 +89,37 @@ app.get(ExtDirectConfig.apiPath, function (request, response) {
     } catch (e) {
         console.log(e);
     }
+});*/
+var directApi = extdirect.initApi(ExtDirectConfig);
+var directRouter = extdirect.initRouter(ExtDirectConfig);
+
+app.get(ExtDirectConfig.apiUrl, function (req, res) {
+    try {
+        directApi.getAPI(
+            function(api){
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(api);
+            }, req, res
+        );
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 // on ignore les GET requests sur le class path de extdirect
-app.get(ExtDirectConfig.classPath, function (request, response) {
-    response.writeHead(400, {'Content-Type': 'application/json'});
-    response.end(JSON.stringify({success: false, msg: 'Unsupported method. Use POST instead.'}));
+app.get(ExtDirectConfig.classRouteUrl, function(req, res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({success:false, msg:'Unsupported method. Use POST instead.'}));
 });
 
 // POST request process route and calls class
-app.post(ExtDirectConfig.classPath, function (request, response) {
-    if (request.session.userinfo || request.body.action === "DXLogin") {
-        extdirect.processRoute(request, response, ExtDirectConfig);
+app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
+    if (req.session.userinfo || req.body.action === "core.DXLogin") {
+        directRouter.processRoute(req, res);
     } else
     {
-        response.writeHead(401, {'Content-Type': 'application/json'});
-        response.end(JSON.stringify({success: false, msg: 'Please Login before'}));
+        res.writeHead(401, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify({success: false, msg: 'Please Login before'}));
     }
 });
 server = https.createServer(sslOpts, app).listen(ServerConfig.port);

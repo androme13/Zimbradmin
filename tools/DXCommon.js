@@ -180,7 +180,7 @@ module.exports = {
             log.error(msg);
         if (success === true)
         {
-            callback({
+            callback(null,{
                 success: true,
                 totalCount: totalCount,
                 error: msg,
@@ -189,7 +189,7 @@ module.exports = {
         }
         else
         {
-            callback({
+            callback(null,{
                 success: false,
                 error: msg
             });
@@ -200,7 +200,7 @@ module.exports = {
 function sendError(err, callback, log) {
     if (log)
         log.error(err);
-    callback({
+    callback(null,{
         success: false,
         error: err
     });
@@ -210,7 +210,7 @@ function sendSuccess(totalCount, data, callback, message) {
     var msg = {};
     if (message)
         msg = message;
-    callback({
+    callback(null,{
         success: true,
         totalCount: totalCount,
         error: msg,

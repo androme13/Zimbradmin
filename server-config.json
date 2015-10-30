@@ -1,6 +1,5 @@
 {
-    
-        "ServerConfig": {
+    "ServerConfig": {
         "port": 443,
         "logger": "dev",
         "enableUpload": true,
@@ -17,33 +16,34 @@
         "AccessControlAllowHeaders": "Origin, X-Requested-With, Content-Type, Accept",
         "AccessControlAllowCredentials": true,
         "AccessControlMaxAge": 3600
-        
+
     },
-    
-    "MySQLConfig" : {
-        "host"     : "localhost",
-        "user"     : "zm",
-        "password" : "zm",
-        "database" : "zm"
+    "MySQLConfig": {
+        "host": "localhost",
+        "user": "zm",
+        "password": "zm",
+        "database": "zm"
     },
-    
-   
     "ExtDirectConfig": {
-        "namespace": "ExtRemote",
+        "rootNamespace": "ExtRemote",
         "apiName": "REMOTING_API",
-        "apiPath": "/directapi",
+        "apiUrl": "/directapi",
+        "classRouteUrl": "/direct",
         "classPath": "/direct",
-        "classPrefix": "DX",
         "server": "10.0.0.19",
+        "cacheAPI": false,
         "port": "443",
         "protocol": "https",
         "relativeUrl": false,
+        "enableMetadata": false,
         "appendRequestResponseObjects": true,
-        "appendRequestRequestObjects": true
+        "appendRequestRequestObjects": true,
+        "responseHelper": false,
+        "enableProcessors": false
+
     },
-    
     "Monitor": {
-      "timerZM":"2000",
-      "timerSMTP":"2000"
+        "timerZM": "2000",
+        "timerSMTP": "2000"
     }
 }

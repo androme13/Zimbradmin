@@ -9,7 +9,7 @@ Ext.define('MyDesktop.App', {
     requires: [
         'Ext.ux.desktop.ShortcutModel',
         'Ext.direct.*',
-        'MyDesktop.modules.directapi.DirectAPI',
+        'MyDesktop.modules.core.directapi.DirectAPI',
         'MyDesktop.modules.core.login.Login'
     ],
 
@@ -70,7 +70,7 @@ Ext.define('MyDesktop.App', {
         Ext.Msg.confirm('Deconnection', 'Etes vous sur de vouloir vous deconnecter ?',
                 function (btn) {
                     if (btn === 'yes') {
-                        ExtRemote.DXLogin.logout({'logout': 'ok'},
+                        ExtRemote.core.DXLogin.logout({'logout': 'ok'},
                         function (result, event) {
                             if (result.success === true)
                             {
@@ -84,7 +84,7 @@ Ext.define('MyDesktop.App', {
         );
     },
     onKillSession: function () {
-        ExtRemote.DXLogin.logout({'logout': 'ok'},
+        ExtRemote.core.DXLogin.logout({'logout': 'ok'},
         function (result, event) {}
         );
     },

@@ -5,7 +5,8 @@
  */
 var log = global.log.child({widget_type: 'DXLogin'});
 var pool = global.pool;
-var DXCommon = require('../tools/DXCommon.js');
+//console.log(window.location.href);
+var DXCommon = require("../../tools/DXCommon.js");
 
 var DXLogin = {
     // method signature has 5 parameters

@@ -89,7 +89,7 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                                         var win = btn.up('window');
                                         var form = win.down('form');
                                         form.setLoading("Veuillez patienter");
-                                        ExtRemote.DXLogin.authenticate(form.getValues(),
+                                        ExtRemote.core.DXLogin.authenticate(form.getValues(),
                                                 function (result, event) {
                                                     var target = btn.up('form').down('label');
                                                     switch (result.error.ZMErrorCode) {
