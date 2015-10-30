@@ -5,7 +5,7 @@
  */
 var log = global.log.child({widget_type: 'DXModules'});
 var pool = global.pool;
-var DXCommon = require('../tools/DXCommon.js');
+var DXCommon = require('../../tools/DXCommon.js');
 
 var DXModules = {
     // method signature has 5 parameters

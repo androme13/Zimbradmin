@@ -5,10 +5,10 @@ Ext.define('MyDesktop.modules.zmsettings.stores.ZMModules', {
     proxy: {
         type: 'direct',
         api: {
-            create: 'ExtRemote.DXModules.add',
-            read: 'ExtRemote.DXModules.get',
-            update: 'ExtRemote.DXModules.update',
-            destroy: 'ExtRemote.DXModules.destroy'
+            create: 'ExtRemote.core.DXModules.add',
+            read: 'ExtRemote.core.DXModules.get',
+            update: 'ExtRemote.core.DXModules.update',
+            destroy: 'ExtRemote.core.DXModules.destroy'
         },
         reader: {
             root: 'data',

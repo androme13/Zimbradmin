@@ -380,7 +380,7 @@ Ext.define('Ext.ux.desktop.App', {
                 module = entry.$className;
             }
         });
-        ExtRemote.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
+        ExtRemote.core.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
         function (result) {
             me.addShortcuts([record]);
         });
@@ -394,7 +394,7 @@ Ext.define('Ext.ux.desktop.App', {
             }
         });
         console.log(module);
-        ExtRemote.DXModules.removemodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
+        ExtRemote.core.DXModules.removemodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
         function (result) {
             me.removeShortcut([record]);
         });
