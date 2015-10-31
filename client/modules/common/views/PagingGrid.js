@@ -164,6 +164,17 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                     grid.store.reload();
                             }
                         }]);
+
+                    // on verifie si la grid est en readonly
+                    // dans ce cas on cache les boutons
+                    if (this.readOnly === true) {
+                        var toolbar = this.down('toolbar[xtype=toolbar]');
+                        toolbar.query('button').every(function (entry) {
+                            entry.hide();
+                            return true;
+                        });
+                    }
+
                 },
                 cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     e.stopEvent();
@@ -491,6 +502,20 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 icon: Ext.MessageBox.ERROR
             });
         }
+    },
+    hideToolbar: function (value)
+    {
+        if (value === true)
+            this.down('toolbar[dock=top]').hide();
+        else
+            this.down('toolbar[dock=top]').show();
+    },
+    hidePagingbar: function (value)
+    {
+        if (value === true)
+            this.down('toolbar[dock=bottom]').hide();
+        else
+            this.down('toolbar[dock=bottom]').show();
     },
     _getFieldTextAndEscape: function (fieldData) {
         var string = this._getFieldText(fieldData);
