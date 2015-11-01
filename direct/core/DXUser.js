@@ -29,17 +29,15 @@ var DXUser = {
         params[0].log = log;
         var myId = request.session.userinfo.id;
         var query = "INSERT INTO " + params[0].table;
-        query += " (level,state,username,firstname,lastname,created_by) VALUES ('";
+        query += " (level,state,username,password,firstname,lastname,created_by) VALUES ('";
         query += params[0].level + "','";
         query += params[0].state + "','";
         query += params[0].username.toLowerCase() + "','";
-        params[0].firstname.toLowerCase();
-        params[0].firstname.charAt(0).toUpperCase();
+        query += params[0].password + "','";
         query += params[0].firstname + "','";
         params[0].firstname.toUpperCase();
         query += params[0].lastname + "','";
         query += myId + "')";
-        //var query = "SELECT id,level,state,username,firstname,lastname,created_date,created_by,modified_date,modified_by FROM ";
         params[0].query = query;
         DXCommon.add(params[0], callback, sessionID, request, response);
     },
@@ -115,9 +113,11 @@ var DXUser = {
         params[0].log = log;
         query = "UPDATE " + params[0].table + " SET level ='" + params[0].level;
         query += "', state ='" + params[0].state;
-        query += "', username ='" + params[0].username;
+        query += "', username ='" + params[0].username.toLowerCase();
+        if (params[0].password !== '')
+            query += "', password ='" + params[0].password;
         query += "', firstname ='" + params[0].firstname;
-        query += "', lastname ='" + params[0].lastname;
+        query += "', lastname ='" + params[0].lastname.toUpperCase();
         query += "', modified_by='" + myId;
         query += "' WHERE id ='" + params[0].id + "'";
         params[0].query = query;
