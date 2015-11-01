@@ -3,7 +3,7 @@
  * (C) Androme 2015
  * 
  */
- 
+
 Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
     extend: 'Ext.data.Model',
     fields: [
@@ -94,7 +94,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             searchable: true
         },
         {
-            name: 'password',           
+            name: 'password',
             type: 'string',
             binded: false
         },
@@ -123,12 +123,18 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                 var nameCreator = 'inconnu';
                 var idCreator = record.get('created_by');
                 var st = this.store;
+                var finalValue;
                 var index = st.find('id', idCreator);
                 if (index >= 0)
                     nameCreator = st.getAt(index).get('username');
                 if (value == null)
-                    value = 'Inconnu';
-                return 'le : <i>' + value + '</i><br>par: <i>' + nameCreator + '</i></br>';
+                    finalValue = 'Inconnu';
+                else
+                {
+                    finalValue = value.toLocaleDateString() + " ";
+                    finalValue += value.toLocaleTimeString();
+                }
+                return 'le : <i>' + finalValue + '</i><br>par: <i>' + nameCreator + '</i></br>';
             },
         },
         {name: 'created_by', binded: false},
@@ -137,6 +143,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                 var nameModifier = 'inconnu';
                 var idModifier = record.get('modified_by');
                 var st = this.store;
+                var finalValue;
                 var index = st.find('id', idModifier);
                 if (index >= 0)
                     nameModifier = st.getAt(index).get('username');
@@ -146,7 +153,14 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                 }
                 else
                 {
-                    return 'le : <i>' + value + '</i><br>par: <i>' + nameModifier + '</i></br>';
+                    if (value == null)
+                        finalValue = 'Inconnu';
+                    else
+                    {
+                        finalValue = value.toLocaleDateString() + " ";
+                        finalValue += value.toLocaleTimeString();
+                    }
+                    return 'le : <i>' + finalValue + '</i><br>par: <i>' + nameModifier + '</i></br>';
                 }
             }
         },
