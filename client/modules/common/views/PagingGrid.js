@@ -47,6 +47,17 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 }
             });
         }
+        else
+        {
+            if (this.customEditRow)
+            {
+                //grid.customAddRow(grid);
+                this.addListener('itemdblclick',function(grid,record){
+                    //console.log(grid,record);
+                    this.customEditRow(grid,record);
+                })
+            }
+        }
         // on crée le store pour le choix du nombre d'elements à afficher
         var elementsNumber = Ext.create('Ext.data.Store', {
             fields: ['nbr', 'name'],
@@ -485,7 +496,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 data += "\n";
             });
             // on lance l'envoi du fichier
-
             var a = window.document.createElement('a');
             a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/octet-stream'}));
             a.download = 'ZimbrAdmin_' + grid.store.storeId + "_export.csv";
