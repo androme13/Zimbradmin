@@ -94,6 +94,11 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             searchable: true
         },
         {
+            name: 'password',           
+            type: 'string',
+            binded: false
+        },
+        {
             name: 'firstname',
             editor: {
                 editable: true,
@@ -141,7 +146,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                 }
                 else
                 {
-                    return 'le : <i>' + value + '</i><br>par: <i>' + idModifier + '</i></br>';
+                    return 'le : <i>' + value + '</i><br>par: <i>' + nameModifier + '</i></br>';
                 }
             }
         },
@@ -150,4 +155,4 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
 });
 
 
-// id,level,username,firstname,lastname
+// id,level,username,password,firstname,lastname
