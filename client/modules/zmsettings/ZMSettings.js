@@ -44,31 +44,17 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             ZMUsersGridStore.proxy.on(proxyOn.create(ZMUsersGridStore));
             var createUserPanelOBJ = Ext.create('MyDesktop.modules.zmsettings.views.NewUser');
             // on defini le wizard d'ajout/edition de l'user
-            createUserPanel=createUserPanelOBJ.create(ZMUsersGrid);
+            createUserPanel = createUserPanelOBJ.create(ZMUsersGrid);
             // création et configuration du grid
             var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMUsersGridStore,
                 multiSelect: true,
                 customAddRow: function (grid) {
-                    var record = Ext.create(grid.store.model.modelName);
-                    ZMUsersGrid.getStore().insert(0, record);
-                    var form=this.up('tabpanel').down('panel[name=userWizard]').down('form');
-                    form.mode = 'add';
-                    form.loadRecord(ZMUsersGrid.getStore().getAt(0));       
+                    createUserPanel.setMode('add');     
                     this.up('panel').getLayout().setActiveItem(1);
                 },
-                customEditRow: function (grid,record) {                   
-                    var panel=this.up('tabpanel').down('panel[name=userWizard]');
-                    var form=this.up('tabpanel').down('panel[name=userWizard]').down('form');
-                    panel.mode = 'edit';
-                    console.log('record',record);
-                    // on genere un mot de passe aléatoire entre 10000 et 99999
-                    var randomPassword=(Math.floor(Math.random() * (10000 - 99999)) + 10000);
-                    panel.origPassword=randomPassword.toString();
-                    //console.log('origpanel',panel.origPassword);
-                    form.loadRecord(record);
-                    form.getForm().findField('password').setValue(randomPassword.toString());
-                    form.getForm().findField('password2').setValue(randomPassword.toString());
+                customEditRow: function (grid, record) {
+                    createUserPanel.setMode('edit',record);
                     this.up('panel').getLayout().setActiveItem(1);
                 }
             });
