@@ -35,8 +35,7 @@ var DXUser = {
         query += params[0].username.toLowerCase() + "','";
         query += params[0].password + "','";
         query += params[0].firstname + "','";
-        params[0].firstname.toUpperCase();
-        query += params[0].lastname + "','";
+        query += params[0].lastname.toUpperCase() + "','";
         query += myId + "')";
         params[0].query = query;
         DXCommon.add(params[0], callback, sessionID, request, response);
