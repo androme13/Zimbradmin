@@ -7,7 +7,7 @@
 Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
-        'MyDesktop.modules.zmsettings.views.NewUser',
+        'MyDesktop.modules.zmsettings.views.UserWizard',
         'MyDesktop.modules.zmsettings.stores.ZMUsers',
         'MyDesktop.modules.common.gridStoreOn',
         'MyDesktop.modules.common.proxyOn',
@@ -42,7 +42,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
             ZMUsersGridStore.on(gridStoreOn.create());
             ZMUsersGridStore.proxy.on(proxyOn.create(ZMUsersGridStore));
-            var createUserPanelOBJ = Ext.create('MyDesktop.modules.zmsettings.views.NewUser');
+            var createUserPanelOBJ = Ext.create('MyDesktop.modules.zmsettings.views.UserWizard');
             // on defini le wizard d'ajout/edition de l'user
             createUserPanel = createUserPanelOBJ.create(ZMUsersGrid);
             // création et configuration du grid
@@ -58,7 +58,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                     this.up('panel').getLayout().setActiveItem(1);
                 }
             });
-
 
             //tab ZMmodules
             // création et configuration du store 

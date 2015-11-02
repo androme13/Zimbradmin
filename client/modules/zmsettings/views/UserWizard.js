@@ -1,5 +1,5 @@
 /* 
- * NewUser
+ * UserWizard
  * (C) Androme 2015
  * 
  */
@@ -7,15 +7,13 @@
 
 
 
-Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
+Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
     create: function (grid) {
         var me; //sera generé à l'event afterrender
         // on fabrique la validity pour les passwords
-        // Ext.apply(Ext.form.field.vTypes, {});
         Ext.apply(Ext.form.field.VTypes, {
             password: function (val, field) {
-                var form = field.up('form');
-                var origPwd = form.getForm().findField('password').rawValue;
+                var origPwd = field.up('form').getForm().findField('password').rawValue;
                 if (val !== origPwd)
                     return false
                 return true;
@@ -77,7 +75,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
         });
         var panel = {
             name: 'userWizard',
-            title: "Création d'un nouvel utilisateur",
             itemId: 'wizard',
             autoScroll: true,
             listeners: {
@@ -294,6 +291,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                         },
                         {
                             text: 'Create Account',
+                            name: 'valid',
                             handler: function () {
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
@@ -304,13 +302,13 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                                     Ext.each(dstGridStore.data.items, function (item, idx) {
                                         me.userData.modules.push(item.data);
                                     });
-                                    var layout = this.up('tabpanel').activeTab.getLayout();                                    
+                                    var layout = this.up('tabpanel').activeTab.getLayout();
                                     // si c'est une edition
                                     var userData = me.userData.user
                                     if (me.getMode() === 'edit') {
                                         var storeRecord = usersGrid.store.findRecord('id', userId);
                                         // le mot de passe a t'il change
-                                        if (me.origPassword !== userData.password)                                        {
+                                        if (me.origPassword !== userData.password) {
                                             storeRecord.set('password', userData.password);
                                         }
                                         storeRecord.set('state', userData.state);
@@ -346,12 +344,18 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                 me.resetForm();
                 switch (mode) {
                     case "edit":
+                        me.setTitle("Edition d'un utilisateur");
+                        me.down('button[name=valid]').setText('Modifier');
                         var form = me.down('form');
                         form.loadRecord(record);
                         var randomPassword = (Math.floor(Math.random() * (10000 - 99999)) + 10000);
                         me.origPassword = randomPassword.toString();
                         form.getForm().findField('password').setValue(randomPassword.toString());
                         form.getForm().findField('password2').setValue(randomPassword.toString());
+                        break;
+                    case "add":
+                        me.setTitle("Ajout d'un utilisateur");
+                        me.down('button[name=valid]').setText('Creer');
                         break;
                 }
                 me.setActiveItem(0);
