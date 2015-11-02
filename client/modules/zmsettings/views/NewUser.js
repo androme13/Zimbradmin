@@ -9,12 +9,11 @@
 
 Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
     create: function (grid) {
-
+        var me; //sera generé à l'event afterrender
         // on fabrique la validity pour les passwords
         // Ext.apply(Ext.form.field.vTypes, {});
         Ext.apply(Ext.form.field.VTypes, {
             password: function (val, field) {
-                console.log('pwdverif');
                 var form = field.up('form');
                 var origPwd = form.getForm().findField('password').rawValue;
                 if (val !== origPwd)
@@ -23,8 +22,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
             },
             passwordText: 'Les mots de passes ne sont pas identiques'
         });
-
-
         // on fabrique le filtre de saisie
         var mask = /^[a-zA-Z0-9\-\_\.]*$/;
         // création et configuration du store 
@@ -52,10 +49,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
             readOnly: true,
             multiSelect: true
         });
-        origGrid.columns.every(function (col) {
-            console.log(col);
-            return true;
-        });
+        /*origGrid.columns.every(function (col) {
+         console.log(col);
+         return true;
+         });*/
         // on cache les toolbars de la grid de destination
         dstGrid.hideToolbar(true);
         dstGrid.hidePagingbar(true);
@@ -65,7 +62,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
             },
             itemdblclick: function (dv, record, item, index, e) {
                 dstGrid = this.up().down('grid[name=dst]');
-                console.log(record.data);
                 if (dstGrid.store.findRecord('module', record.data.module))
                 {
                     Ext.infoMsg.msg("Ajout de module à l'utilisateur",
@@ -84,6 +80,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
             title: "Création d'un nouvel utilisateur",
             itemId: 'wizard',
             autoScroll: true,
+            listeners: {
+                afterrender: function () {
+                    me = this;
+                }},
             userData: {},
             //overflowY: 'scroll',
             //height: 600,
@@ -127,7 +127,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                                     queryMode: 'local',
                                     value: 2,
                                     store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
-                                    editable: false
+                                    editable: false,
                                 },
                                 {
                                     name: 'level',
@@ -192,10 +192,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                         },
                         {
                             xtype: 'fieldset',
-                            validator: function () {
-                                console.log('validator');
-                                return false;
-                            },
                             title: 'Mot de passe',
                             margins: '0 0 0 0',
                             //fieldLabel: 'Date Range',
@@ -239,21 +235,27 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                         {
                             text: 'Suivant &raquo;',
                             handler: function () {
-                                var wizard = this.up('#wizard');
+                                //var wizard = this.up('#wizard');
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
-                                    var panel = form.up('panel');
-                                    panel.userData.user = form.getForm().getValues();
+                                    //var panel = form.up('panel');
+                                    // panel.userData.user = form.getForm().getValues();
+                                    me.userData.user = form.getForm().getValues();
+
                                     // on supprime le champ password2 des données
-                                    delete panel.userData.user.password2;
-                                    wizard.getLayout().setActiveItem('step-2');
+                                    //delete panel.userData.user.password2;
+                                    delete me.userData.user.password2;
+
+                                    //console.log(me);
+                                    me.setActiveItem('step-2');
+                                    //wizard.getLayout().setActiveItem('step-2');
                                 }
                             }
                         }],
-                    listeners: {
-                        afterrender: function () {
-                            console.log('render');
-                        }}
+                    /*listeners: {
+                     afterrender: function () {
+                     me=this;
+                     }}*/
                 },
                 {
                     itemId: 'step-2',
@@ -293,30 +295,22 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                         {
                             text: 'Create Account',
                             handler: function () {
-                                var wizard = this.up('#wizard');
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
-                                    var panel = form.up('panel');
-                                    var newPassword = panel.down('form').getForm().findField('password').getValue();
-                                    var userId = panel.down('form').getForm().findField('id').getValue();
-                                    var grid=this.up('tabpanel').down('grid');
-                                    var usersStore = grid.store;
-                                    panel.userData.modules = [];
+                                    var userId = me.down('form').getForm().findField('id').getValue();
+                                    var usersGrid = this.up('tabpanel').down('grid');
+                                    //on peuple les modules choisis
+                                    me.userData.modules = [];
                                     Ext.each(dstGridStore.data.items, function (item, idx) {
-                                        panel.userData.modules.push(item.data);
+                                        me.userData.modules.push(item.data);
                                     });
-                                    console.log(panel.userData);
-                                    var layout = this.up('tabpanel').activeTab.getLayout();
-                                    // si c'est une edition on ne change pas le password
-
-                                    var storeRecord = usersStore.findRecord('id', userId);
-                                    var userData = panel.userData.user
-
-                                    if (panel.mode === 'edit') {
+                                    var layout = this.up('tabpanel').activeTab.getLayout();                                    
+                                    // si c'est une edition
+                                    var userData = me.userData.user
+                                    if (me.getMode() === 'edit') {
+                                        var storeRecord = usersGrid.store.findRecord('id', userId);
                                         // le mot de passe a t'il change
-                                        if (panel.origPassword !== newPassword)
-                                        {
-                                            console.log('mot de passe changé');
+                                        if (me.origPassword !== userData.password)                                        {
                                             storeRecord.set('password', userData.password);
                                         }
                                         storeRecord.set('state', userData.state);
@@ -325,26 +319,58 @@ Ext.define('MyDesktop.modules.zmsettings.views.NewUser', {
                                         storeRecord.set('firstname', userData.firstname);
                                         storeRecord.set('lastname', userData.lastname);
                                     }
-                                    layout.setActiveItem(0);
-                                    grid.store.sync({
+                                    // si c'est un ajout
+                                    if (me.getMode() === 'add') {
+                                        var record = Ext.create(usersGrid.store.model.modelName);
+                                        record.set('state', userData.state);
+                                        record.set('level', userData.level);
+                                        record.set('username', userData.username);
+                                        record.set('password', userData.password);
+                                        record.set('firstname', userData.firstname);
+                                        record.set('lastname', userData.lastname);
+                                        usersGrid.store.insert(0, record);
+                                    }
+                                    usersGrid.store.sync({
                                         success: function () {
                                             layout.setActiveItem(0);
-                                            grid.store.reload();
+                                            usersGrid.store.reload();
                                         }
                                     });
-                                    //wizard.getLayout().setActiveItem('step-3');
                                 }
                             }
                         }]
-                },
-                {
-                    itemId: 'step-3',
-                    html: 'Account was successfully created!'
                 }
-            ]
-                    //renderTo: 'output'
+            ],
+            setMode: function (mode, record) {
+                me.mode = mode;
+                me.resetForm();
+                switch (mode) {
+                    case "edit":
+                        var form = me.down('form');
+                        form.loadRecord(record);
+                        var randomPassword = (Math.floor(Math.random() * (10000 - 99999)) + 10000);
+                        me.origPassword = randomPassword.toString();
+                        form.getForm().findField('password').setValue(randomPassword.toString());
+                        form.getForm().findField('password2').setValue(randomPassword.toString());
+                        break;
+                }
+                me.setActiveItem(0);
+
+            },
+            getMode: function () {
+                return me.mode
+            },
+            resetForm: function () {
+                Ext.each(me.query('form'), function (item, idx) {
+                    item.getForm().reset(true);
+                });
+            },
+            setActiveItem: function (item) {
+                me.getLayout().setActiveItem(item);
+            }
+            //renderTo: 'output'
         };
         return panel;
-    }
+    },
 });
 
