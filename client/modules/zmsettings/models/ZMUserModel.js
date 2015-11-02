@@ -134,7 +134,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                     finalValue = value.toLocaleDateString() + " ";
                     finalValue += value.toLocaleTimeString();
                 }
-                return 'le : <i>' + finalValue + '</i><br>par: <i>' + nameCreator + '</i></br>';
+                return 'le : <small><i>' + finalValue + '</i></small><br>par: <small><i>' + nameCreator + '</i></small></br>';
             },
         },
         {name: 'created_by', binded: false},
@@ -160,7 +160,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
                         finalValue = value.toLocaleDateString() + " ";
                         finalValue += value.toLocaleTimeString();
                     }
-                    return 'le : <i>' + finalValue + '</i><br>par: <i>' + nameModifier + '</i></br>';
+                    return 'le : <small><i>' + finalValue + '</i></small><br>par: <small><i>' + nameModifier + '</i></small></br>';
                 }
             }
         },
