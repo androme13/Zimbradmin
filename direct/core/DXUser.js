@@ -142,9 +142,7 @@ var DXUser = {
         if (!params.limit)
             params.limit = 0;
         params.log = log;
-        //var query = "SELECT * FROM " + params.table + params.extraQuery;
-        //query += " LIMIT " + params.start + ',' + params.limit;
-        var query = "SELECT moduleid,module,hasshortcut FROM users ";
+        var query = "SELECT moduleid,module,modules.comment,hasshortcut FROM users ";
         query += "INNER JOIN usersmodules ";
         query += "ON users.id=usersmodules.userid ";
         query += "INNER JOIN modules ";
