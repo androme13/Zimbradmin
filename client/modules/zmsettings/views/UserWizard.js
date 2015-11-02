@@ -31,12 +31,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             multiSelect: true,
             margins: '0 5 0 0'
         });
-        var dstGridStore = Ext.create('Ext.data.Store', {
-            fields: [{name: 'id', hidden: true}, {name: 'module'}, {name: 'comment', binded: false}],
-            proxy: {
-                type: 'memory'
-            }
-        });
+        var dstGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.UserWizardModules');
         var dstGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
             store: dstGridStore,
             name: 'dst',
@@ -50,9 +45,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
         dstGrid.hidePagingbar(true);
         origGrid.on({
             afterRender: function (grid) {
-                grid.getStore().load();
+                //grid.getStore().load();
             },
-            itemdblclick: function (dv, record, item, index, e) {
+            itemdblclick: function (grid, record, item, index, e) {
                 dstGrid = this.up().down('grid[name=dst]');
                 if (dstGrid.store.findRecord('module', record.data.module))
                 {
@@ -64,7 +59,18 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 else
                 {
                     dstGrid.store.add(record);
+                    Ext.infoMsg.msg("Ajout de module à l'utilisateur",
+                            "Vous avez ajouté le module<BR>" + record.data.module +
+                            "<BR><SMALL>" + record.data.comment + "</SMALL>");
                 }
+            }
+        });
+        dstGrid.on({
+            itemdblclick: function (grid, record, item, index, e) {
+                grid.store.remove(record);
+                Ext.infoMsg.msg("Suppression de module à l'utilisateur",
+                        "Vous avez supprimé le module<BR>" + record.data.module +
+                        "<BR><SMALL>" + record.data.comment + "</SMALL>");
             }
         });
         var panel = {
@@ -223,6 +229,17 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
                                     me.userData.user = form.getForm().getValues();
+                                    // on charge le store des modules afin qu'il soit raffraichit
+                                    dstGridStore.getProxy().extraParams = {
+                                        id: me.userData.user.id
+                                    };
+                                    origGridStore.load({
+                                        scope: this,
+                                        callback: function (records, operation, success) {
+                                            // on charge les modules de l'user en cours
+                                            dstGridStore.load();
+                                        }
+                                    });
                                     // on supprime le champ password2 des données
                                     delete me.userData.user.password2;
                                     me.setActiveItem('step-2');
@@ -278,6 +295,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         me.userData.modules.push(item.data);
                                     });
                                     var layout = this.up('tabpanel').activeTab.getLayout();
+                                    console.log(me.getMode());
                                     // si c'est une edition
                                     var userData = me.userData.user
                                     if (me.getMode() === 'edit') {
@@ -292,6 +310,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         storeRecord.set('firstname', userData.firstname);
                                         storeRecord.set('lastname', userData.lastname);
                                     }
+
                                     // si c'est un ajout
                                     if (me.getMode() === 'add') {
                                         var record = Ext.create(usersGrid.store.model.modelName);
@@ -303,12 +322,33 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         record.set('lastname', userData.lastname);
                                         usersGrid.store.insert(0, record);
                                     }
-                                    usersGrid.store.sync({
-                                        success: function () {
-                                            layout.setActiveItem(0);
-                                            usersGrid.store.reload();
+                                    if (usersGrid.store.getModifiedRecords().length > 0)
+                                    {
+                                        usersGrid.store.sync({
+                                            success: function () {
+                                                console.log('success');
+
+                                            },
+                                            failure: function (batch, Opts) {
+                                                console.log('failure', batch, Opts);
+
+                                            },
+                                            callback: function ()
+                                            {
+                                                layout.setActiveItem(0);
+                                                usersGrid.store.reload();
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        layout.setActiveItem(0);
+                                        if (me.getMode() === 'edit')
+                                        {
+                                            Ext.infoMsg.msg("Modification de l'utilisateur",
+                                                    "Aucune modification n'a été effectuée");
                                         }
-                                    });
+                                    }
                                 }
                             }
                         }]
@@ -323,7 +363,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         me.down('button[name=valid]').setText('Modifier');
                         var form = me.down('form');
                         form.loadRecord(record);
-                        var randomPassword = (Math.floor(Math.random() * (10000 - 99999)) + 10000);
+                        var randomPassword = (Math.floor(Math.random() * (10000)) + 10000);
                         me.origPassword = randomPassword.toString();
                         form.getForm().findField('password').setValue(randomPassword.toString());
                         form.getForm().findField('password2').setValue(randomPassword.toString());
