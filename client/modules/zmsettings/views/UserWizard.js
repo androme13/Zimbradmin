@@ -3,9 +3,7 @@
  * (C) Androme 2015
  * 
  */
-// wizard de création d'user
-
-
+// wizard de création et d'edition d'un user
 
 Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
     create: function (grid) {
@@ -15,7 +13,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             password: function (val, field) {
                 var origPwd = field.up('form').getForm().findField('password').rawValue;
                 if (val !== origPwd)
-                    return false
+                    return false;
                 return true;
             },
             passwordText: 'Les mots de passes ne sont pas identiques'
@@ -47,10 +45,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             readOnly: true,
             multiSelect: true
         });
-        /*origGrid.columns.every(function (col) {
-         console.log(col);
-         return true;
-         });*/
         // on cache les toolbars de la grid de destination
         dstGrid.hideToolbar(true);
         dstGrid.hidePagingbar(true);
@@ -124,7 +118,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     queryMode: 'local',
                                     value: 2,
                                     store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
-                                    editable: false,
+                                    editable: false
                                 },
                                 {
                                     name: 'level',
@@ -148,13 +142,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             xtype: 'fieldset',
                             title: "Informations de l'utilisateur",
                             margins: '0 0 0 0',
-                            //fieldLabel: 'Date Range',
                             combineErrors: true,
                             //msgTarget: 'side',
                             layout: 'vbox',
                             defaults: {
-                                //flex: 1,
-                                //hideLabel: true
                                 maskRe: mask,
                                 margins: '5 5 5 5'
                             },
@@ -191,20 +182,17 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             xtype: 'fieldset',
                             title: 'Mot de passe',
                             margins: '0 0 0 0',
-                            //fieldLabel: 'Date Range',
                             combineErrors: true,
                             //msgTarget: 'side',
                             layout: 'vbox',
                             defaults: {
                                 flex: 1,
-                                //hideLabel: true
                                 margins: '5 5 5 5'
                             },
                             items: [
                                 {
                                     xtype: 'textfield',
                                     name: 'password',
-                                    //vtype: 'password',
                                     inputType: 'password',
                                     maxLength: 64,
                                     allowBlank: false,
@@ -217,10 +205,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     inputType: 'password',
                                     maxLength: 64,
                                     allowBlank: false,
-                                    fieldLabel: 'Confirmation du mot de passe',
+                                    fieldLabel: 'Confirmation du mot de passe'
                                 }
                             ]
-                        },
+                        }
                     ],
                     buttons: [
                         {
@@ -232,27 +220,15 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         {
                             text: 'Suivant &raquo;',
                             handler: function () {
-                                //var wizard = this.up('#wizard');
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
-                                    //var panel = form.up('panel');
-                                    // panel.userData.user = form.getForm().getValues();
                                     me.userData.user = form.getForm().getValues();
-
                                     // on supprime le champ password2 des données
-                                    //delete panel.userData.user.password2;
                                     delete me.userData.user.password2;
-
-                                    //console.log(me);
                                     me.setActiveItem('step-2');
-                                    //wizard.getLayout().setActiveItem('step-2');
                                 }
                             }
                         }],
-                    /*listeners: {
-                     afterrender: function () {
-                     me=this;
-                     }}*/
                 },
                 {
                     itemId: 'step-2',
@@ -260,7 +236,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                     layout: 'fit',
                     items: [
                         {
-                            //flex: 1,
                             xtype: 'panel',
                             layout: {
                                 type: 'hbox',
@@ -359,10 +334,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         break;
                 }
                 me.setActiveItem(0);
-
             },
             getMode: function () {
-                return me.mode
+                return me.mode;
             },
             resetForm: function () {
                 Ext.each(me.query('form'), function (item, idx) {
