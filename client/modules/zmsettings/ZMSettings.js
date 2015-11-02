@@ -8,6 +8,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
         'MyDesktop.modules.zmsettings.views.UserWizard',
+        'MyDesktop.modules.zmsettings.stores.UserWizardModules',
         'MyDesktop.modules.zmsettings.stores.ZMUsers',
         'MyDesktop.modules.common.gridStoreOn',
         'MyDesktop.modules.common.proxyOn',
