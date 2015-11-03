@@ -36,8 +36,10 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
         var win = desktop.getWindow(this.id);
         if (!win) {
             //tab zmusers
-            // création et configuration du store 
+            // création et configuration des stores
             var ZMUsersGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMUsers');
+            var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
+                    
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
@@ -45,24 +47,24 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             ZMUsersGridStore.proxy.on(proxyOn.create(ZMUsersGridStore));
             var createUserPanelOBJ = Ext.create('MyDesktop.modules.zmsettings.views.UserWizard');
             // on defini le wizard d'ajout/edition de l'user
-            createUserPanel = createUserPanelOBJ.create(ZMUsersGrid);
+            createUserPanel = createUserPanelOBJ.create(ZMUsersGrid,ZMModulesGridStore );
             // création et configuration du grid
             var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMUsersGridStore,
                 multiSelect: true,
                 customAddRow: function (grid) {
-                    createUserPanel.setMode('add');     
+                    createUserPanel.setMode('add', null);
                     this.up('panel').getLayout().setActiveItem(1);
                 },
                 customEditRow: function (grid, record) {
-                    createUserPanel.setMode('edit',record);
+                    createUserPanel.setMode('edit', record);
                     this.up('panel').getLayout().setActiveItem(1);
                 }
             });
 
             //tab ZMmodules
             // création et configuration du store 
-            var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
+
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
@@ -121,7 +123,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                             title: 'Uilisateurs',
                             defaults: {scrollable: true},
                             items: [ZMUsersGrid, createUserPanel],
-                            //xtype: ZMUsersGrid,
                         },
                         {
                             xtype: ZMModulesGrid,
