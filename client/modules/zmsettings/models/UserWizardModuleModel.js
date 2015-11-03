@@ -7,19 +7,27 @@
 Ext.define('MyDesktop.modules.zmsettings.models.UserWizardModuleModel', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id', hidden: true
+        {
+            name: 'id',
+            type: 'int',
+            hidden: true
         },
-        {name: 'module',
-            type: 'string',
+        {
+            name: 'userid',
+            type: 'int',
+            binded: false,
+        },
+        {
+            name: 'moduleid',
+            type: 'int',
+            
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-                var comment = record.get('comment');
-                return value + '<br><small><i>' + comment + '</i></small></br>';
+                console.log('renderer',record);
+                var modulesGridStore=this.up().down('grid[name=src]').getStore();
+                var moduleRecord=modulesGridStore.findRecord('id',record.get('moduleid'));
+                return moduleRecord.get('module') + '<br><small><i>' + moduleRecord.get('comment') + '</i></small></br>';
             }
-        },
-        {name: 'comment',
-            type: 'string',
-            binded: false
-        },
+        }
     ]
 });
 
