@@ -12,7 +12,7 @@ Ext.define('MyDesktop.modules.zmsettings.stores.UserWizardModules', {
         type: 'direct',
         api: {
             //create: 'ExtRemote.core.DXModules.add',
-            read: 'ExtRemote.core.DXUser.getmodules',
+            read: 'ExtRemote.core.DXUser.getmodulesById',
             //update: 'ExtRemote.core.DXModules.update',
             //destroy: 'ExtRemote.core.DXModules.destroy'
         },
