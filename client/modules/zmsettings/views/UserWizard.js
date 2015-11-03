@@ -6,7 +6,7 @@
 // wizard de création et d'edition d'un user
 
 Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
-    create: function (grid) {
+    create: function (grid,modulesStore) {
         var me; //sera generé à l'event afterrender
         // on fabrique la validity pour les passwords
         Ext.apply(Ext.form.field.VTypes, {
@@ -20,10 +20,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
         });
         // on fabrique le filtre de saisie
         var mask = /^[a-zA-Z0-9\-\_\.]*$/;
-        // création et configuration du store 
-        var origGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
+
         var origGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
-            store: origGridStore,
+            store: modulesStore,
             name: 'src',
             rowEditing: false,
             title: 'Modules disponibles',
@@ -220,7 +219,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         {
                             text: 'Annuler',
                             handler: function () {
-                                this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
+                                // console.log(me);
+                                me.cancel();
+                                //this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
                             }
                         },
                         {
@@ -229,15 +230,14 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
                                     me.userData.user = form.getForm().getValues();
-                                    // on charge le store des modules afin qu'il soit raffraichit
-                                    dstGridStore.getProxy().extraParams = {
-                                        id: me.userData.user.id
-                                    };
-                                    origGridStore.load({
+                                    if (me.getMode() === 'add')
+                                        me.userData.user.id = "0";
+                                    dstGridStore.getProxy().setExtraParam("id", me.userData.user.id);
+                                    origGrid.getStore().load({
                                         scope: this,
                                         callback: function (records, operation, success) {
-                                            // on charge les modules de l'user en cours
-                                            dstGridStore.load();
+
+                                            dstGridStore.load({});
                                         }
                                     });
                                     // on supprime le champ password2 des données
@@ -245,7 +245,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     me.setActiveItem('step-2');
                                 }
                             }
-                        }],
+                        }]
                 },
                 {
                     itemId: 'step-2',
@@ -268,7 +268,8 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         {
                             text: 'Annuler',
                             handler: function () {
-                                this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
+                                me.cancel();
+                                //this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
                             }
                         },
                         {
@@ -295,7 +296,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         me.userData.modules.push(item.data);
                                     });
                                     var layout = this.up('tabpanel').activeTab.getLayout();
-                                    console.log(me.getMode());
                                     // si c'est une edition
                                     var userData = me.userData.user
                                     if (me.getMode() === 'edit') {
@@ -327,11 +327,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         usersGrid.store.sync({
                                             success: function () {
                                                 console.log('success');
-
                                             },
                                             failure: function (batch, Opts) {
                                                 console.log('failure', batch, Opts);
-
                                             },
                                             callback: function ()
                                             {
@@ -354,9 +352,14 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         }]
                 }
             ],
+            cancel: function () {
+                me.resetForm();
+                this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
+            },
             setMode: function (mode, record) {
                 me.mode = mode;
                 me.resetForm();
+                me.userData = {};
                 switch (mode) {
                     case "edit":
                         me.setTitle("Edition d'un utilisateur");
