@@ -129,7 +129,7 @@ var DXUser = {
         if (!params)
             var params = {};
         params.extraQuery = '';
-        params.table = 'transport';
+        params.table = 'users';
         if (!params.id) {
             id = request.session.userinfo.id;
         }
@@ -148,6 +148,30 @@ var DXUser = {
         query += "INNER JOIN modules ";
         query += "ON modules.id=usersmodules.moduleid ";
         query += "WHERE users.id=" + id;
+        params.query = query;
+        DXCommon.get(params, callback, sessionID, request, response);
+    },
+    getmodulesById: function (params, callback, sessionID, request, response) {
+        // on set les parametres par défaut si ils sont absents
+        var id;
+        if (!params)
+            var params = {};
+        params.extraQuery = '';
+        params.table = 'usersmodules';
+        if (!params.id) {
+            id = request.session.userinfo.id;
+        }
+        else
+        {
+            id = params.id;
+        }
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 0;
+        params.log = log;
+        var query = "SELECT id, userid, moduleid FROM "+params.table;
+        query += " WHERE userid=" + id;
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
     },
