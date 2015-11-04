@@ -11,8 +11,8 @@ Ext.define('MyDesktop.modules.zmsettings.stores.UserWizardModules', {
     proxy: {
         type: 'direct',
         api: {
-            //create: 'ExtRemote.core.DXModules.add',
-            read: 'ExtRemote.core.DXUser.getmodulesById',
+            create: 'ExtRemote.core.DXUser.addUserModules',
+            read: 'ExtRemote.core.DXUser.getUserModules',
             //update: 'ExtRemote.core.DXModules.update',
             //destroy: 'ExtRemote.core.DXModules.destroy'
         },

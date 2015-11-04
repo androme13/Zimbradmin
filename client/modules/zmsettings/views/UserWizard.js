@@ -6,7 +6,7 @@
 // wizard de création et d'edition d'un user
 
 Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
-    create: function (grid,modulesStore) {
+    create: function (grid, modulesStore) {
         var me; //sera generé à l'event afterrender
         // on fabrique la validity pour les passwords
         Ext.apply(Ext.form.field.VTypes, {
@@ -18,9 +18,18 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             },
             passwordText: 'Les mots de passes ne sont pas identiques'
         });
+        Ext.apply(Ext.form.field.VTypes, {
+            username: function (val, field) {
+                console.log('vtype username');
+
+                if (field.valid === true)
+                    return true;
+                return false;
+            },
+            usernameText: "Ce nom d'utilisateur existe déja"
+        });
         // on fabrique le filtre de saisie
         var mask = /^[a-zA-Z0-9\-\_\.]*$/;
-
         var origGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
             store: modulesStore,
             name: 'src',
@@ -164,13 +173,25 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'username',
                                     fieldLabel: 'Nom utilisateur',
+                                    vtype: 'username',
+                                    msgTarget: 'side',
                                     maxLength: 64,
-                                    allowBlank: false
+                                    // on ajoute la propriété valid pour verfier si il existe deja ou pas.
+                                    valid: true,
+                                    //allowBlank: false,
+                                    enableKeyEvents: true,
+                                    listeners: {
+                                        keypress: function (obj, e)
+                                        {
+                                            me.usernameFieldKeyPress(obj, e);
+                                        }, buffer: 500
+                                    }
                                 },
                                 {
                                     xtype: 'textfield',
                                     name: 'firstname',
                                     fieldLabel: 'Prénom',
+                                    msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false
                                 },
@@ -178,6 +199,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'lastname',
                                     fieldLabel: 'Nom',
+                                    msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false
                                 }
@@ -199,6 +221,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'password',
                                     inputType: 'password',
+                                    msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false,
                                     fieldLabel: 'Mot de passe'
@@ -208,6 +231,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     name: 'password2',
                                     vtype: 'password',
                                     inputType: 'password',
+                                    msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false,
                                     fieldLabel: 'Confirmation du mot de passe'
@@ -283,75 +307,82 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             }
                         },
                         {
-                            text: 'Create Account',
+                            text: 'Account',
                             name: 'valid',
                             handler: function () {
                                 var form = this.up('form');
                                 if (form.getForm().isValid()) {
-                                    var userId = me.down('form').getForm().findField('id').getValue();
-                                    var usersGrid = this.up('tabpanel').down('grid');
-                                    //on peuple les modules choisis
-                                    me.userData.modules = [];
-                                    Ext.each(dstGridStore.data.items, function (item, idx) {
-                                        me.userData.modules.push(item.data);
-                                    });
-                                    var layout = this.up('tabpanel').activeTab.getLayout();
-                                    // si c'est une edition
-                                    var userData = me.userData.user
-                                    if (me.getMode() === 'edit') {
-                                        var storeRecord = usersGrid.store.findRecord('id', userId);
-                                        // le mot de passe a t'il change
-                                        if (me.origPassword !== userData.password) {
-                                            storeRecord.set('password', userData.password);
-                                        }
-                                        storeRecord.set('state', userData.state);
-                                        storeRecord.set('level', userData.level);
-                                        storeRecord.set('username', userData.username);
-                                        storeRecord.set('firstname', userData.firstname);
-                                        storeRecord.set('lastname', userData.lastname);
-                                    }
-
-                                    // si c'est un ajout
-                                    if (me.getMode() === 'add') {
-                                        var record = Ext.create(usersGrid.store.model.modelName);
-                                        record.set('state', userData.state);
-                                        record.set('level', userData.level);
-                                        record.set('username', userData.username);
-                                        record.set('password', userData.password);
-                                        record.set('firstname', userData.firstname);
-                                        record.set('lastname', userData.lastname);
-                                        usersGrid.store.insert(0, record);
-                                    }
-                                    if (usersGrid.store.getModifiedRecords().length > 0)
-                                    {
-                                        usersGrid.store.sync({
-                                            success: function () {
-                                                console.log('success');
-                                            },
-                                            failure: function (batch, Opts) {
-                                                console.log('failure', batch, Opts);
-                                            },
-                                            callback: function ()
-                                            {
-                                                layout.setActiveItem(0);
-                                                usersGrid.store.reload();
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        layout.setActiveItem(0);
-                                        if (me.getMode() === 'edit')
-                                        {
-                                            Ext.infoMsg.msg("Modification de l'utilisateur",
-                                                    "Aucune modification n'a été effectuée");
-                                        }
-                                    }
+                                    me.editAccount(form);
                                 }
                             }
                         }]
                 }
             ],
+            editAccount: function (form) {
+                //var form = this.down('form');
+                //if (form.getForm().isValid()) {
+                var userId = me.down('form').getForm().findField('id').getValue();
+                var usersGrid = this.up('tabpanel').down('grid');
+                //on peuple les modules choisis
+                me.userData.modules = [];
+                Ext.each(dstGridStore.data.items, function (item, idx) {
+                    me.userData.modules.push(item.data);
+                });
+                var layout = this.up('tabpanel').activeTab.getLayout();
+                // si c'est une edition
+                var userData = me.userData.user
+                if (me.getMode() === 'edit') {
+                    var storeRecord = usersGrid.store.findRecord('id', userId);
+                    // le mot de passe a t'il change
+                    if (me.origPassword !== userData.password) {
+                        storeRecord.set('password', userData.password);
+                    }
+                    storeRecord.set('state', userData.state);
+                    storeRecord.set('level', userData.level);
+                    storeRecord.set('username', userData.username);
+                    storeRecord.set('firstname', userData.firstname);
+                    storeRecord.set('lastname', userData.lastname);
+                }
+
+                // si c'est un ajout
+                if (me.getMode() === 'add') {
+                    var record = Ext.create(usersGrid.store.model.modelName);
+                    record.set('state', userData.state);
+                    record.set('level', userData.level);
+                    record.set('username', userData.username);
+                    record.set('password', userData.password);
+                    record.set('firstname', userData.firstname);
+                    record.set('lastname', userData.lastname);
+                    usersGrid.store.insert(0, record);
+                }
+                if (usersGrid.store.getModifiedRecords().length > 0)
+                {
+                    usersGrid.store.sync({
+                        success: function () {
+                            console.log('success');
+                        },
+                        failure: function (batch, Opts) {
+                            console.log('failure', batch, Opts);
+                        },
+                        callback: function ()
+                        {
+                            layout.setActiveItem(0);
+                            usersGrid.store.reload();
+                        }
+                    });
+                }
+                else
+                {
+                    layout.setActiveItem(0);
+                    if (me.getMode() === 'edit')
+                    {
+                        Ext.infoMsg.msg("Modification de l'utilisateur",
+                                "Aucune modification n'a été effectuée");
+                    }
+                }
+                //}
+
+            },
             cancel: function () {
                 me.resetForm();
                 this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
@@ -362,12 +393,16 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 me.userData = {};
                 switch (mode) {
                     case "edit":
-                        me.setTitle("Edition d'un utilisateur");
+                        console.log(record);
+                        me.setTitle("Edition d'un utilisateur (" + record.data.username + ")");
                         me.down('button[name=valid]').setText('Modifier');
                         var form = me.down('form');
+                        var usernameField = form.down('textfield[name=username]');
                         form.loadRecord(record);
+                        usernameField.origUsername = usernameField.value;
                         var randomPassword = (Math.floor(Math.random() * (10000)) + 10000);
                         me.origPassword = randomPassword.toString();
+                        // on set les champs passwords avec une valeur random
                         form.getForm().findField('password').setValue(randomPassword.toString());
                         form.getForm().findField('password2').setValue(randomPassword.toString());
                         break;
@@ -385,9 +420,49 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 Ext.each(me.query('form'), function (item, idx) {
                     item.getForm().reset(true);
                 });
+                //var form = me.down('form');
+                var usernameField = me.down('textfield[name=username]');
+                usernameField.origUsername=null;
+                usernameField.valid = true;
             },
             setActiveItem: function (item) {
                 me.getLayout().setActiveItem(item);
+            },
+            usernameFieldKeyPress: function (field, e) {
+
+
+                ExtRemote.core.DXUser.isExistUserByName({'search': field.value},
+                function (result, event) {
+                    //si la session existe cote serveur
+                    if (result.data.length > 0)
+                    {
+                        // si on est en mode edition on gere l'username différemment
+                        // pour la verif
+                        console.log(result);
+                        console.log(field.origUsername, field.value)
+                        if (me.getMode() === 'edit' && field.value === field.origUsername)
+                            field.valid = true;
+                        else
+                            field.valid = false;
+                        field.validate();
+                        //console.log('isExistUserByName',result);
+                        //field.markInvalid("Ce nom d'utilisateur existe déja");
+                    } else
+                    {
+                        field.valid = true;
+                        field.validate();
+                        //console.log('error isExistUserByName',result);
+                    }
+                }
+                );
+
+
+
+
+
+
+
+
             }
             //renderTo: 'output'
         };
