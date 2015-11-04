@@ -20,8 +20,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
         });
         Ext.apply(Ext.form.field.VTypes, {
             username: function (val, field) {
-                console.log('vtype username');
-
                 if (field.valid === true)
                     return true;
                 return false;
@@ -104,9 +102,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 {
                     itemId: 'step-1',
                     xtype: 'form',
-                    //layout: 'fit',
                     layout: 'anchor',
-                    //anchor: '100%',
                     bodyPadding: 5,
                     //defaults: {anchor: '100%'},
                     items: [
@@ -114,7 +110,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             xtype: 'fieldset',
                             title: 'Etat et niveau du compte',
                             margins: '0 0 0 0',
-                            //fieldLabel: 'Date Range',
                             combineErrors: true,
                             //msgTarget: 'side',
                             layout: 'hbox',
@@ -161,6 +156,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             layout: 'vbox',
                             defaults: {
                                 maskRe: mask,
+                                msgTarget: 'side',
                                 margins: '5 5 5 5'
                             },
                             items: [
@@ -174,11 +170,11 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     name: 'username',
                                     fieldLabel: 'Nom utilisateur',
                                     vtype: 'username',
-                                    msgTarget: 'side',
+                                    //msgTarget: 'side',
                                     maxLength: 64,
                                     // on ajoute la propriété valid pour verfier si il existe deja ou pas.
                                     valid: true,
-                                    //allowBlank: false,
+                                    allowBlank: false,
                                     enableKeyEvents: true,
                                     listeners: {
                                         keypress: function (obj, e)
@@ -191,7 +187,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'firstname',
                                     fieldLabel: 'Prénom',
-                                    msgTarget: 'side',
+                                    //msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false
                                 },
@@ -199,7 +195,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'lastname',
                                     fieldLabel: 'Nom',
-                                    msgTarget: 'side',
+                                   // msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false
                                 }
@@ -210,10 +206,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                             title: 'Mot de passe',
                             margins: '0 0 0 0',
                             combineErrors: true,
-                            //msgTarget: 'side',
                             layout: 'vbox',
                             defaults: {
-                                flex: 1,
+                                //flex: 1,
+                                msgTarget: 'side',
                                 margins: '5 5 5 5'
                             },
                             items: [
@@ -221,7 +217,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'password',
                                     inputType: 'password',
-                                    msgTarget: 'side',
+                                    //msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false,
                                     fieldLabel: 'Mot de passe'
@@ -231,7 +227,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     name: 'password2',
                                     vtype: 'password',
                                     inputType: 'password',
-                                    msgTarget: 'side',
+                                    //msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false,
                                     fieldLabel: 'Confirmation du mot de passe'
@@ -243,9 +239,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         {
                             text: 'Annuler',
                             handler: function () {
-                                // console.log(me);
                                 me.cancel();
-                                //this.up('tabpanel').activeTab.getLayout().setActiveItem(0);
                             }
                         },
                         {
@@ -260,8 +254,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     origGrid.getStore().load({
                                         scope: this,
                                         callback: function (records, operation, success) {
-
-                                            dstGridStore.load({});
+                                            dstGridStore.load();
                                         }
                                     });
                                     // on supprime le champ password2 des données
@@ -330,7 +323,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 });
                 var layout = this.up('tabpanel').activeTab.getLayout();
                 // si c'est une edition
-                var userData = me.userData.user
+                var userData = me.userData.user;
                 if (me.getMode() === 'edit') {
                     var storeRecord = usersGrid.store.findRecord('id', userId);
                     // le mot de passe a t'il change
@@ -380,8 +373,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                 "Aucune modification n'a été effectuée");
                     }
                 }
-                //}
-
             },
             cancel: function () {
                 me.resetForm();
@@ -393,7 +384,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 me.userData = {};
                 switch (mode) {
                     case "edit":
-                        console.log(record);
                         me.setTitle("Edition d'un utilisateur (" + record.data.username + ")");
                         me.down('button[name=valid]').setText('Modifier');
                         var form = me.down('form');
@@ -420,9 +410,8 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 Ext.each(me.query('form'), function (item, idx) {
                     item.getForm().reset(true);
                 });
-                //var form = me.down('form');
                 var usernameField = me.down('textfield[name=username]');
-                usernameField.origUsername=null;
+                usernameField.origUsername = null;
                 usernameField.valid = true;
             },
             setActiveItem: function (item) {
@@ -438,35 +427,21 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                     {
                         // si on est en mode edition on gere l'username différemment
                         // pour la verif
-                        console.log(result);
-                        console.log(field.origUsername, field.value)
                         if (me.getMode() === 'edit' && field.value === field.origUsername)
                             field.valid = true;
                         else
                             field.valid = false;
-                        field.validate();
-                        //console.log('isExistUserByName',result);
-                        //field.markInvalid("Ce nom d'utilisateur existe déja");
                     } else
                     {
                         field.valid = true;
-                        field.validate();
-                        //console.log('error isExistUserByName',result);
                     }
+                    field.validate();
                 }
                 );
-
-
-
-
-
-
-
-
             }
             //renderTo: 'output'
         };
         return panel;
-    },
+    }
 });
 
