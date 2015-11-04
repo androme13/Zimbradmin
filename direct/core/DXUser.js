@@ -99,6 +99,25 @@ var DXUser = {
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
     },
+    isExistUserByName: function (params, callback, sessionID, request, response) {
+        var query, extraQuery;
+        // on set les parametres par défaut si ils sont absents
+        if (!params)
+            var params = {};
+        params.table = 'users';
+        params.col = 'username';
+        if (!params.search)
+            params.search = "";
+        if (params.search) {
+            params.extraQuery = "WHERE " + params.col;
+            params.extraQuery += " = '" + params.search+"'";
+        }
+        params.log = log;
+        var query = "SELECT "+params.col+" FROM ";
+        query += params.table + " " + params.extraQuery;
+        params.query = query;
+        DXCommon.get(params, callback, sessionID, request, response);
+    },
     update: function (params, callback, sessionID, request, response) {
         // mono requete, à voir plus tard pour du multi-requete
         var query;
@@ -151,7 +170,33 @@ var DXUser = {
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
     },
-    getmodulesById: function (params, callback, sessionID, request, response) {
+    addUserModules: function (params, callback, sessionID, request, response) {
+        // on set les parametres par défaut si ils sont absents
+
+        var id;
+        if (!params)
+            var params = {};
+        params.extraQuery = '';
+        params.table = 'usersmodules';
+        if (!params.id) {
+            id = request.session.userinfo.id;
+        }
+        else
+        {
+            id = params.id;
+        }
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 0;
+        params.log = log;
+        var query = "SELECT id, userid, moduleid FROM " + params.table;
+        query += " WHERE userid=" + id;
+        params.query = query;
+        console.log(params, query)
+        DXCommon.get(params, callback, sessionID, request, response);
+    },
+    getUserModules: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
         var id;
         if (!params)
@@ -170,7 +215,7 @@ var DXUser = {
         if (!params.limit)
             params.limit = 0;
         params.log = log;
-        var query = "SELECT id, userid, moduleid FROM "+params.table;
+        var query = "SELECT id, userid, moduleid FROM " + params.table;
         query += " WHERE userid=" + id;
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
