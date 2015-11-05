@@ -8,9 +8,15 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
     extend: 'Ext.data.Model',
     fields: [
         // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
-        {name: 'id', hidden: true},
-        {name: 'state',
+        {
+            name: 'id',
+            hidden: true,
+            flex: 1
+        },
+        {
+            name: 'state',
             text: 'Etat',
+            flex: 1,
             defaultValue: 2,
             editor: {
                 xtype: 'combo',
@@ -44,6 +50,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
         {name: 'level',
             text: 'Niveau',
             defaultValue: 1,
+            flex: 2,
             editor: {
                 xtype: 'combo',
                 editable: false,
@@ -86,6 +93,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
         },
         {
             name: 'username',
+            flex: 2,
             editor: {
                 editable: true,
                 allowBlank: false
@@ -100,6 +108,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
         },
         {
             name: 'firstname',
+            flex: 2,
             editor: {
                 editable: true,
                 allowBlank: false
@@ -110,6 +119,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
         },
         {
             name: 'lastname',
+            flex: 2,
             editor: {
                 editable: true,
                 allowBlank: false
@@ -118,7 +128,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             searchable: true
 
         },
-        {name: 'created_date', type: 'date', text: 'Crée le',
+        {name: 'created_date', type: 'date', text: 'Crée le',hidden: true,flex: 2,
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
                 var nameCreator = 'inconnu';
                 var idCreator = record.get('created_by');
@@ -138,7 +148,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             },
         },
         {name: 'created_by', binded: false},
-        {name: 'modified_date', type: 'date', text: 'Modifié le',
+        {name: 'modified_date', type: 'date', text: 'Modifié le',hidden: true,flex: 2,
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
                 var nameModifier = 'inconnu';
                 var idModifier = record.get('modified_by');

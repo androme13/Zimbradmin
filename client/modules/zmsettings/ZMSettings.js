@@ -80,8 +80,8 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
-                width: 500,
-                height: 400,
+                width: 800,
+                height: 600,
                 iconCls: this.launcher.iconCls,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',

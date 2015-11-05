@@ -20,12 +20,10 @@ Ext.define('MyDesktop.modules.zmsettings.models.UserWizardModuleModel', {
         {
             name: 'moduleid',
             type: 'int',
-            
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-                console.log('renderer',record);
-                var modulesGridStore=this.up().down('grid[name=src]').getStore();
-                var moduleRecord=modulesGridStore.findRecord('id',record.get('moduleid'));
-                return moduleRecord.get('module') + '<br><small><i>' + moduleRecord.get('comment') + '</i></small></br>';
+                var modulesGridStore = this.up().down('grid[name=src]').getStore();
+                var moduleRecord = modulesGridStore.findRecord('id', record.get('moduleid'));
+                return moduleRecord.get('comment') + '<br><small><i>' + moduleRecord.get('module') + '</i></small></br>';
             }
         }
     ]

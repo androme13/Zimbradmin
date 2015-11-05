@@ -1,29 +1,48 @@
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
+/* 
+ * ZMModule Model
+ * (C) Androme 2015
+ * 
  */
 
 Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id', hidden: true
+        {
+            name: 'id',
+            type: 'int',
+            hidden: true
         },
-        {name: 'module',
+        {
+            name: 'state',
+            type: 'int',
+            renderer: function (value, meta) {
+                switch (value) {
+                    case 0 :
+                        meta.css = 'zmsettings-disabled_entry24';
+                        meta.tdAttr = 'data-qtip="Inactif"';
+                        break;
+                    case 1 :
+                        meta.css = 'zmsettings-enabled_entry24';
+                        meta.tdAttr = 'data-qtip="Actif"';
+                        break;
+                }
+                return '';
+            },
+        },
+        {
+            name: 'module',
             editor: {
                 allowBlank: false,
-                //blankText: 'Le champ est obligatoire.',
             },
             type: 'string'
         },
-        {name: 'comment',
+        {
+            name: 'comment',
             editor: {
                 allowBlank: false,
-                //blankText: 'Le champ est obligatoire.',
             },
             type: 'string'
-        },
+        }
     ]
 });
 

@@ -55,7 +55,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             },
             itemdblclick: function (grid, record, item, index, e) {
                 dstGrid = this.up().down('grid[name=dst]');
-                if (dstGrid.store.findRecord('module', record.data.module))
+                if (dstGrid.getStore().findRecord('moduleid', record.data.id))
                 {
                     Ext.infoMsg.msg("Ajout de module à l'utilisateur",
                             "Vous avez deja ajouté le module<BR>" + record.data.module,
@@ -64,7 +64,12 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 }
                 else
                 {
-                    dstGrid.store.add(record);
+                    // on transforme le record pour l'adapter à la nouvelle grille
+                    var newRecord = Ext.create('MyDesktop.modules.zmsettings.models.UserWizardModuleModel');
+                    newRecord.data.id = 0;
+                    newRecord.data.moduleid = record.data.id;
+                    dstGrid.store.add(newRecord);
+                    console.log('dblclick', record, newRecord);
                     Ext.infoMsg.msg("Ajout de module à l'utilisateur",
                             "Vous avez ajouté le module<BR>" + record.data.module +
                             "<BR><SMALL>" + record.data.comment + "</SMALL>");
@@ -73,10 +78,12 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
         });
         dstGrid.on({
             itemdblclick: function (grid, record, item, index, e) {
+                srcGridStore = this.up().down('grid[name=src]').getStore();
+                var srcModuleRecord = srcGridStore.findRecord('id', record.get('moduleid'));
                 grid.store.remove(record);
                 Ext.infoMsg.msg("Suppression de module à l'utilisateur",
-                        "Vous avez supprimé le module<BR>" + record.data.module +
-                        "<BR><SMALL>" + record.data.comment + "</SMALL>");
+                        "Vous avez supprimé le module<BR>" + srcModuleRecord.data.module +
+                        "<BR><SMALL>" + srcModuleRecord.data.comment + "</SMALL>");
             }
         });
         var panel = {
@@ -195,7 +202,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     xtype: 'textfield',
                                     name: 'lastname',
                                     fieldLabel: 'Nom',
-                                   // msgTarget: 'side',
+                                    // msgTarget: 'side',
                                     maxLength: 64,
                                     allowBlank: false
                                 }
