@@ -15,6 +15,13 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
         {
             name: 'state',
             type: 'int',
+            editor: {
+                xtype: 'combo',
+                valueField: 'value',
+                queryMode: 'local',
+                store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
+                editable: false,
+            },
             renderer: function (value, meta) {
                 switch (value) {
                     case 0 :
