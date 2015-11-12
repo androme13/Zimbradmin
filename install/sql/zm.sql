@@ -1,22 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.11.1deb2+deb7u1
+-- version 4.2.12deb2+deb8u1
 -- http://www.phpmyadmin.net
 --
--- Client: localhost-- phpMyAdmin SQL Dump
--- version 3.4.11.1deb2+deb7u1
--- http://www.phpmyadmin.net
---
--- Client: localhost
--- Généré le: Jeu 29 Octobre 2015 à 22:56
--- Version du serveur: 5.5.46
--- Version de PHP: 5.4.45-0+deb7u1
+-- Client :  localhost
+-- Généré le :  Jeu 12 Novembre 2015 à 16:07
+-- Version du serveur :  5.5.46-0+deb8u1
+-- Version de PHP :  5.6.14-0+deb8u1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Base de données: `zm` V0.1.3
+-- Base de données :  `zm` V0.1.4
 --
+CREATE DATABASE IF NOT EXISTS `zm` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `zm`;
 
 -- --------------------------------------------------------
 
@@ -26,16 +24,15 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `modules`;
 CREATE TABLE IF NOT EXISTS `modules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT '0',
   `module` varchar(255) NOT NULL,
   `comment` varchar(255) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQUE` (`module`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `modules`
@@ -61,17 +58,15 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `mynetworks`;
 CREATE TABLE IF NOT EXISTS `mynetworks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `state` tinyint(1) NOT NULL,
   `network` varchar(128) NOT NULL,
   `comment` varchar(128) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `domain` (`network`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `mynetworks`
@@ -97,17 +92,15 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `relay_domains`;
 CREATE TABLE IF NOT EXISTS `relay_domains` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `state` tinyint(1) NOT NULL,
   `domain` varchar(128) NOT NULL,
   `comment` varchar(128) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `domain` (`domain`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `relay_domains`
@@ -133,17 +126,15 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `smtp_servers`;
 CREATE TABLE IF NOT EXISTS `smtp_servers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `state` int(11) NOT NULL DEFAULT '0',
   `server` varchar(128) NOT NULL,
   `comment` varchar(128) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(11) NOT NULL DEFAULT '0',
   `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `server` (`server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `modified_by` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `smtp_servers`
@@ -169,16 +160,15 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `transport`;
 CREATE TABLE IF NOT EXISTS `transport` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT '1',
   `domain` varchar(128) NOT NULL,
   `transport` varchar(128) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `domain` (`domain`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2108 ;
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM AUTO_INCREMENT=2108 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `transport`
@@ -204,7 +194,7 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `level` int(11) NOT NULL DEFAULT '1',
   `state` int(11) NOT NULL DEFAULT '0',
   `username` varchar(64) NOT NULL,
@@ -214,10 +204,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(11) NOT NULL DEFAULT '0',
   `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+  `modified_by` int(11) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 --
 -- Déclencheurs `users`
@@ -243,12 +231,11 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `usersmodules`;
 CREATE TABLE IF NOT EXISTS `usersmodules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `moduleid` int(11) NOT NULL,
-  `hasshortcut` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+  `hasshortcut` tinyint(1) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -263,186 +250,88 @@ CREATE TABLE IF NOT EXISTS `usersshortcuts2` (
   `name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Généré le: Mer 28 Octobre 2015 à 18:51
--- Version du serveur: 5.5.46
--- Version de PHP: 5.4.45-0+deb7u1
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
 --
--- Base de données: `zm` v0.1.2
+-- Index pour les tables exportées
 --
 
--- --------------------------------------------------------
+--
+-- Index pour la table `modules`
+--
+ALTER TABLE `modules`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `UNIQUE` (`module`);
 
 --
--- Structure de la table `modules`
+-- Index pour la table `mynetworks`
 --
-
-DROP TABLE IF EXISTS `modules`;
-CREATE TABLE IF NOT EXISTS `modules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `module` varchar(255) NOT NULL,
-  `comment` varchar(255) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQUE` (`module`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+ALTER TABLE `mynetworks`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `domain` (`network`);
 
 --
--- Déclencheurs `modules`
+-- Index pour la table `relay_domains`
 --
-DROP TRIGGER IF EXISTS `modules_task_creation_timestamp`;
-DELIMITER //
-CREATE TRIGGER `modules_task_creation_timestamp` BEFORE INSERT ON `modules`
- FOR EACH ROW SET NEW.created_date = NOW()
-//
-DELIMITER ;
-DROP TRIGGER IF EXISTS `modules_task_update_timestamp`;
-DELIMITER //
-CREATE TRIGGER `modules_task_update_timestamp` BEFORE UPDATE ON `modules`
- FOR EACH ROW SET NEW.modified_date = NOW()
-//
-DELIMITER ;
-
--- --------------------------------------------------------
+ALTER TABLE `relay_domains`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `domain` (`domain`);
 
 --
--- Structure de la table `smtp_servers`
+-- Index pour la table `smtp_servers`
 --
-
-DROP TABLE IF EXISTS `smtp_servers`;
-CREATE TABLE IF NOT EXISTS `smtp_servers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` int(11) NOT NULL DEFAULT '0',
-  `server` varchar(128) NOT NULL,
-  `comment` varchar(128) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_by` int(11) NOT NULL DEFAULT '0',
-  `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `server` (`server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+ALTER TABLE `smtp_servers`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `server` (`server`);
 
 --
--- Déclencheurs `smtp_servers`
+-- Index pour la table `transport`
 --
-DROP TRIGGER IF EXISTS `smtp_servers_task_creation_timestamp`;
-DELIMITER //
-CREATE TRIGGER `smtp_servers_task_creation_timestamp` BEFORE INSERT ON `smtp_servers`
- FOR EACH ROW SET NEW.created_date = NOW()
-//
-DELIMITER ;
-DROP TRIGGER IF EXISTS `smtp_servers_task_update_timestamp`;
-DELIMITER //
-CREATE TRIGGER `smtp_servers_task_update_timestamp` BEFORE UPDATE ON `smtp_servers`
- FOR EACH ROW SET NEW.modified_date = NOW()
-//
-DELIMITER ;
-
--- --------------------------------------------------------
+ALTER TABLE `transport`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `domain` (`domain`);
 
 --
--- Structure de la table `transport`
+-- Index pour la table `users`
 --
-
-DROP TABLE IF EXISTS `transport`;
-CREATE TABLE IF NOT EXISTS `transport` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `domain` varchar(128) NOT NULL,
-  `transport` varchar(128) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL,
-  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `domain` (`domain`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2108 ;
+ALTER TABLE `users`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `username` (`username`);
 
 --
--- Déclencheurs `transport`
+-- Index pour la table `usersmodules`
 --
-DROP TRIGGER IF EXISTS `transport_task_creation_timestamp`;
-DELIMITER //
-CREATE TRIGGER `transport_task_creation_timestamp` BEFORE INSERT ON `transport`
- FOR EACH ROW SET NEW.created_date = NOW()
-//
-DELIMITER ;
-DROP TRIGGER IF EXISTS `transport_task_update_timestamp`;
-DELIMITER //
-CREATE TRIGGER `transport_task_update_timestamp` BEFORE UPDATE ON `transport`
- FOR EACH ROW SET NEW.modified_date = NOW()
-//
-DELIMITER ;
-
--- --------------------------------------------------------
+ALTER TABLE `usersmodules`
+ ADD PRIMARY KEY (`id`);
 
 --
--- Structure de la table `users`
+-- AUTO_INCREMENT pour les tables exportées
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `level` int(11) NOT NULL DEFAULT '1',
-  `state` int(11) NOT NULL DEFAULT '0',
-  `username` varchar(64) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `firstname` varchar(64) NOT NULL,
-  `lastname` varchar(64) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_by` int(11) NOT NULL DEFAULT '0',
-  `modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
-
 --
--- Déclencheurs `users`
+-- AUTO_INCREMENT pour la table `modules`
 --
-DROP TRIGGER IF EXISTS `users_task_creation_timestamp`;
-DELIMITER //
-CREATE TRIGGER `users_task_creation_timestamp` BEFORE INSERT ON `users`
- FOR EACH ROW SET NEW.created_date = NOW()
-//
-DELIMITER ;
-DROP TRIGGER IF EXISTS `users_task_update_timestamp`;
-DELIMITER //
-CREATE TRIGGER `users_task_update_timestamp` BEFORE UPDATE ON `users`
- FOR EACH ROW SET NEW.modified_date = NOW()
-//
-DELIMITER ;
-
--- --------------------------------------------------------
-
+ALTER TABLE `modules`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
--- Structure de la table `usersmodules`
+-- AUTO_INCREMENT pour la table `mynetworks`
 --
-
-DROP TABLE IF EXISTS `usersmodules`;
-CREATE TABLE IF NOT EXISTS `usersmodules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userid` int(11) NOT NULL,
-  `moduleid` int(11) NOT NULL,
-  `hasshortcut` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
-
--- --------------------------------------------------------
-
+ALTER TABLE `mynetworks`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
--- Structure de la table `usersshortcuts`
+-- AUTO_INCREMENT pour la table `relay_domains`
 --
-
-DROP TABLE IF EXISTS `usersshortcuts`;
-CREATE TABLE IF NOT EXISTS `usersshortcuts` (
-  `userid` int(11) NOT NULL,
-  `moduleid` int(11) NOT NULL,
-  `name` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `relay_domains`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
+--
+-- AUTO_INCREMENT pour la table `smtp_servers`
+--
+ALTER TABLE `smtp_servers`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT pour la table `transport`
+--
+ALTER TABLE `transport`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2108;
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=41;
+--
+-- AUTO_INCREMENT pour la table `usersmodules`
+--
+ALTER TABLE `usersmodules`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=57;
