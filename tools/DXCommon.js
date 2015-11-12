@@ -40,7 +40,7 @@ module.exports = {
         });
 
     },
-    add2: function (params, callback, sessionID, request, response) {
+    add2: function (query, callback, sessionID, request, response, log) {
         var result = [];
         var data = [];
         pool.getConnection(function (err, connection) {
@@ -51,7 +51,7 @@ module.exports = {
                 err.ZMErrorMsg = String(err);
                 if (connection)
                     connection.release();
-                sendError(err, callback, params.log);
+                sendError(err, callback, log);
             }
             else
             {
@@ -60,7 +60,7 @@ module.exports = {
                     'ZMTypeCode': 'DX',
                     'ZMErrorCode': 100,
                 };
-                connection.query(params.query, function (err, rows, fields) {
+                connection.query(query, function (err, rows, fields) {
                     if (connection)
                         connection.release();
                     if (!err) {
@@ -77,7 +77,7 @@ module.exports = {
                         err.ZMTypeCode = 'DX';
                         err.ZMErrorCode = 102;
                         err.ZMErrorMsg = String(err);
-                        sendError(err, callback, params.log);
+                        sendError(err, callback, log);
                     }
 
 

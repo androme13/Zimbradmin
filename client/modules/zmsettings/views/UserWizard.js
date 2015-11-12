@@ -361,18 +361,28 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 if (usersGrid.store.getModifiedRecords().length > 0)
                 {
                     usersGrid.store.sync({
-                        success: function () {
+                        success: function (batch, opts) {
                             //si les modules ont été modifies
-
+                            console.log('success', batch);
+                            console.log(dstGrid.store);
                             if (dstGrid.store.getModifiedRecords().length > 0)
                             {
                                 if (me.getMode() === 'edit')
                                 {
                                     //dstGrid.store.getProxy().setParam('id', userId);
                                 }
+                                else
+                                {
+                                    // si c'est un ajout d'user on recupere l'id affecté
+                                    var id = batch.operations[0].response.result.data[0].insertId;
+                                    // et on modifie l'userid enregistré dans les modules ajoutés
+                                    dstGrid.store.data.items.every(function (item) {
+                                        item.data.userid=id;
+                                        return true;
+                                    });
+                                }
                                 dstGrid.store.sync({
                                     success: function () {
-                                        console.log('success');
                                         // dstGridStore.sync();
                                         if (me.getMode() === 'edit')
                                         {

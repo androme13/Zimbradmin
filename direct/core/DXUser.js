@@ -25,114 +25,73 @@ var DXUser = {
             var params = [];
             params[0] = {};
         }
-        params[0].table = 'users';
-        params[0].log = log;
+        var query = '';
+        var table = 'users';
         var myId = request.session.userinfo.id;
-        var query = "INSERT INTO " + params[0].table;
-        query += " (level,state,username,password,firstname,lastname,created_by) VALUES ('";
-        query += params[0].level + "','";
-        query += params[0].state + "','";
-        query += params[0].username.toLowerCase() + "','";
-        query += params[0].password + "','";
-        query += params[0].firstname + "','";
-        query += params[0].lastname.toUpperCase() + "','";
-        query += myId + "')";
-        params[0].query = query;
-        DXCommon.add(params[0], callback, sessionID, request, response);
+        params.every(function (param) {
+            query += "INSERT INTO " + table;
+            query += " (level,state,username,password,firstname,lastname,created_by) VALUES ('";
+            query += param.level + "','";
+            query += param.state + "','";
+            query += param.username.toLowerCase() + "','";
+            query += param.password + "','";
+            query += param.firstname + "','";
+            query += param.lastname.toUpperCase() + "','";
+            query += myId + "'); ";
+            return true;
+        });
+        console.log('users', query);
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     addUserModules: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
         var id;
-        var query;
+        var query = '';
         if (!params)
             var params = {};
-        params.extraQuery = '';
-        params.table = 'usersmodules';
-        if (!params.id) {
-            id = request.session.userinfo.id;
-        }
-        else
-        {
-            id = params.id;
-        }
-        if (!params.start)
-            params.start = 0;
-        if (!params.limit)
-            params.limit = 0;
-        params.log = log;
-        params.query = '';
-        console.log("dxuser(addusermodules) : preparation query");
+        var table = 'usersmodules';
         params.every(function (param) {
-
-            query = "INSERT INTO " + params.table;
+            query += "INSERT INTO " + table;
             query += " (userid,moduleid) VALUES (";
             query += param.userid + ",";
             query += param.moduleid + "); ";
-//            var query = "SELECT id, userid, moduleid FROM " + params.table;
- //           query += " WHERE userid=" + id + "; ";
-            params.query += query;
-            //console.log('param:',param);
             return true;
         });
-        console.log('fin preparation query-------------------------------');
-        console.log('query final: ', params.query);
-
-        //params.query = query;
-        //console.log(params, query)
-
-
-        /*Ext.each(params.data, function (value) {
-         var k = myArray[0];
-         console.log(value + k);
-         DXCommon.addAndBack(params);
-         });*/
-        DXCommon.add2(params, callback, sessionID, request, response);
-        //console.log('result',result);
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     destroy: function (params, callback, sessionID, request, response) {
         // multi requete
+        var query='';
         if (!params) {
             var params = [];
             params[0] = {};
         }
-        var newParams = {};
-        newParams.table = 'users';
-        newParams.log = log;
-        newParams.length = params.length;
-        var occur = '';
-        var temp = '';
+        table = 'users';      
         var count = 0;
-        params.forEach(function (entry) {
+        params.every(function (param) {
             count++;
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
-            temp = "(" + entry.id + ",";
-            temp += entry.level + ",";
-            temp += entry.state + ",'";
-            temp += entry.username + "','";
-            temp += entry.firstname + "','";
-            temp += entry.lastname + "')";
-            if (count < params.length)
-            {
-                temp += ',';
-            }
-            occur += temp;
+            query += "DELETE FROM " + table + " WHERE ";
+            query += "id="+param.id + " AND ";
+            query += "level='"+param.level + "' AND ";
+            query += "state='"+param.state + "' AND ";
+            query += "username='"+param.username + "' AND ";
+            query += "firstname='"+param.firstname + "' AND ";
+            query += "lastname='"+param.lastname + "';";
+            return true;
         });
-        var query = "DELETE FROM " + newParams.table + " WHERE (id,level,state,username,firstname,lastname) IN (" + occur + ")";
-        newParams.query = query;
-        DXCommon.destroy(newParams, callback, sessionID, request, response);
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
     destroyUserModules: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
-        var query='';       
-       // params.log = log;
+        var query = '';
         params.table = 'usersmodules';
-        //params.query = '';
-        params.every(function (param) {           
+        params.every(function (param) {
             query += "DELETE FROM " + params.table + " WHERE ";
-            query += "userid ="+param.userid + " AND ";
-            query += "moduleid ="+param.moduleid + "; ";
+            query += "userid =" + param.userid + " AND ";
+            query += "moduleid =" + param.moduleid + "; ";
             //query += query;
             return true;
         });
