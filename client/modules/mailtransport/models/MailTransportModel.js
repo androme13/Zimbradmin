@@ -8,14 +8,38 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
     extend: 'Ext.data.Model',
     fields: [
         // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
-        {name: 'id',hidden: true
+        {name: 'id', hidden: true
+        },
+        {
+            name: 'state',
+            type: 'int',
+            editor: {
+                xtype: 'combo',
+                valueField: 'value',
+                queryMode: 'local',
+                store: [[0, 'Inactif'], [1, 'Actif']],
+                editable: false,
+            },
+            renderer: function (value, meta) {
+                switch (value) {
+                    case 0 :
+                        meta.css = 'zmsettings-disabled_entry24';
+                        meta.tdAttr = 'data-qtip="Inactif"';
+                        break;
+                    case 1 :
+                        meta.css = 'zmsettings-enabled_entry24';
+                        meta.tdAttr = 'data-qtip="Actif"';
+                        break;
+                }
+                return '';
+            },
         },
         {name: 'domain',
             type: 'string',
             searchable: true,
             exportable: true,
             editor: {
-                vtype:'email',
+                vtype: 'email',
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
             }
