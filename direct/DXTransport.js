@@ -27,7 +27,8 @@ var DXTransport = {
         params[0].log = log;
         var myId = request.session.userinfo.id;
         var query = "INSERT INTO " + params[0].table;
-        query += " (domain, transport, created_by) VALUES ('";
+        query += " (state, domain, transport, created_by) VALUES (";
+        query += params[0].state + ",'";
         query += params[0].domain.toLowerCase() + "','";
         query += params[0].transport.toLowerCase() + "','" + myId + "')";
         params[0].query = query;
@@ -97,7 +98,9 @@ var DXTransport = {
         }
         params[0].table = 'transport';
         params[0].log = log;
-        var query = "UPDATE " + params[0].table + " SET domain='" + params[0].domain.toLowerCase();
+        var query = "UPDATE " + params[0].table +" SET ";
+        query += "state=" + params[0].state;
+        query += ", domain='" + params[0].domain.toLowerCase();
         query += "', transport='" + params[0].transport.toLowerCase();
         query += "', modified_by='" + myId;
         query += "' WHERE id='" + params[0].id + "'";
