@@ -23,16 +23,19 @@ var DXTransport = {
             var params = [];
             params[0] = {};
         }
-        params[0].table = 'transport';
+        var query = '';
+        var table = 'transport';
         params[0].log = log;
         var myId = request.session.userinfo.id;
-        var query = "INSERT INTO " + params[0].table;
-        query += " (state, domain, transport, created_by) VALUES (";
-        query += params[0].state + ",'";
-        query += params[0].domain.toLowerCase() + "','";
-        query += params[0].transport.toLowerCase() + "','" + myId + "')";
-        params[0].query = query;
-        DXCommon.add(params[0], callback, sessionID, request, response);
+        params.every(function (param) {
+            query += "INSERT INTO " + table;
+            query += " (state, domain, transport, created_by) VALUES (";
+            query += param.state + ",'";
+            query += param.domain.toLowerCase() + "','";
+            query += param.transport.toLowerCase() + "','" + myId + "')";
+            return true;
+        });
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     destroy: function (params, callback, sessionID, request, response) {
         // multi requete
@@ -40,30 +43,21 @@ var DXTransport = {
             var params = [];
             params[0] = {};
         }
-        var newParams = {};
-        newParams.table = 'transport';
-        newParams.log = log;
-        newParams.length = params.length;
-        var occur = '';
-        var temp = '';
+        var query = '';
+        var table = 'transport';
         var count = 0;
-        params.forEach(function (entry) {
+        params.every(function (param) {
             count++;
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
-            temp = "(" + entry.id + ",'";
-            temp += entry.domain + "','";
-            temp += entry.transport + "')";
-            if (count < params.length)
-            {
-                temp += ',';
-            }
-            occur += temp;
+            query += "DELETE FROM " + table + " WHERE ";
+            query += "id="+param.id + " AND ";
+            query += "domain='"+param.domain + "' AND ";
+            query += "transport='"+param.transport + "'; ";
+            return true;
         });
-        var query = "DELETE FROM " + newParams.table + " WHERE (id,domain,transport) IN (" + occur + ")";
-        newParams.query = query;
-        DXCommon.destroy(newParams, callback, sessionID, request, response);
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
     get: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
@@ -98,7 +92,7 @@ var DXTransport = {
         }
         params[0].table = 'transport';
         params[0].log = log;
-        var query = "UPDATE " + params[0].table +" SET ";
+        var query = "UPDATE " + params[0].table + " SET ";
         query += "state=" + params[0].state;
         query += ", domain='" + params[0].domain.toLowerCase();
         query += "', transport='" + params[0].transport.toLowerCase();
@@ -106,7 +100,7 @@ var DXTransport = {
         query += "' WHERE id='" + params[0].id + "'";
         params[0].query = query;
         DXCommon.update(params, callback, sessionID, request, response);
-    },
+    }
 };
 
 module.exports = DXTransport;

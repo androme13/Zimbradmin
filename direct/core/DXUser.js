@@ -23,7 +23,6 @@ var DXUser = {
         // mono requete, à voir plus tard pour du multi-requete
         if (!params) {
             var params = [];
-            params[0] = {};
         }
         var query = '';
         var table = 'users';
@@ -67,9 +66,7 @@ var DXUser = {
             params[0] = {};
         }
         table = 'users';      
-        var count = 0;
         params.every(function (param) {
-            count++;
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
@@ -79,7 +76,7 @@ var DXUser = {
             query += "state='"+param.state + "' AND ";
             query += "username='"+param.username + "' AND ";
             query += "firstname='"+param.firstname + "' AND ";
-            query += "lastname='"+param.lastname + "';";
+            query += "lastname='"+param.lastname + "'; ";
             return true;
         });
         DXCommon.destroy2(query, callback, sessionID, request, response, log);

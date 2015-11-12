@@ -24,19 +24,20 @@ var DXRouter = {
         // mono requete, à voir plus tard pour du multi-requete
         if (!params) {
             var params = [];
-            params[0] = {};
         }
-        params[0].table = 'relay_domains';
-        params[0].log = log;
+        var query = '';
+        var table = 'relay_domains';
         var myId = request.session.userinfo.id;
-        var query = "INSERT INTO " + params[0].table;
-        query += " (state,domain,comment,created_by) VALUES (";
-        query += params[0].state + ",'";
-        query += params[0].domain.toLowerCase() + "','";
-        query += params[0].comment+ "','";
-        query += myId + "')";
-        params[0].query = query;
-        DXCommon.add(params[0], callback, sessionID, request, response);
+        params.every(function (param) {
+            query += "INSERT INTO " + table;
+            query += " (state,domain,comment,created_by) VALUES (";
+            query += param.state + ",'";
+            query += param.domain.toLowerCase() + "','";
+            query += param.comment + "','";
+            query += myId + "')";
+            return true;
+        });
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     addMyNetworks: function (params, callback, sessionID, request, response) {
         // mono requete, à voir plus tard pour du multi-requete
@@ -44,81 +45,60 @@ var DXRouter = {
             var params = [];
             params[0] = {};
         }
-        params[0].table = 'mynetworks';
-        params[0].log = log;
+        var query = '';
+        var table = 'mynetworks';
         var myId = request.session.userinfo.id;
-        var query = "INSERT INTO " + params[0].table;
-        query += " (state,network,comment,created_by) VALUES (";
-        query += params[0].state + ",'";
-        query += params[0].network+ "','";
-        query += params[0].comment+ "','";
-        query += myId + "')";
-        params[0].query = query;
-        DXCommon.add(params[0], callback, sessionID, request, response);
+        params.every(function (param) {
+            var query = "INSERT INTO " + table;
+            query += " (state,network,comment,created_by) VALUES (";
+            query += param.state + ",'";
+            query += param.network + "','";
+            query += param.comment + "','";
+            query += myId + "')";
+            return true;
+        });
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     destroyRelayDomains: function (params, callback, sessionID, request, response) {
         // multi requete
         if (!params) {
             var params = [];
-            params[0] = {};
         }
-        var newParams = {};
-        newParams.table = 'relay_domains';
-        newParams.log = log;
-        newParams.length = params.length;
-        var occur = '';
-        var temp = '';
-        var count = 0;
-        params.forEach(function (entry) {
-            count++;
+        var query='';
+        var table = 'relay_domains';
+        params.every(function (param) {
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
-            temp = "(" + entry.id + ",";
-            temp += entry.state + ",'";
-            temp += entry.domain + "','";
-            temp += entry.comment + "')";
-            if (count < params.length)
-            {
-                temp += ',';
-            }
-            occur += temp;
+            query += "DELETE FROM " + table + " WHERE ";
+            query += "id=" + param.id + " AND ";
+            query += "state='" + param.state + "' AND ";
+            query += "domain='" + param.domain + "' AND ";
+            query += "comment='" + param.comment + "'; ";
+            return true;
         });
-        var query = "DELETE FROM " + newParams.table + " WHERE (id,state,domain,comment) IN (" + occur + ")";
-        newParams.query = query;
-        DXCommon.destroy(newParams, callback, sessionID, request, response);
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
     destroyMyNetworks: function (params, callback, sessionID, request, response) {
         // multi requete
         if (!params) {
             var params = [];
-            params[0] = {};
         }
-        var newParams = {};
-        newParams.table = 'mynetworks';
-        newParams.log = log;
-        newParams.length = params.length;
-        var occur = '';
-        var temp = '';
-        var count = 0;
+        var query='';
+        var table = 'mynetworks';
         params.forEach(function (entry) {
             count++;
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
-            temp = "(" + entry.id + ",";
-            temp += entry.state + ",'";
-            temp += entry.network + "','";
-            temp += entry.comment + "')";
-            if (count < params.length)
-            {
-                temp += ',';
-            }
-            occur += temp;
+            query += "DELETE FROM " + table + " WHERE ";
+            query += "id="+param.id + " AND ";
+            query += "state='"+param.state + "' AND ";
+            query += "username='"+param.network + "' AND ";
+            query += "lastname='"+param.comment + "';";
+            return true;
         });
-        var query = "DELETE FROM " + newParams.table + " WHERE (id,state,network,comment) IN (" + occur + ")";
-        newParams.query = query;
-        DXCommon.destroy(newParams, callback, sessionID, request, response);
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
     getRelayDomains: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
