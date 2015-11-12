@@ -14,7 +14,7 @@ Ext.define('MyDesktop.modules.zmsettings.stores.UserWizardModules', {
             create: 'ExtRemote.core.DXUser.addUserModules',
             read: 'ExtRemote.core.DXUser.getUserModules',
             //update: 'ExtRemote.core.DXModules.update',
-            //destroy: 'ExtRemote.core.DXModules.destroy'
+            destroy: 'ExtRemote.core.DXUser.destroyUserModules'
         },
         reader: {
             root: 'data',

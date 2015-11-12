@@ -40,6 +40,55 @@ var DXUser = {
         params[0].query = query;
         DXCommon.add(params[0], callback, sessionID, request, response);
     },
+    addUserModules: function (params, callback, sessionID, request, response) {
+        // on set les parametres par défaut si ils sont absents
+        var id;
+        var query;
+        if (!params)
+            var params = {};
+        params.extraQuery = '';
+        params.table = 'usersmodules';
+        if (!params.id) {
+            id = request.session.userinfo.id;
+        }
+        else
+        {
+            id = params.id;
+        }
+        if (!params.start)
+            params.start = 0;
+        if (!params.limit)
+            params.limit = 0;
+        params.log = log;
+        params.query = '';
+        console.log("dxuser(addusermodules) : preparation query");
+        params.every(function (param) {
+
+            query = "INSERT INTO " + params.table;
+            query += " (userid,moduleid) VALUES (";
+            query += param.userid + ",";
+            query += param.moduleid + "); ";
+//            var query = "SELECT id, userid, moduleid FROM " + params.table;
+ //           query += " WHERE userid=" + id + "; ";
+            params.query += query;
+            //console.log('param:',param);
+            return true;
+        });
+        console.log('fin preparation query-------------------------------');
+        console.log('query final: ', params.query);
+
+        //params.query = query;
+        //console.log(params, query)
+
+
+        /*Ext.each(params.data, function (value) {
+         var k = myArray[0];
+         console.log(value + k);
+         DXCommon.addAndBack(params);
+         });*/
+        DXCommon.add2(params, callback, sessionID, request, response);
+        //console.log('result',result);
+    },
     destroy: function (params, callback, sessionID, request, response) {
         // multi requete
         if (!params) {
@@ -73,6 +122,21 @@ var DXUser = {
         var query = "DELETE FROM " + newParams.table + " WHERE (id,level,state,username,firstname,lastname) IN (" + occur + ")";
         newParams.query = query;
         DXCommon.destroy(newParams, callback, sessionID, request, response);
+    },
+    destroyUserModules: function (params, callback, sessionID, request, response) {
+        // on set les parametres par défaut si ils sont absents
+        var query='';       
+       // params.log = log;
+        params.table = 'usersmodules';
+        //params.query = '';
+        params.every(function (param) {           
+            query += "DELETE FROM " + params.table + " WHERE ";
+            query += "userid ="+param.userid + " AND ";
+            query += "moduleid ="+param.moduleid + "; ";
+            //query += query;
+            return true;
+        });
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
@@ -110,10 +174,10 @@ var DXUser = {
             params.search = "";
         if (params.search) {
             params.extraQuery = "WHERE " + params.col;
-            params.extraQuery += " = '" + params.search+"'";
+            params.extraQuery += " = '" + params.search + "'";
         }
         params.log = log;
-        var query = "SELECT "+params.col+" FROM ";
+        var query = "SELECT " + params.col + " FROM ";
         query += params.table + " " + params.extraQuery;
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
@@ -170,32 +234,6 @@ var DXUser = {
         params.query = query;
         DXCommon.get(params, callback, sessionID, request, response);
     },
-    addUserModules: function (params, callback, sessionID, request, response) {
-        // on set les parametres par défaut si ils sont absents
-
-        var id;
-        if (!params)
-            var params = {};
-        params.extraQuery = '';
-        params.table = 'usersmodules';
-        if (!params.id) {
-            id = request.session.userinfo.id;
-        }
-        else
-        {
-            id = params.id;
-        }
-        if (!params.start)
-            params.start = 0;
-        if (!params.limit)
-            params.limit = 0;
-        params.log = log;
-        var query = "SELECT id, userid, moduleid FROM " + params.table;
-        query += " WHERE userid=" + id;
-        params.query = query;
-        console.log(params, query)
-        DXCommon.get(params, callback, sessionID, request, response);
-    },
     getUserModules: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
         var id;
@@ -249,8 +287,8 @@ var DXUser = {
             }
             DXCommon.sendMsg(success, message, data, callback, data.length);
         });
-    },
-};
+    }
+}
 // fonctions sur les wallpapaers ////////////////////////////////
 
 function availPoolCnx() {

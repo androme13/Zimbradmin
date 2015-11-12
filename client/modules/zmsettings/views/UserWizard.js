@@ -54,7 +54,8 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 //grid.getStore().load();
             },
             itemdblclick: function (grid, record, item, index, e) {
-                dstGrid = this.up().down('grid[name=dst]');
+                var dstGrid = this.up().down('grid[name=dst]');
+                var userId = me.down('form').getForm().findField('id').getValue();
                 if (dstGrid.getStore().findRecord('moduleid', record.data.id))
                 {
                     Ext.infoMsg.msg("Ajout de module à l'utilisateur",
@@ -67,6 +68,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                     // on transforme le record pour l'adapter à la nouvelle grille
                     var newRecord = Ext.create('MyDesktop.modules.zmsettings.models.UserWizardModuleModel');
                     newRecord.data.id = 0;
+                    newRecord.data.userid = userId;
                     newRecord.data.moduleid = record.data.id;
                     dstGrid.store.add(newRecord);
                     console.log('dblclick', record, newRecord);
@@ -319,10 +321,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 }
             ],
             editAccount: function (form) {
-                //var form = this.down('form');
-                //if (form.getForm().isValid()) {
                 var userId = me.down('form').getForm().findField('id').getValue();
                 var usersGrid = this.up('tabpanel').down('grid');
+                var dstGridStore = this.up().down('grid[name=dst]').getStore();
+
                 //on peuple les modules choisis
                 me.userData.modules = [];
                 Ext.each(dstGridStore.data.items, function (item, idx) {
@@ -333,6 +335,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 var userData = me.userData.user;
                 if (me.getMode() === 'edit') {
                     var storeRecord = usersGrid.store.findRecord('id', userId);
+
                     // le mot de passe a t'il change
                     if (me.origPassword !== userData.password) {
                         storeRecord.set('password', userData.password);
@@ -359,7 +362,52 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 {
                     usersGrid.store.sync({
                         success: function () {
-                            console.log('success');
+                            //si les modules ont été modifies
+
+                            if (dstGrid.store.getModifiedRecords().length > 0)
+                            {
+                                if (me.getMode() === 'edit')
+                                {
+                                    //dstGrid.store.getProxy().setParam('id', userId);
+                                }
+                                dstGrid.store.sync({
+                                    success: function () {
+                                        console.log('success');
+                                        // dstGridStore.sync();
+                                        if (me.getMode() === 'edit')
+                                        {
+                                            Ext.infoMsg.msg("Modification de l'utilisateur",
+                                                    "Les modifications ont été effectuée");
+                                        }
+                                        else
+                                        {
+                                            Ext.infoMsg.msg("Ajout de l'utilisateur",
+                                                    "L'ajout a été effectuée");
+                                        }
+                                    },
+                                    failure: function (batch, Opts) {
+                                        console.log('failure', batch, Opts);
+                                    },
+                                    callback: function ()
+                                    {
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                if (me.getMode() === 'edit')
+                                {
+                                    Ext.infoMsg.msg("Modification de l'utilisateur",
+                                            "Les modifications ont été effectuée");
+                                }
+                                else
+                                {
+                                    Ext.infoMsg.msg("Ajout de l'utilisateur",
+                                            "L'ajout a été effectuée");
+                                }
+                            }
+
                         },
                         failure: function (batch, Opts) {
                             console.log('failure', batch, Opts);
@@ -371,14 +419,35 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                         }
                     });
                 }
-                else
+                //si l'utilisateur n'a pas été modifié mais
+                // que ses modules l'ont été.
+                if ((dstGrid.store.getModifiedRecords().length > 0 || dstGrid.store.getRemovedRecords().length > 0) && usersGrid.store.getModifiedRecords().length === 0)
                 {
-                    layout.setActiveItem(0);
-                    if (me.getMode() === 'edit')
-                    {
-                        Ext.infoMsg.msg("Modification de l'utilisateur",
-                                "Aucune modification n'a été effectuée");
-                    }
+                    dstGrid.store.sync({
+                        success: function () {
+                            if (me.getMode() === 'edit')
+                            {
+                                Ext.infoMsg.msg("Modification de l'utilisateur",
+                                        "Les modifications ont été effectuée");
+                            }
+                            else
+                            {
+                                Ext.infoMsg.msg("Ajout de l'utilisateur",
+                                        "L'ajout a été effectuée");
+                            }
+                        },
+                        failure: function (batch, Opts) {
+                            console.log('failure', batch, Opts);
+                        },
+                        callback: function ()
+                        {
+                            layout.setActiveItem(0);
+                            usersGrid.store.reload();
+                        }
+
+                    });
+                    // layout.setActiveItem(0);
+
                 }
             },
             cancel: function () {

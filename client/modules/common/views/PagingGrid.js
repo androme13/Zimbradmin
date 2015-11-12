@@ -110,7 +110,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             columns: columns,
             listeners: {
                 afterrender: function (grid) {
-                    // on affiche le marqueur de colonne de recherche sur la
+                    // on aeffiche le marqueur de colonne de recherche sur la
                     // première colonne disposant de l'attribut 'searchable'
                     // et on genere le params.col
 

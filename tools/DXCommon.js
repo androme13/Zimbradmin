@@ -40,6 +40,52 @@ module.exports = {
         });
 
     },
+    add2: function (params, callback, sessionID, request, response) {
+        var result = [];
+        var data = [];
+        pool.getConnection(function (err, connection) {
+            var message = {};
+            if (err) {
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 102;
+                err.ZMErrorMsg = String(err);
+                if (connection)
+                    connection.release();
+                sendError(err, callback, params.log);
+            }
+            else
+            {
+                setLanguage(connection, request);
+                message = {
+                    'ZMTypeCode': 'DX',
+                    'ZMErrorCode': 100,
+                };
+                connection.query(params.query, function (err, rows, fields) {
+                    if (connection)
+                        connection.release();
+                    if (!err) {
+                        if (rows.length > 1)
+                            rows.every(function (row) {
+                                data.push(row);
+                                return true;
+                            });
+                        else
+                            data.push(rows);
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 102;
+                        err.ZMErrorMsg = String(err);
+                        sendError(err, callback, params.log);
+                    }
+
+
+                    sendSuccess(data.length, data, callback, message);
+                });
+            }
+        });
+    },
     destroy: function (params, callback, sessionID, request, response) {
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -91,6 +137,78 @@ module.exports = {
             }
             if (connection)
                 connection.release();
+        });
+
+    },
+    destroy2: function (query, callback, sessionID, request, response, log) {
+        var result = [];
+        var data = [];
+        pool.getConnection(function (err, connection) {
+
+            if (err) {
+                err.ZMTypeCode = 'DX';
+                err.ZMErrorCode = 202;
+                err.ZMErrorMsg = String(err);
+                if (connection)
+                    connection.release();
+                sendError(err, callback, log);
+            }
+            else
+            {
+                setLanguage(connection, request);
+                console.log('querydestroy', query);
+                connection.query(query, function (err, rows, fields) {
+                    if (connection)
+                        connection.release();
+                    var message = {};
+                    if (!err) {
+                        // si toutes les entrées ont été supprimées
+                        if (query.length === rows.affectedRows)
+                        {
+                            message = {
+                                'ZMTypeCode': 'DX',
+                                'ZMErrorCode': 200,
+                            };
+
+                        }
+                        // si seulement certaines entrées ont ét suprimées
+                        if (query.length > rows.affectedRows)
+                        {
+                            //console.log(err, rows);
+                            message = {
+                                'ZMTypeCode': 'DX',
+                                'ZMErrorCode': 204,
+                            };
+                        }
+                        // si aucune entrée n'a été supprimée
+                        if (rows.affectedRows === 0)
+                        {
+                            message = {
+                                'ZMTypeCode': 'DX',
+                                'ZMErrorCode': 203,
+                            };
+                        }
+
+                        if (rows.length > 1)
+                            rows.every(function (row) {
+                                data.push(row);
+                                return true;
+                            });
+                        else
+                            data.push(rows);
+                        sendSuccess(data.length, data, callback, message);
+                    }
+                    else
+                    {
+                        err.ZMTypeCode = 'DX';
+                        err.ZMErrorCode = 202;
+                        err.ZMErrorMsg = String(err);
+                        sendError(err, callback, log);
+                    }
+
+                });
+            }
+
         });
 
     },
@@ -180,7 +298,7 @@ module.exports = {
             log.error(msg);
         if (success === true)
         {
-            callback(null,{
+            callback(null, {
                 success: true,
                 totalCount: totalCount,
                 error: msg,
@@ -189,7 +307,7 @@ module.exports = {
         }
         else
         {
-            callback(null,{
+            callback(null, {
                 success: false,
                 error: msg
             });
@@ -197,10 +315,73 @@ module.exports = {
     }
 };
 
+function addAndBack(params, request) {
+    console.log('addandbackparams', params);
+    //var toReturn;
+    var message = {test: 'test'};
+    connection = pool.getConnection();
+    //console.log(connection);
+    //connection.release();
+    //var message={};
+
+
+
+
+
+    /*if (err) {
+     err.ZMTypeCode = 'DX';
+     err.ZMErrorCode = 102;
+     err.ZMErrorMsg = String(err);
+     return err;
+     //sendError(err, callback, params.log);
+     }
+     else
+     {
+     setLanguage(connection, request);
+     console.log(params.query);
+     connection.query(params.query, function (err, rows, fields) {
+     if (!err) {
+     console.log('messageavant', message)
+     message = {
+     'ZMTypeCode': 'DX',
+     'ZMErrorCode': 100,
+     'data': rows
+     };
+     console.log('messageaprès', message)
+     //console.log('dxok',rows);
+     //message=err;
+     //return message;
+     //sendSuccess(rows.length, rows, callback, message);
+     }
+     else
+     {
+     err.ZMTypeCode = 'DX';
+     err.ZMErrorCode = 102;
+     err.ZMErrorMsg = String(err);
+     return err;
+     //toReturn = err;
+     //sendError(err, callback, params.log);
+     }
+     });
+     
+     }
+     console.log('conn release');
+     if (connection)
+     connection.release();
+     return message;*/
+
+
+
+    // console.log ('fin de addandback');
+    //console.log('toReturn',toReturn);
+    //return toReturn;
+
+}
+
 function sendError(err, callback, log) {
     if (log)
         log.error(err);
-    callback(null,{
+    callback(null, {
         success: false,
         error: err
     });
@@ -210,7 +391,7 @@ function sendSuccess(totalCount, data, callback, message) {
     var msg = {};
     if (message)
         msg = message;
-    callback(null,{
+    callback(null, {
         success: true,
         totalCount: totalCount,
         error: msg,

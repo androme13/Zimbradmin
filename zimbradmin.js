@@ -34,7 +34,8 @@ global.pool = mysql.createPool({
     user: MySQLConfig.user,
     password: MySQLConfig.password,
     database: MySQLConfig.database,
-    debug: false
+    debug: false,
+    multipleStatements: true
 });
 monitor.init(ZMConf.get("Monitor"));
 var notFound = function (req, res) {
