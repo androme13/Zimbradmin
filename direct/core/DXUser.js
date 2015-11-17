@@ -94,6 +94,19 @@ var DXUser = {
         });
         DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
+    destroyAllUserModules: function (params, callback, sessionID, request, response) {
+        // on set les parametres par défaut si ils sont absents
+        var query = '';
+        params.table = 'usersmodules';
+        params.every(function (param) {
+            query += "DELETE FROM " + params.table + " WHERE ";
+            query += "userid =" + param.userid + "; ";
+            //query += query;
+            return true;
+        });
+        DXCommon.destroy2(query, callback, sessionID, request, response, log);
+    },
+    
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
         // on set les parametres par défaut si ils sont absents
@@ -244,7 +257,7 @@ var DXUser = {
             DXCommon.sendMsg(success, message, data, callback, data.length);
         });
     }
-}
+};
 // fonctions sur les wallpapaers ////////////////////////////////
 
 function availPoolCnx() {
