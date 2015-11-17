@@ -71,10 +71,10 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                     newRecord.data.userid = userId;
                     newRecord.data.moduleid = record.data.id;
                     dstGrid.store.add(newRecord);
-                    console.log('dblclick', record, newRecord);
-                    Ext.infoMsg.msg("Ajout de module à l'utilisateur",
-                            "Vous avez ajouté le module<BR>" + record.data.module +
-                            "<BR><SMALL>" + record.data.comment + "</SMALL>");
+                    //console.log('dblclick', record, newRecord);
+                    //Ext.infoMsg.msg("Ajout de module à l'utilisateur",
+                    //        "Vous avez ajouté le module<BR>" + record.data.module +
+                    //        "<BR><SMALL>" + record.data.comment + "</SMALL>");
                 }
             }
         });
@@ -83,9 +83,9 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 srcGridStore = this.up().down('grid[name=src]').getStore();
                 var srcModuleRecord = srcGridStore.findRecord('id', record.get('moduleid'));
                 grid.store.remove(record);
-                Ext.infoMsg.msg("Suppression de module à l'utilisateur",
-                        "Vous avez supprimé le module<BR>" + srcModuleRecord.data.module +
-                        "<BR><SMALL>" + srcModuleRecord.data.comment + "</SMALL>");
+               // Ext.infoMsg.msg("Suppression de module à l'utilisateur",
+                //        "Vous avez supprimé le module<BR>" + srcModuleRecord.data.module +
+                 //       "<BR><SMALL>" + srcModuleRecord.data.comment + "</SMALL>");
             }
         });
         var panel = {
@@ -386,14 +386,14 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                         // dstGridStore.sync();
                                         if (me.getMode() === 'edit')
                                         {
-                                            Ext.infoMsg.msg("Modification de l'utilisateur",
-                                                    "Les modifications ont été effectuée");
+                                            Ext.infoMsg.msg("Modification des modules l'utilisateur",
+                                                    "Les modifications sur les modules de l'utilisateur ont été effectuée");
                                         }
-                                        else
-                                        {
-                                            Ext.infoMsg.msg("Ajout de l'utilisateur",
-                                                    "L'ajout a été effectuée");
-                                        }
+                                        //else
+                                        //{
+                                        //    Ext.infoMsg.msg("Ajout de l'utilisateur",
+                                        //            "L'ajout a été effectuée");
+                                        //}
                                     },
                                     failure: function (batch, Opts) {
                                         console.log('failure', batch, Opts);
@@ -404,7 +404,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
 
                                 });
                             }
-                            else
+                           /* else
                             {
                                 if (me.getMode() === 'edit')
                                 {
@@ -416,7 +416,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     Ext.infoMsg.msg("Ajout de l'utilisateur",
                                             "L'ajout a été effectuée");
                                 }
-                            }
+                            }*/
 
                         },
                         failure: function (batch, Opts) {
