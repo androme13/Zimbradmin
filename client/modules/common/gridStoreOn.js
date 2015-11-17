@@ -23,7 +23,7 @@ Ext.define('MyDesktop.modules.common.gridStoreOn', {
                         break;
                     case '2':
                         console.log('destroy');
-                        var nbItems = message.data.affectedRows;
+                        var nbItems = message.error.affectedRows;
                         console.log('store', store, nbItems);
                         var txtItems = "<BR><B>" + nbItems + "</B> élément(s) supprimé(s)";
                         switch (message.error.ZMErrorCode.toString()[2]) {
