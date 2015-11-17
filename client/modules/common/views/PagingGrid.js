@@ -419,12 +419,12 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             grid.store.remove(rows);
                             grid.store.sync({                                
                                 success: function () {
-                                    console.log('succesrows',rows);
                                     if (grid.customAfterRemoveRow)
-                                        grid.customAfterRemoveRow(rows);
-                                    // on peut supprimer les modules de l'user
+                                        grid.customAfterRemoveRow(true,rows);
                                 },
                                 failure: function (batch, Opts) {
+                                    if (grid.customAfterRemoveRow)
+                                        grid.customAfterRemoveRow(false,rows);
                                 },
                                 callback: function () {
                                     //grid.customAfterRemoveRow(rows);
