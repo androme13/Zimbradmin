@@ -52,9 +52,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             if (this.customEditRow)
             {
                 //grid.customAddRow(grid);
-                this.addListener('itemdblclick',function(grid,record){
+                this.addListener('itemdblclick', function (grid, record) {
                     //console.log(grid,record);
-                    this.customEditRow(grid,record);
+                    this.customEditRow(grid, record);
                 })
             }
         }
@@ -110,7 +110,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             columns: columns,
             listeners: {
                 afterrender: function (grid) {
-                    // on aeffiche le marqueur de colonne de recherche sur la
+                    // on affiche le marqueur de colonne de recherche sur la
                     // première colonne disposant de l'attribut 'searchable'
                     // et on genere le params.col
 
@@ -417,7 +417,16 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         iconCls: 'accept16',
                         handler: function () {
                             grid.store.remove(rows);
-                            grid.store.sync();
+                            grid.store.sync({
+                                success: function () {
+                                },
+                                failure: function (batch, Opts) {
+                                },
+                                callback: function () {
+                                    grid.customAfterRemoveRow(rows);
+                                }
+                            }
+                            );
                             this.up('window').close();
                         }
                     }, {
