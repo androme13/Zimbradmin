@@ -43,13 +43,13 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                 items: [
                     {
                         xtype: 'form',
-                        reference: 'form',
-                        buttonAlign: 'center',
+                        //reference: 'form',
+                        buttonAlign: 'right',
                         border: false,
                         bodyPadding: 10,
                         fieldDefaults: {
                             //labelWidth: 125,
-                            //msgTarget: 'side',
+                            msgTarget: 'side',
                             autoFitErrors: false
                         },
                         items: [{
@@ -74,6 +74,7 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                                 xtype: 'label',
                                 id: 'logincomment',
                                 margin: '20 0 0 0',
+                                tabIndex: -1,
                                 html: "Veuillez saisir votre nom d'utilisateur ainsi que votre mot de passe",
                                 style: {
                                     color: 'black' //default color
@@ -84,6 +85,7 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                                 id: 'Login',
                                 text: 'Login',
                                 formBind: true,
+                                tabIndex: -1,
                                 listeners: {
                                     click: function (btn) {
                                         var win = btn.up('window');
@@ -124,7 +126,7 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                                 this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {
                                     enter: function () {
                                         var form = win.down('form');
-                                        var button = form.down('button#Login');
+                                        var button = win.down('button#Login');
                                         if (form.getForm().isValid())
                                         {
                                             button.fireEvent('click', button);
@@ -135,17 +137,24 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                             }
                         }
                     }
-                ]
+                ],
+                listeners: {
+                    beforeshow: function (window, eOpts) {
+                        //window.down('form').getForm().reset();
+                        var field = win.down('form').getForm().findField('username');
+                         if (user) {
+                         field.setValue(user);
+                         field.readOnly = true;
+                         field = win.down('form').getForm().findField('password');
+                         }
+                         //field = win.down('form').getForm().findField('username');
+                         field.focus(false,1000);
+                    }
+                }
+
             });
         }
-        var field = win.down('form').getForm().findField('username');
-        if (user) {
-            field.setValue(user);
-            field.readOnly = true;
-            field = win.down('form').getForm().findField('password');
-        }
-        field = win.down('form').getForm().findField('username');
-        field.focus(false, 1000);
+
         return win;
     },
 });
