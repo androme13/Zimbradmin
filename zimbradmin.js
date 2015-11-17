@@ -6,7 +6,7 @@ var ZMConf = require('nconf');
 ZMConf.env().file({file: 'server-config.json'});
 var bunyan = require('bunyan');
 global.log = bunyan.createLogger({name: 'ZM'});
-var monitor = require('./ZMModules/monitor.js')
+var monitor = require('./ZMModules/monitor.js');
 var ServerConfig = ZMConf.get("ServerConfig");
 var ExtDirectConfig = ZMConf.get("ExtDirectConfig");
 var MySQLConfig = ZMConf.get("MySQLConfig");
@@ -14,7 +14,7 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var session = require('express-session');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var extdirect = require('extdirect');
@@ -75,7 +75,7 @@ app.use(parallel([
         saveUninitialized: false,
         cookie: {maxAge: ServerConfig.sessionMaxAge, secret: ServerConfig.sessionSecret},
         rolling: true
-    }),
+    })
 ]));
 // on charge la page par defaut
 app.get('/', startPage);
