@@ -417,13 +417,17 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         iconCls: 'accept16',
                         handler: function () {
                             grid.store.remove(rows);
-                            grid.store.sync({
+                            grid.store.sync({                                
                                 success: function () {
+                                    console.log('succesrows',rows);
+                                    if (grid.customAfterRemoveRow)
+                                        grid.customAfterRemoveRow(rows);
+                                    // on peut supprimer les modules de l'user
                                 },
                                 failure: function (batch, Opts) {
                                 },
                                 callback: function () {
-                                    grid.customAfterRemoveRow(rows);
+                                    //grid.customAfterRemoveRow(rows);
                                 }
                             }
                             );
