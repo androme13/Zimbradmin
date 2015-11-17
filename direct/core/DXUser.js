@@ -60,23 +60,23 @@ var DXUser = {
     },
     destroy: function (params, callback, sessionID, request, response) {
         // multi requete
-        var query='';
+        var query = '';
         if (!params) {
             var params = [];
             params[0] = {};
         }
-        table = 'users';      
+        table = 'users';
         params.every(function (param) {
             // test erreur///
             //if (count == 2)
             // entry.domain = 'aa' + entry.domain;
             query += "DELETE FROM " + table + " WHERE ";
-            query += "id="+param.id + " AND ";
-            query += "level='"+param.level + "' AND ";
-            query += "state='"+param.state + "' AND ";
-            query += "username='"+param.username + "' AND ";
-            query += "firstname='"+param.firstname + "' AND ";
-            query += "lastname='"+param.lastname + "'; ";
+            query += "id=" + param.id + " AND ";
+            query += "level='" + param.level + "' AND ";
+            query += "state='" + param.state + "' AND ";
+            query += "username='" + param.username + "' AND ";
+            query += "firstname='" + param.firstname + "' AND ";
+            query += "lastname='" + param.lastname + "'; ";
             return true;
         });
         DXCommon.destroy2(query, callback, sessionID, request, response, log);
@@ -96,17 +96,17 @@ var DXUser = {
     },
     destroyAllUserModules: function (params, callback, sessionID, request, response) {
         // on set les parametres par défaut si ils sont absents
+        if (Array.isArray(params) === false)
+            params = [params];
         var query = '';
         params.table = 'usersmodules';
         params.every(function (param) {
             query += "DELETE FROM " + params.table + " WHERE ";
             query += "userid =" + param.userid + "; ";
-            //query += query;
             return true;
         });
         DXCommon.destroy2(query, callback, sessionID, request, response, log);
     },
-    
     get: function (params, callback, sessionID, request, response) {
         var query, extraQuery;
         // on set les parametres par défaut si ils sont absents
