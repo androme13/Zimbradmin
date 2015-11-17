@@ -43,8 +43,9 @@ module.exports = {
     add2: function (query, callback, sessionID, request, response, log) {
         var result = [];
         var data = [];
+        var message = {};
         pool.getConnection(function (err, connection) {
-            var message = {};
+
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 102;
@@ -143,8 +144,8 @@ module.exports = {
     destroy2: function (query, callback, sessionID, request, response, log) {
         var result = [];
         var data = [];
+        var message = {};
         pool.getConnection(function (err, connection) {
-
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 202;
@@ -156,14 +157,23 @@ module.exports = {
             else
             {
                 setLanguage(connection, request);
-                console.log('querydestroy', query);
                 connection.query(query, function (err, rows, fields) {
+                    // on encapsule query et rows dans un tableau
+                    // si ils ne sont pas deja des tableaux
+                    if (Array.isArray(query) === false)
+                        query = [query];
+                    if (Array.isArray(rows) === false)
+                        rows = [rows];
                     if (connection)
                         connection.release();
-                    var message = {};
                     if (!err) {
-                        // si toutes les entrées ont été supprimées
-                        if (query.length === rows.affectedRows)
+                        var globalAffectedRows = 0;
+                        rows.every(function (row) {
+                            globalAffectedRows += row.affectedRows;
+                            data.push(row);
+                            return true;
+                        });
+                        if (globalAffectedRows === rows.length)
                         {
                             message = {
                                 'ZMTypeCode': 'DX',
@@ -171,31 +181,25 @@ module.exports = {
                             };
 
                         }
-                        // si seulement certaines entrées ont ét suprimées
-                        if (query.length > rows.affectedRows)
+                        else
+                        // si seulement certaines entrées ont été suprimées
+                        if (globalAffectedRows < rows.length)
                         {
-                            //console.log(err, rows);
                             message = {
                                 'ZMTypeCode': 'DX',
                                 'ZMErrorCode': 204,
                             };
                         }
+                        else
                         // si aucune entrée n'a été supprimée
-                        if (rows.affectedRows === 0)
+                        if (globalAffectedRows === 0)
                         {
                             message = {
                                 'ZMTypeCode': 'DX',
                                 'ZMErrorCode': 203,
                             };
                         }
-
-                        if (rows.length > 1)
-                            rows.every(function (row) {
-                                data.push(row);
-                                return true;
-                            });
-                        else
-                            data.push(rows);
+                        message.affectedRows=globalAffectedRows;
                         sendSuccess(data.length, data, callback, message);
                     }
                     else
