@@ -34,7 +34,7 @@ Ext.infoMsg = function () {
 }();
 
 // fix hide submenu (in chrome 43)
-Ext.override(Ext.menu.Menu, {
+/*Ext.override(Ext.menu.Menu, {
     onMouseLeave: function (e) {
         var me = this;
         // BEGIN FIX
@@ -55,7 +55,7 @@ Ext.override(Ext.menu.Menu, {
         }
         me.fireEvent('mouseleave', me, e);
     }
-});
+});*/
 
 
 
