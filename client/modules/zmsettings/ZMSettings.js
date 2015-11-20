@@ -39,7 +39,6 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             // création et configuration des stores
             var ZMUsersGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMUsers');
             var ZMModulesGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.ZMModules');
-
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
@@ -59,29 +58,15 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                 customEditRow: function (grid, record) {
                     createUserPanel.setMode('edit', record);
                     this.up('panel').getLayout().setActiveItem(1);
-                },
-                customAfterRemoveRow: function (success, rows) {
-                    // une fois le ou les utilisateurs supprimés 
-                    // on peut supprimer aussi ses modules
-                    console.log('this.customAfterRemoveRow');
-                    rows.every(function (row) {
-                        ExtRemote.core.DXUser.destroyAllUserModules({'userid': row.data.id},
-                        function (result, event) {              
-                        });
-                        return true;
-                    });
                 }
             });
-
             //tab ZMmodules
             // création et configuration du store 
-
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
             ZMModulesGridStore.on(gridStoreOn.create());
             ZMModulesGridStore.proxy.on(proxyOn.create(ZMModulesGridStore));
-
             var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
                 store: ZMModulesGridStore,
                 rowEditing: true,
