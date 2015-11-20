@@ -98,6 +98,7 @@ var DXModules = {
         params[0].table = 'modules';
         params[0].log = log;
         var query = "UPDATE " + params[0].table + " SET module='" + params[0].module;
+        query += "', state ='" + params[0].state;
         query += "', comment='" + params[0].comment;
         query += "', modified_by='" + myId;
         query += "' WHERE id='" + params[0].id + "'";
