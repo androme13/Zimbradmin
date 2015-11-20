@@ -46,12 +46,12 @@ var DXLogin = {
                                     message.ZMTypeCode = 'LOGIN';
                                     message.ZMErrorCode = 105;
                                     break;
-                                case 1:
+                                case 2:
                                     log.info('Login try of locked account ' + request.session.userinfo.username);
                                     message.ZMTypeCode = 'LOGIN';
                                     message.ZMErrorCode = 106;
                                     break;
-                                case 2:
+                                case 1:
                                     log.info('Login of ' + request.session.userinfo.username);
                                     message.ZMTypeCode = 'LOGIN';
                                     message.ZMErrorCode = 100;
