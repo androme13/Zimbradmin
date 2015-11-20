@@ -36,6 +36,50 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
                 return '';
             },
         },
+        {name: 'level',
+            text: 'Niveau',
+            defaultValue: 1,
+            flex: 2,
+            editor: {
+                xtype: 'combo',
+                editable: false,
+                //typeAhead: true,
+                triggerAction: 'all',
+                store: [
+                    [0, 'invité'],
+                    [1, 'utilisateur'],
+                    [2, 'super utilisateur'],
+                    [3, 'administrateur'],
+                    [4, 'super administrateur']
+                ]
+
+            },
+            renderer: function (value) {
+                var backval = "";
+                switch (value)
+                {
+                    case 0 :
+                        backval = "invité";
+                        break;
+                    case 1 :
+                        backval = "utilisateur";
+                        break;
+                    case 2 :
+                        backval = "super utilisateur";
+                        break;
+                    case 3 :
+                        backval = "administrateur";
+                        break;
+                    case 4 :
+                        backval = "super administrateur";
+                        break;
+                    default:
+                        backval = "inconnu";
+                        break;
+                }
+                return backval;
+            }
+        },
         {
             name: 'module',
             editor: {
