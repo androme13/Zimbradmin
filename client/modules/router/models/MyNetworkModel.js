@@ -12,6 +12,7 @@ Ext.define('MyDesktop.modules.router.models.MyNetworkModel', {
         Ext.create('MyDesktop.modules.common.gridcols.gridCols').createStateCol(),
         {
             name: 'network',
+            exportable: true,
             editor: {
                 editable: true,
                 allowBlank: false,
@@ -21,7 +22,7 @@ Ext.define('MyDesktop.modules.router.models.MyNetworkModel', {
             type: 'string',
             searchable: true
         },
-        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createCommentCol(),
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createCommentCol({exportable: true}),
         Ext.create('MyDesktop.modules.common.gridcols.gridCols').createCreatedCol(),
         {name: 'created_by', binded: false},
         Ext.create('MyDesktop.modules.common.gridcols.gridCols').createModifiedCol(),
