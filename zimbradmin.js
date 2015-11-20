@@ -1,6 +1,7 @@
 'use strict';
 // Chargement des modules de Node.js
 var fs = require('fs');
+var system = require('os');
 global.bcrypt = require('bcrypt-nodejs');
 var ZMConf = require('nconf');
 ZMConf.env().file({file: 'server-config.json'});
@@ -120,7 +121,9 @@ HTTPServer=http.createServer(function(req, res) {
 
 // creation serveur https
 HTTPSServer = https.createServer(sslOpts, app).listen(ServerConfig.HTTPSPort);
+
 log.info('ZimbradminNG server listening on port %d in %s mode', ServerConfig.HTTPSPort, app.settings.env);
+log.info('Running on :', system.hostname());
 log.info('Node Version: ' + process.version);
 // Écoute du signal SIGINT
 process.on('SIGINT', function () {
