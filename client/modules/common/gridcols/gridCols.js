@@ -8,7 +8,7 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
     createStateCol: function (options) {
         var col = {name: 'state',
             text: 'Etat',
-            defaultValue: 2,
+            defaultValue: 1,
             flex: 1,
             editor: {
                 xtype: 'combo',
