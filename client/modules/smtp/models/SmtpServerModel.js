@@ -8,7 +8,7 @@ Ext.define('MyDesktop.modules.smtp.models.SmtpServerModel', {
     extend: 'Ext.data.Model',
     fields: [
         // IMPORTANT : le champ id ne doit pas avoir de valeur par défaut
-        {name: 'id', hidden: true, flex: 1},
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createIdCol(),
         Ext.create('MyDesktop.modules.common.gridcols.gridCols').createStateCol(),
         {
             name: 'server',
