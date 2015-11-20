@@ -38,7 +38,7 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 }
                 return '';
             }
-        }
+        };
         return col;
     },
     createLevelCol: function () {
@@ -85,7 +85,65 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 }
                 return backval;
             }
-        }
+        };
+        return col;
+    },
+    createCommentCol: function () {
+        var col = {
+            name: 'comment',
+            flex: 2,
+            editor: {
+                editable: true,
+                allowBlank: false
+            },
+            type: 'string'
+        };
+        return col;
+    },
+    createCreatedCol: function () {
+        var col = {name: 'created_date', type: 'date', text: 'Crée le',
+            renderer: function (value, metaData, record, rowIndex, colIndex, store) {
+                var nameCreator = 'inconnu';
+                var idCreator = record.get('created_by');
+                var st = this.store;
+                var index = st.find('id', idCreator);
+                if (index >= 0)
+                    nameCreator = st.getAt(index).get('username');
+                if (value == null)
+                    value = 'Inconnu';
+                return 'le : <i>' + value + '</i><br>par: <i>' + nameCreator + '</i></br>';
+            }
+        };
+        return col;
+    },
+    createIdCol: function () {
+        var col =         {
+            name: 'id',
+            type: 'int',
+            hidden: true,
+            flex: 1
+        };
+        return col;
+    },
+    createModifiedCol: function () {
+        var col = {name: 'modified_date', type: 'date', text: 'Modifié le',
+            renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+                var nameModifier = 'inconnu';
+                var idModifier = record.get('modified_by');
+                var st = this.store;
+                var index = st.find('id', idModifier);
+                if (index >= 0)
+                    nameModifier = st.getAt(index).get('username');
+                if (record.data.modified_date === record.data.created_date)
+                {
+                    return 'non modifié';
+                }
+                else
+                {
+                    return 'le : <i>' + value + '</i><br>par: <i>' + idModifier + '</i></br>';
+                }
+            }
+        };
         return col;
     }
 });
