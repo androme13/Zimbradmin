@@ -13,84 +13,8 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             hidden: true,
             flex: 1
         },
-        {
-            name: 'state',
-            text: 'Etat',
-            flex: 1,
-            defaultValue: 2,
-            editor: {
-                xtype: 'combo',
-                valueField: 'value',
-                queryMode: 'local',
-                store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
-                editable: false,
-            },
-            renderer: function (value, meta) {
-                switch (value) {
-                    case 0 :
-                        meta.css = 'zmsettings-disabled_entry24';
-                        meta.tdAttr = 'data-qtip="Inactif"';
-                        break;
-                    case 1 :
-                        meta.css = 'zmsettings-blocked_entry24';
-                        meta.tdAttr = 'data-qtip="Bloqué"';
-                        break;
-                    case 2 :
-                        meta.css = 'zmsettings-enabled_entry24';
-                        meta.tdAttr = 'data-qtip="Actif"';
-                        break;
-                    case 3 :
-                        meta.css = 'zmsettings-deleted_entry24';
-                        meta.tdAttr = 'data-qtip="Supprimé"';
-                        break;
-                }
-                return '';
-            },
-        },
-        {name: 'level',
-            text: 'Niveau',
-            defaultValue: 1,
-            flex: 2,
-            editor: {
-                xtype: 'combo',
-                editable: false,
-                //typeAhead: true,
-                triggerAction: 'all',
-                store: [
-                    [0, 'invité'],
-                    [1, 'utilisateur'],
-                    [2, 'super utilisateur'],
-                    [3, 'administrateur'],
-                    [4, 'super administrateur']
-                ]
-
-            },
-            renderer: function (value) {
-                var backval = "";
-                switch (value)
-                {
-                    case 0 :
-                        backval = "invité";
-                        break;
-                    case 1 :
-                        backval = "utilisateur";
-                        break;
-                    case 2 :
-                        backval = "super utilisateur";
-                        break;
-                    case 3 :
-                        backval = "administrateur";
-                        break;
-                    case 4 :
-                        backval = "super administrateur";
-                        break;
-                    default:
-                        backval = "inconnu";
-                        break;
-                }
-                return backval;
-            }
-        },
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createStateCol(),
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createLevelCol(),
         {
             name: 'username',
             flex: 2,
@@ -128,52 +52,9 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMUserModel', {
             searchable: true
 
         },
-        {name: 'created_date', type: 'date', text: 'Crée le',hidden: true,flex: 2,
-            renderer: function (value, metaData, record, rowIndex, colIndex, store) {
-                var nameCreator = 'inconnu';
-                var idCreator = record.get('created_by');
-                var st = this.store;
-                var finalValue;
-                var index = st.find('id', idCreator);
-                if (index >= 0)
-                    nameCreator = st.getAt(index).get('username');
-                if (value == null)
-                    finalValue = 'Inconnu';
-                else
-                {
-                    finalValue = value.toLocaleDateString() + " ";
-                    finalValue += value.toLocaleTimeString();
-                }
-                return 'le : <small><i>' + finalValue + '</i></small><br>par: <small><i>' + nameCreator + '</i></small></br>';
-            },
-        },
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createCreatedCol(),
         {name: 'created_by', binded: false},
-        {name: 'modified_date', type: 'date', text: 'Modifié le',hidden: true,flex: 2,
-            renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-                var nameModifier = 'inconnu';
-                var idModifier = record.get('modified_by');
-                var st = this.store;
-                var finalValue;
-                var index = st.find('id', idModifier);
-                if (index >= 0)
-                    nameModifier = st.getAt(index).get('username');
-                if (record.data.modified_date === record.data.created_date)
-                {
-                    return 'non modifié';
-                }
-                else
-                {
-                    if (value == null)
-                        finalValue = 'Inconnu';
-                    else
-                    {
-                        finalValue = value.toLocaleDateString() + " ";
-                        finalValue += value.toLocaleTimeString();
-                    }
-                    return 'le : <small><i>' + finalValue + '</i></small><br>par: <small><i>' + nameModifier + '</i></small></br>';
-                }
-            }
-        },
+        Ext.create('MyDesktop.modules.common.gridcols.gridCols').createModifiedCol(),
         {name: 'modified_by', binded: false},
     ]
 });
