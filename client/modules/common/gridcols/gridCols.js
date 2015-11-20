@@ -5,7 +5,7 @@
  */
 
 Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
-    createStateCol: function () {
+    createStateCol: function (options) {
         var col = {name: 'state',
             text: 'Etat',
             defaultValue: 2,
@@ -14,7 +14,7 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 xtype: 'combo',
                 valueField: 'value',
                 queryMode: 'local',
-                store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
+                store: [[0, 'Inactif'], [1, 'Actif'], [2, 'Bloqué']],
                 editable: false,
             },
             renderer: function (value, meta) {
@@ -23,11 +23,11 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                         meta.css = 'smtp-disabled_entry24';
                         meta.tdAttr = 'data-qtip="Inactif"';
                         break;
-                    case 1 :
+                    case 2 :
                         meta.css = 'smtp-blocked_entry24';
                         meta.tdAttr = 'data-qtip="Bloqué"';
                         break;
-                    case 2 :
+                    case 1 :
                         meta.css = 'smtp-enabled_entry24';
                         meta.tdAttr = 'data-qtip="Actif"';
                         break;
@@ -39,9 +39,15 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 return '';
             }
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     },
-    createLevelCol: function () {
+    createLevelCol: function (options) {
         var col = {name: 'level',
             text: 'Niveau',
             defaultValue: 1,
@@ -86,9 +92,16 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 return backval;
             }
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     },
-    createCommentCol: function () {
+    createCommentCol: function (options) {
+
         var col = {
             name: 'comment',
             flex: 2,
@@ -98,9 +111,15 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
             },
             type: 'string'
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     },
-    createCreatedCol: function () {
+    createCreatedCol: function (options) {
         var col = {name: 'created_date', type: 'date', text: 'Crée le',
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
                 var nameCreator = 'inconnu';
@@ -114,18 +133,30 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 return 'le : <i>' + value + '</i><br>par: <i>' + nameCreator + '</i></br>';
             }
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     },
-    createIdCol: function () {
-        var col =         {
+    createIdCol: function (options) {
+        var col = {
             name: 'id',
             type: 'int',
             hidden: true,
             flex: 1
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     },
-    createModifiedCol: function () {
+    createModifiedCol: function (options) {
         var col = {name: 'modified_date', type: 'date', text: 'Modifié le',
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
                 var nameModifier = 'inconnu';
@@ -144,6 +175,12 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
                 }
             }
         };
+        if (options)
+        {
+            for (var key in options) {
+                col[key] = options[key];
+            }
+        }
         return col;
     }
 });
