@@ -10,11 +10,13 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
         {
             name: 'id',
             type: 'int',
-            hidden: true
+            hidden: true,
+            flex: 1
         },
         {
             name: 'state',
             type: 'int',
+            flex: 1,
             editor: {
                 xtype: 'combo',
                 valueField: 'value',
@@ -36,7 +38,8 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
                 return '';
             },
         },
-        {name: 'level',
+        {
+            name: 'level',
             text: 'Niveau',
             defaultValue: 1,
             flex: 2,
@@ -82,6 +85,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
         },
         {
             name: 'module',
+            flex: 2,
             editor: {
                 allowBlank: false,
             },
@@ -89,6 +93,7 @@ Ext.define('MyDesktop.modules.zmsettings.models.ZMModuleModel', {
         },
         {
             name: 'comment',
+            flex: 2,
             editor: {
                 allowBlank: false,
             },
