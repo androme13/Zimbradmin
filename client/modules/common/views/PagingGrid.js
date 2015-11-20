@@ -80,7 +80,10 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         this.store.model.getFields().forEach(function (i)
         {
             if (i.binded !== false) {
-                var colCFG = {header: i.name, dataIndex: i.name, flex: 1};
+                var colCFG = {header: i.name, dataIndex: i.name};
+                if (i.flex){
+                    colCFG.flex = i.flex;
+                }
                 if (i.hidden) {
                     colCFG.hidden = i.hidden;
                 }
