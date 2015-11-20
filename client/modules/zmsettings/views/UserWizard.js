@@ -71,10 +71,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                     newRecord.data.userid = userId;
                     newRecord.data.moduleid = record.data.id;
                     dstGrid.store.add(newRecord);
-                    //console.log('dblclick', record, newRecord);
-                    //Ext.infoMsg.msg("Ajout de module à l'utilisateur",
-                    //        "Vous avez ajouté le module<BR>" + record.data.module +
-                    //        "<BR><SMALL>" + record.data.comment + "</SMALL>");
                 }
             }
         });
@@ -83,9 +79,6 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                 srcGridStore = this.up().down('grid[name=src]').getStore();
                 var srcModuleRecord = srcGridStore.findRecord('id', record.get('moduleid'));
                 grid.store.remove(record);
-               // Ext.infoMsg.msg("Suppression de module à l'utilisateur",
-                //        "Vous avez supprimé le module<BR>" + srcModuleRecord.data.module +
-                 //       "<BR><SMALL>" + srcModuleRecord.data.comment + "</SMALL>");
             }
         });
         var panel = {
@@ -135,7 +128,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
                                     valueField: 'value',
                                     queryMode: 'local',
                                     value: 2,
-                                    store: [[0, 'Inactif'], [1, 'Bloqué'], [2, 'Actif']],
+                                    store: [[0, 'Inactif'], [1, 'Actif'], [2, 'Bloqué']],
                                     editable: false
                                 },
                                 {
