@@ -26,21 +26,24 @@ function start(MonitorConfig) {
         //clearInterval(this);
         stat1 = fs.readFileSync('/proc/stat', "utf8");
         data1 = stat1.split('\n');
-        data1[0]=data1[0].replace('cpu  ', '');
-        data1f= data1[0].split(' ');
-       // console.log('stat1', data1f);
+        data1[0] = data1[0].replace('cpu  ', '');
+        data1f = data1[0].split(' ');
         setTimeout(function () {
             stat2 = fs.readFileSync('/proc/stat', "utf8");
             data2 = stat2.split('\n');
-            data2[0]=data2[0].replace('cpu  ','');
-            data2f= data2[0].split(' ');
-            //console.log('stat2', data2f);
-            user = data2f[0]-data1f[0];
-            nice =data2f[1]-data1f[1];
-            sys =data2f[2]-data1f[2];
-            idle =data2f[3]-data1f[3];
-            total= user+nice+sys+idle;
-            global.Monitor.ZM.CPU = {'idle': idle/total*100, 'sys': sys/total*100, 'user': user/total*100};
+            data2[0] = data2[0].replace('cpu  ', '');
+            data2f = data2[0].split(' ');
+            user = data2f[0] - data1f[0];
+            nice = data2f[1] - data1f[1];
+            sys = data2f[2] - data1f[2];
+            idle = data2f[3] - data1f[3];
+            total = user + nice + sys + idle;
+            global.Monitor.ZM.CPU = {
+                'idle': idle / total * 100,
+                'sys': sys / total * 100,
+                'user': user / total * 100,
+                'nice': nice / total *100
+            };
             //console.log (global.Monitor.ZM.CPU);
         }, 1000);
     }, MonitorConfig.timerZM);

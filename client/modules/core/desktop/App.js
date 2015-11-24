@@ -102,6 +102,9 @@ Ext.define('Ext.ux.desktop.App', {
             },
             interval: 60000 // toutes les 60 secondes
         };
+        me.timers=Ext.create('MyDesktop.modules.common.timerspool.timersPool');
+                        // tableau des timers
+        //console.log(me.timers);
         me.addEvents(
                 'ready',
                 'beforeunload'

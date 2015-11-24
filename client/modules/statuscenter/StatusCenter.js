@@ -60,26 +60,28 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
              }*/
             ]
         });
-        polling = setInterval(function () {
-            ExtRemote.core.DXMonitor.getCPUUsage({},
-                    function (result, event) {
-                        //console.log(result.data.idle)
-                        if (result===null) clearInterval(this);
-                        if (store1.getCount()>=30)
-                            store1.removeAt(0);
-                        store1.add([{
-                                //name: '',
-                                name: Math.floor(Math.random() * 6000).toString(),
-                                idle: result.data.idle,
-                                sys: result.data.sys,
-                                user: result.data.user,
-                                irq: result.data.irq,
-                                nice: result.data.nice,
-                            }]);
-                        //console.log(result, event);
-                    }
-            );
-        }, 2000);
+
+        /*polling = setInterval(function () {
+         ExtRemote.core.DXMonitor.getCPUUsage({},
+         function (result, event) {
+         //console.log(result.data.idle)
+         if (result===null) clearInterval(this);
+         if (store1.getCount()>=30)
+         store1.removeAt(0);
+         store1.add([{
+         //name: '',
+         name: Math.floor(Math.random() * 10000).toString(),
+         idle: result.data.idle,
+         sys: result.data.sys,
+         user: result.data.user,
+         irq: result.data.irq,
+         nice: result.data.nice,
+         }]);
+         //console.log(result, event);
+         }
+         );
+         }, 2000);*/
+        //console.log ('polling',polling);
         var chart = Ext.create('Ext.chart.Chart', {
             style: 'background:#fff',
             //animate: true,
@@ -172,6 +174,29 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
             ]
         });
         if (!win) {
+            func = function () {
+                ExtRemote.core.DXMonitor.getCPUUsage({},
+                        function (result, event) {
+                            //console.log(result.data.idle)
+                            if (result === null)
+                                clearInterval(this);
+                            if (store1.getCount() >= 30)
+                                store1.removeAt(0);
+                            store1.add([{
+                                    //name: '',
+                                    name: Math.floor(Math.random() * 10000).toString(),
+                                    idle: result.data.idle,
+                                    sys: result.data.sys,
+                                    user: result.data.user,
+                                    irq: result.data.irq,
+                                    nice: result.data.nice,
+                                }]);
+                            //console.log(result, event);
+                        }
+                );
+            };
+            //console.log(desktop.app.timers);
+            polling = desktop.app.timers.add(func, 2000);
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -222,7 +247,8 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     ]},
                 listeners: {
                     beforeclose: function () {
-                        clearInterval(polling);
+                        desktop.app.timers.remove(polling);
+                        //clearInterval(polling);
                     }
                 },
                 //fonctions

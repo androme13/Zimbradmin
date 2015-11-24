@@ -28,6 +28,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
     layout: 'fit',
     xTickSize: 1,
     yTickSize: 1,
+    timers: [],
     app: null,
     /**
      * @cfg {Array|Store} shortcuts
@@ -408,5 +409,5 @@ Ext.define('Ext.ux.desktop.Desktop', {
         }
 
         me.taskbar.setActiveButton(activeWindow && activeWindow.taskButton);
-    }
+    },
 });
