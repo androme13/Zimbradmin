@@ -45,7 +45,6 @@ module.exports = {
         var data = [];
         var message = {};
         pool.getConnection(function (err, connection) {
-
             if (err) {
                 err.ZMTypeCode = 'DX';
                 err.ZMErrorCode = 102;
@@ -80,8 +79,6 @@ module.exports = {
                         err.ZMErrorMsg = String(err);
                         sendError(err, callback, log);
                     }
-
-
                     sendSuccess(data.length, data, callback, message);
                 });
             }
@@ -299,7 +296,7 @@ module.exports = {
     },
     sendMsg: function (success, msg, data, callback, totalCount, log) {
         if (log)
-            log.error(msg);
+            log.info(data);
         if (success === true)
         {
             callback(null, {
@@ -318,69 +315,6 @@ module.exports = {
         }
     }
 };
-
-function addAndBack(params, request) {
-    console.log('addandbackparams', params);
-    //var toReturn;
-    var message = {test: 'test'};
-    connection = pool.getConnection();
-    //console.log(connection);
-    //connection.release();
-    //var message={};
-
-
-
-
-
-    /*if (err) {
-     err.ZMTypeCode = 'DX';
-     err.ZMErrorCode = 102;
-     err.ZMErrorMsg = String(err);
-     return err;
-     //sendError(err, callback, params.log);
-     }
-     else
-     {
-     setLanguage(connection, request);
-     console.log(params.query);
-     connection.query(params.query, function (err, rows, fields) {
-     if (!err) {
-     console.log('messageavant', message)
-     message = {
-     'ZMTypeCode': 'DX',
-     'ZMErrorCode': 100,
-     'data': rows
-     };
-     console.log('messageaprès', message)
-     //console.log('dxok',rows);
-     //message=err;
-     //return message;
-     //sendSuccess(rows.length, rows, callback, message);
-     }
-     else
-     {
-     err.ZMTypeCode = 'DX';
-     err.ZMErrorCode = 102;
-     err.ZMErrorMsg = String(err);
-     return err;
-     //toReturn = err;
-     //sendError(err, callback, params.log);
-     }
-     });
-     
-     }
-     console.log('conn release');
-     if (connection)
-     connection.release();
-     return message;*/
-
-
-
-    // console.log ('fin de addandback');
-    //console.log('toReturn',toReturn);
-    //return toReturn;
-
-}
 
 function sendError(err, callback, log) {
     if (log)
