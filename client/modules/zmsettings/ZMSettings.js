@@ -111,10 +111,8 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
                     items: [{
                             layout: {
                                 type: 'card',
-                                //  align: 'stretch'
                             },
                             cardSwitchAnimation: 'slide',
-                            //autoScroll: true,
                             activeItem: 0,
                             title: 'Uilisateurs',
                             defaults: {scrollable: true},

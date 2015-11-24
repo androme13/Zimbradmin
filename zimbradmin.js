@@ -28,7 +28,7 @@ var sslOpts = {
     key: fs.readFileSync('./ssl/certif.key'),
     cert: fs.readFileSync('./ssl/certif-crt.pem')
 };
-
+global.Monitor={};
 global.pool = mysql.createPool({
     connectionLimit: 100,
     host: MySQLConfig.host,

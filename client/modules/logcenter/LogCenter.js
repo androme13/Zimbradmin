@@ -24,9 +24,9 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
           w : 4, // write minimum level
         },*/
         this.launcher = {
-            menu: 'Smtp',
-            text: 'Gestion du routeur',
-            title: 'Gestion du routeur SMTP',
+            menu: 'Logs',
+            text: 'Gestion des Logs',
+            title: 'Gestion des log de Zimbradmin',
             iconCls: this.id + '-icon',
             shortcutCls: this.id + '-shortcut',
         };
@@ -37,8 +37,6 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
-            
-
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,

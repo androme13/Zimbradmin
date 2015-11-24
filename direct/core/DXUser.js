@@ -39,7 +39,6 @@ var DXUser = {
             query += myId + "'); ";
             return true;
         });
-        console.log('users', query);
         DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     addUserModules: function (params, callback, sessionID, request, response) {

@@ -18,20 +18,23 @@ var DXModules = {
      * @param response only if "appendRequestResponseObjects" enabled
      */
     add: function (params, callback, sessionID, request, response) {
-        // mono requete, à voir plus tard pour du multi-requete
         if (!params) {
             var params = [];
-            params[0] = {};
         }
-        params[0].table = 'modules';
-        params[0].log = log;
+        var query = '';
+        var table = 'modules';
         var myId = request.session.userinfo.id;
-        var query = "INSERT INTO " + params[0].table;
-        query += " (module, comment, created_by) VALUES ('";
-        query += params[0].domain.toLowerCase() + "','";
-        query += params[0].transport.toLowerCase() + "','" + myId + "')";
-        params[0].query = query;
-        DXCommon.add(params[0], callback, sessionID, request, response);
+        params.every(function (param) {
+            query += "INSERT INTO " + table;
+            query += " (level,state,module,comment,created_by) VALUES (";
+            query += param.level + ",";
+            query += param.state + ",'";
+            query += param.module + "','";
+            query += param.comment + "','";
+            query += myId + "'); ";
+            return true;
+        });
+        DXCommon.add2(query, callback, sessionID, request, response, log);
     },
     destroy: function (params, callback, sessionID, request, response) {
         // multi requete
