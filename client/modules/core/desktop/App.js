@@ -102,9 +102,9 @@ Ext.define('Ext.ux.desktop.App', {
             },
             interval: 60000 // toutes les 60 secondes
         };
+        // gestion des timers
         me.timers=Ext.create('MyDesktop.modules.common.timerspool.timersPool');
-                        // tableau des timers
-        //console.log(me.timers);
+        
         me.addEvents(
                 'ready',
                 'beforeunload'
@@ -220,10 +220,12 @@ Ext.define('Ext.ux.desktop.App', {
     runSessionPollTask: function () {
         console.log('runpolltask', this);
         Ext.TaskManager.start(this.task);
+        this.timers.resumeAll();
     },
     stopSessionPollTask: function () {
         console.log('stoppolltask', this);
         Ext.TaskManager.stop(this.task);
+        this.timers.pauseAll();
     },
     isExistSession: function () {
         if (this.session)
