@@ -42,32 +42,27 @@ function start(MonitorConfig) {
                 'idle': idle / total * 100,
                 'sys': sys / total * 100,
                 'user': user / total * 100,
-                'nice': nice / total *100
+                'nice': nice / total * 100
             };
-            //console.log (global.Monitor.ZM.CPU);
-        }, 1000);
+        },
+                1000);
     }, MonitorConfig.timerZM);
 
 // on definit le monitor postfix
     Monitor.tasks.SMTP = setInterval(function () {
-        //console.log(Monitor.ZM.CPU);
     }, MonitorConfig.timerSMTP);
 }
 ;
 function topToString(entry, start, stop) {
     entry.replace(' ', '');
     return entry.substring(start, stop).replace(',', '.')
-
 }
 ;
 
 exports.init = function (MonitorConfig) {
     Monitor.tasks = new Object();
     Monitor.ZM = new Object();
-    //Monitor.ZM.CPU = new Object();
-
     start(MonitorConfig);
-
 };
 
 
