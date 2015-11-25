@@ -26,7 +26,6 @@ Ext.define('MyDesktop.modules.common.timerspool.timersPool', {
             interval.id = setInterval(interval.func, interval.timer);
             interval.state = true;
             this.pool.push(interval);
-            console.log('add', this.get());
             return interval.id;
         }
         return false;
@@ -35,24 +34,25 @@ Ext.define('MyDesktop.modules.common.timerspool.timersPool', {
         return this.pool;
     },
     pause: function (name) {
-        for (var i = 0; i < this.pool.length; i++) {
-            if (this.pool[i].name === name) {
-                clearInterval(interval.id);
-                this.pool[i].id = false;
-                break;
+        if (name) {
+            for (var i = 0; i < this.pool.length; i++) {
+                if (this.pool[i].name === name) {
+                    clearInterval(interval.id);
+                    this.pool[i].id = false;
+                    return true;
+                }
             }
+
         }
-        console.log('pause', this.get());
+        else return false
     },
     pauseAll: function () {
         if (this.pool.length > 0)
-            this.pool.every(function (interval, index, pool) {
-                clearInterval(interval.id);
-                interval.id = false;
-                interval.state = false;
-                return true;
-            });
-        console.log('pauseall', this.get());
+            for (var i = 0; i < this.pool.length; i++) {
+                clearInterval(this.pool[i].id);
+                this.pool[i].id = false;
+                this.pool[i].state = false;
+            }
     },
     remove: function (name) {
         if (name) {
@@ -61,13 +61,10 @@ Ext.define('MyDesktop.modules.common.timerspool.timersPool', {
                 {
                     clearInterval(this.pool[i].id);
                     this.pool.splice(i, 1);
-                    console.log('remove', this.get());
                     return true;
                     break;
                 }
             }
-            ;
-            console.log('remove', this.get());
             return false;
         }
         return false;
@@ -81,10 +78,8 @@ Ext.define('MyDesktop.modules.common.timerspool.timersPool', {
                     break;
                 }
             }
-        console.log('resume', this.get());
     },
     resumeAll: function () {
-        console.log('resumeall', this.pool.length);
         if (this.pool.length > 0)
             for (var i = 0; i < this.pool.length; i++) {
                 if (this.pool[i].state === false) {
@@ -92,8 +87,6 @@ Ext.define('MyDesktop.modules.common.timerspool.timersPool', {
                     this.pool[i].state = true;
                 }
             }
-        ;
-        console.log('resumeall', this.get());
     }
 });
 
