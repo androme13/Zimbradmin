@@ -177,26 +177,26 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
             func = function () {
                 ExtRemote.core.DXMonitor.getCPUUsage({},
                         function (result, event) {
-                            //console.log(result.data.idle)
-                            if (result === null)
-                                clearInterval(this);
-                            if (store1.getCount() >= 30)
-                                store1.removeAt(0);
-                            store1.add([{
-                                    //name: '',
-                                    name: Math.floor(Math.random() * 10000).toString(),
-                                    idle: result.data.idle,
-                                    sys: result.data.sys,
-                                    user: result.data.user,
-                                    irq: result.data.irq,
-                                    nice: result.data.nice,
-                                }]);
-                            //console.log(result, event);
+                            //if (result === null)
+                            //    clearInterval(this);
+                            if (result != null) {
+                                if (store1.getCount() >= 30)
+                                    store1.removeAt(0);
+                                store1.add([{
+                                        //name: '',
+                                        name: Math.floor(Math.random() * 10000).toString(),
+                                        idle: result.data.idle,
+                                        sys: result.data.sys,
+                                        user: result.data.user,
+                                        irq: result.data.irq,
+                                        nice: result.data.nice,
+                                    }]);
+                            }
                         }
                 );
             };
             //console.log(desktop.app.timers);
-            polling = desktop.app.timers.add(func, 2000);
+            desktop.app.timers.add('statusCenterPollCPU', func, 2000);
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -209,12 +209,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     xtype: 'tabpanel',
                     listeners: {
                         afterrender: function () {
-                            /* store1.add([{
-                             name: 'test4',
-                             data1: 25,
-                             data2: 35 - 25,
-                             data3: 45 - 35
-                             }]);*/
+
                         },
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)
@@ -247,7 +242,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     ]},
                 listeners: {
                     beforeclose: function () {
-                        desktop.app.timers.remove(polling);
+                        desktop.app.timers.remove('statusCenterPollCPU');
                         //clearInterval(polling);
                     }
                 },
