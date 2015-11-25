@@ -177,8 +177,6 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
             func = function () {
                 ExtRemote.core.DXMonitor.getCPUUsage({},
                         function (result, event) {
-                            //if (result === null)
-                            //    clearInterval(this);
                             if (result != null) {
                                 if (store1.getCount() >= 30)
                                     store1.removeAt(0);
@@ -195,7 +193,6 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                         }
                 );
             };
-            //console.log(desktop.app.timers);
             desktop.app.timers.add('statusCenterPollCPU', func, 2000);
             win = desktop.createWindow({
                 id: this.id,
