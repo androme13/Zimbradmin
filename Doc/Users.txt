@@ -1,9 +1,13 @@
 // informations sur les users
 
 Users LEVEL
-
 [0, 'invité'],
 [1, 'utilisateur'],
 [2, 'super utilisateur'],
 [3, 'administrateur'],
 [4, 'super administrateur']
+
+Users STATE
+[0, 'desactivé'],
+[1, 'activé'],
+[2, 'bloqué'],
