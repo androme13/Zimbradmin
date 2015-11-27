@@ -72,9 +72,10 @@ Ext.define('Ext.ux.desktop.App', {
     useQuickTips: true,
     constructor: function (config) {
         var me = this;
+        me.dxQueue=Ext.create('MyDesktop.modules.core.dxqueue.dxQueue');
         // on defini les exceptions des appels DIRECT
-        Ext.Direct.on("exception", function (event) {
-            //console.log('exception XHR:', event);
+        Ext.Direct.on("exception", function (event,eOpts) {
+            console.log('exception XHR:', event,eOpts);
             if (event.xhr) {
                 if (event.xhr.status === 401)
                 {
@@ -218,7 +219,7 @@ Ext.define('Ext.ux.desktop.App', {
         });
     },
     runSessionPollTask: function () {
-        console.log('runpolltask', this);
+        console.log('runpolltask', this,ExtRemote);
         Ext.TaskManager.start(this.task);
         this.timers.resumeAll();
     },

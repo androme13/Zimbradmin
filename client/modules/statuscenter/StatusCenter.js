@@ -177,17 +177,17 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
             func = function () {
                 ExtRemote.core.DXMonitor.getCPUUsage({},
                         function (result, event) {
-                            if (result != null) {
+                            if (result !== null) {
                                 if (store1.getCount() >= 30)
                                     store1.removeAt(0);
-                                store1.add([{
+                                    store1.add([{
                                         //name: '',
                                         name: Math.floor(Math.random() * 10000).toString(),
                                         idle: result.data.idle,
                                         sys: result.data.sys,
                                         user: result.data.user,
                                         irq: result.data.irq,
-                                        nice: result.data.nice,
+                                        nice: result.data.nice
                                     }]);
                             }
                         }

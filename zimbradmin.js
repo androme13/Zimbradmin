@@ -103,7 +103,7 @@ app.get(ExtDirectConfig.classRouteUrl, function (req, res) {
 });
 // POST request process route and calls class
 app.post(ExtDirectConfig.classRouteUrl, function (req, res) {
-    if (req.session.userinfo || req.body.action === "core.DXLogin") {
+    if (req.session.userinfo ||req.body.action === "core.DXLogin") {
         directRouter.processRoute(req, res);
     } else
     {
