@@ -32,20 +32,24 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
         };
     },
     createWindow: function (refer) {
-        var storeMaxValues=30;
+        var storeMaxValues = 30;
         var me = this;
         var cfg = {};
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         var floor = (!floor && floor !== 0) ? 20 : floor;
         var polling;
-        var store1 = Ext.create('Ext.data.JsonStore', {
+        var storeCPU = Ext.create('Ext.data.JsonStore', {
             fields: ['name', 'idle', 'sys', 'user', 'irq', 'nice'],
             data: []
         });
+        var storeMEM = Ext.create('Ext.data.JsonStore', {
+            fields: ['name', 'MemTotal', 'MemFree', 'MemAvailable', 'Buffers','Cached'],
+            data: []
+        });
         // on peuple le store de 50 valeurs à 0
-        for (var i=0;i<=storeMaxValues;i++){
-            store1.add({
+        for (var i = 0; i <= storeMaxValues; i++) {
+            storeCPU.add({
                 name: Math.floor(Math.random() * 100000).toString(),
                 idle: 0,
                 sys: 0,
@@ -54,10 +58,21 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 nice: 0
             });
         }
-        var chart = Ext.create('Ext.chart.Chart', {
+        for (var i = 0; i <= storeMaxValues; i++) {
+            storeMEM.add({
+                name: Math.floor(Math.random() * 100000).toString(),
+                MemTotal: 0,
+                MemFree: 0,
+                MemAvailable: 0,
+                Buffers: 0,
+                Cached: 0
+                //nice: 0
+            });
+        }
+        var chartCPU = Ext.create('Ext.chart.Chart', {
             style: 'background:#fff',
             //animate: true,
-            store: store1,
+            store: storeCPU,
             legend: {
                 position: 'bottom'
             },
@@ -76,7 +91,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     },
                     minimum: 0,
                     //maximum: 100,
-                    adjustMinimumByMajorUnit: 0,
+                    //adjustMinimumByMajorUnit: 0,
                 }, {
                     type: 'Category',
                     //minimum: 0,
@@ -97,8 +112,8 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 {
                     type: 'line',
                     highlight: {
-                        size: 7,
-                        radius: 7
+                        size: 5,
+                        radius: 5
                     },
                     axis: 'left',
                     fill: true,
@@ -111,7 +126,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                         'stroke-width': 0
                     },
                     style: {
-                      //  stroke: '#003300',
+                        //  stroke: '#003300',
                         //'stroke-width': 20,
                         fill: '#96CA2D',
                         opacity: 0.8
@@ -119,13 +134,13 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 }, {
                     type: 'line',
                     highlight: {
-                        size: 7,
-                        radius: 7
+                        size: 5,
+                        radius: 5
                     },
                     axis: 'left',
                     fill: true,
                     xField: 'name',
-                    yField: 'sys',
+                    yField: 'user',
                     markerConfig: {
                         type: 'circle',
                         size: 2,
@@ -139,13 +154,158 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 }, {
                     type: 'line',
                     highlight: {
-                        size: 7,
-                        radius: 7
+                        size: 5,
+                        radius: 5
                     },
                     axis: 'left',
                     fill: true,
                     xField: 'name',
-                    yField: 'user',
+                    yField: 'sys',
+                    markerConfig: {
+                        type: 'circle',
+                        size: 2,
+                        radius: 2,
+                        'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#01B0F0',
+                        opacity: 0.8
+                    }
+                }
+            ]
+        });
+        var chartMEM = Ext.create('Ext.chart.Chart', {
+            style: 'background:#fff',
+            //animate: true,
+            store: storeMEM,
+            legend: {
+                position: 'bottom'
+            },
+            axes: [{
+                    type: 'Numeric',
+                    position: 'left',
+                    fields: ['MemTotal', 'MemFree', 'MemAvailable', 'Cached'],
+                    title: 'MEM',
+                    grid: {
+                        odd: {
+                            opacity: 1,
+                            fill: '#ddd',
+                            stroke: '#bbb',
+                            'stroke-width': 1
+                        }
+                    },
+                    minimum: 0,
+                    //maximum: 100,
+                    //adjustMinimumByMajorUnit: 0,
+                }, {
+                    type: 'Category',
+                    //minimum: 0,
+                    // maximum: 60,
+                    //majorTickSteps: 2,
+                    position: 'bottom',
+                    fields: ['name'],
+                    hidden: true,
+                    //title: 'Month of the Year',
+                    //grid: true,
+                    label: {
+                        rotate: {
+                            degrees: 90
+                        }
+                    }
+                }],
+            series: [
+                {
+                    type: 'line',
+                    highlight: {
+                        size: 5,
+                        radius: 5
+                    },
+                    axis: 'left',
+                    fill: true,
+                    xField: 'name',
+                    yField: 'MemTotal',
+                    markerConfig: {
+                        type: 'circle',
+                        size: 2,
+                        radius: 2,
+                        'stroke-width': 0
+                    },
+                    style: {
+                        //  stroke: '#003300',
+                        //'stroke-width': 20,
+                        fill: '#96CA2D',
+                        opacity: 0.8
+                    }
+                }, {
+                    type: 'line',
+                    highlight: {
+                        size: 5,
+                        radius: 5
+                    },
+                    axis: 'left',
+                    fill: true,
+                    xField: 'name',
+                    yField: 'MemFree',
+                    markerConfig: {
+                        type: 'circle',
+                        size: 2,
+                        radius: 2,
+                        'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#FF358B',
+                        opacity: 0.8
+                    }
+                }, {
+                    type: 'line',
+                    highlight: {
+                        size: 5,
+                        radius: 5
+                    },
+                    axis: 'left',
+                    fill: true,
+                    xField: 'name',
+                    yField: 'MemAvailable',
+                    markerConfig: {
+                        type: 'circle',
+                        size: 2,
+                        radius: 2,
+                        'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#01B0F0',
+                        opacity: 0.8
+                    }
+                },{
+                    type: 'line',
+                    highlight: {
+                        size: 5,
+                        radius: 5
+                    },
+                    axis: 'left',
+                    fill: true,
+                    xField: 'name',
+                    yField: 'Buffers',
+                    markerConfig: {
+                        type: 'circle',
+                        size: 2,
+                        radius: 2,
+                        'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#01B0F0',
+                        opacity: 0.8
+                    }
+                },{
+                    type: 'line',
+                    highlight: {
+                        size: 5,
+                        radius: 5
+                    },
+                    axis: 'left',
+                    fill: true,
+                    xField: 'name',
+                    yField: 'Cached',
                     markerConfig: {
                         type: 'circle',
                         size: 2,
@@ -161,19 +321,31 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
         });
         if (!win) {
             func = function () {
-                ExtRemote.core.DXMonitor.getCPUUsage({},
+                ExtRemote.core.DXMonitor.getZMUsage({},
                         function (result, event) {
                             if (result !== null) {
-                                if (store1.getCount() >= storeMaxValues)
-                                    store1.removeAt(0);
-                                store1.add([{
+                                console.log(result);
+                                if (storeCPU.getCount() >= storeMaxValues)
+                                    storeCPU.removeAt(0);
+                                if (storeMEM.getCount() >= storeMaxValues)
+                                    storeMEM.removeAt(0);
+                                storeCPU.add([{
                                         //name: '',
                                         name: Math.floor(Math.random() * 100000).toString(),
-                                        idle: result.data.idle,
-                                        sys: result.data.sys,
-                                        user: result.data.user,
-                                        irq: result.data.irq,
-                                        nice: result.data.nice
+                                        idle: result.data.cpu.idle,
+                                        sys: result.data.cpu.sys,
+                                        user: result.data.cpu.user,
+                                        irq: result.data.cpu.irq,
+                                        nice: result.data.cpu.nice
+                                    }]);
+                                storeMEM.add([{
+                                        //name: '',
+                                        name: Math.floor(Math.random() * 100000).toString(),
+                                        MemTotal: result.data.mem.MemTotal,
+                                        MemFree: result.data.mem.MemFree,
+                                        MemAvailable: result.data.mem.MemAvailable,
+                                        Buffers: result.data.mem.Buffers,
+                                        Cached: result.data.mem.Cached
                                     }]);
                             }
                         }
@@ -217,10 +389,11 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     items: [
                         {
                             //xtype: relayDomainsgrid
-                            xtype: chart
+                            xtype: chartCPU,
+                            
                         },
                         {
-                            //xtype: myNetworksgrid
+                            xtype: chartMEM,
                         }
                     ]},
                 listeners: {
