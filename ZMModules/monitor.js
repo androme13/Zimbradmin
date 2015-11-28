@@ -1,9 +1,10 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * monitor.js
+ * (C) Androme 2015
+ * 
  */
 var log = global.log.child({widget_type: 'DXMonitor'});
+//global.Monitor.ZM = {};
 var exec = require('child_process').exec;
 var fs = require('fs');
 var os = require('os');
@@ -30,14 +31,17 @@ function start(MonitorConfig) {
         // on s'occupe de la mémoire
         stat1 = fs.readFileSync('/proc/meminfo', "utf8");
         var memDataRaw = stat1.split('\n');       
-        var memData =[];
+        var memData ={};
         var tempData = [];
         for (var i=0;i<memDataRaw.length-1;i++){
             tempData=memDataRaw[i].split(':');
             tempData[1]= parseInt(tempData[1]);
-            memData.push(tempData);
+            memData[tempData[0]]=tempData[1];
+            //memData.push(tempData);
         }
+        console.log(memData.MemTotal,memData.MemFree,memData.MemAvailable,memData.Buffers,memData.Cached);;
         global.Monitor.ZM.MEM=memData;
+        //console.log(global.Monitor.ZM.MEM);
         // on s'occupe du CPU
         stat1 = fs.readFileSync('/proc/stat', "utf8");
         data1 = stat1.split('\n');
