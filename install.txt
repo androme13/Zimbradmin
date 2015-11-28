@@ -53,3 +53,6 @@ npm install bunyan -save
 npm install bcrypt-nodejs -save
 #on installe le module async de node
 npm install async -save
+#on installe le module split de node
+npm install split -save
+
