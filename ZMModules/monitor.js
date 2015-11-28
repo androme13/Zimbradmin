@@ -9,8 +9,11 @@ var fs = require('fs');
 var os = require('os');
 var cpu = os.cpus();
 var Monitor = new Object();
-var free = 0;
-var counter = 0;
+var memTotal = 0;
+var memFree = 0;
+var memBuffers = 0;
+var memCached = 0;
+//var counter = 0;
 var total = 0;
 var sys = 0;
 var user = 0;
@@ -24,10 +27,23 @@ function start(MonitorConfig) {
     global.Monitor.ZM = {};
     Monitor.tasks.ZM = setInterval(function () {
         //clearInterval(this);
+        // on s'occupe de la mémoire
+        stat1 = fs.readFileSync('/proc/meminfo', "utf8");
+        var memDataRaw = stat1.split('\n');       
+        var memData =[];
+        var tempData = [];
+        for (var i=0;i<memDataRaw.length-1;i++){
+            tempData=memDataRaw[i].split(':');
+            tempData[1]= parseInt(tempData[1]);
+            memData.push(tempData);
+        }
+        global.Monitor.ZM.MEM=memData;
+        // on s'occupe du CPU
         stat1 = fs.readFileSync('/proc/stat', "utf8");
         data1 = stat1.split('\n');
         data1[0] = data1[0].replace('cpu  ', '');
         data1f = data1[0].split(' ');
+        // on relis les ressources cpu pour faire un dif et avoir la vraie valeur
         setTimeout(function () {
             stat2 = fs.readFileSync('/proc/stat', "utf8");
             data2 = stat2.split('\n');
