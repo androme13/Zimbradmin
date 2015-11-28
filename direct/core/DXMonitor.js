@@ -27,6 +27,23 @@ var DXMonitor = {
             data: global.Monitor.ZM.CPU
         });*/
     },
+    getMEMUsage: function (params, callback, sessionID, request, response) {       
+        DXCommon.sendMsg(true,null,global.Monitor.ZM.MEM,callback,2);
+       /* callback({
+            success: success,
+            message: 'getshortcuts',
+            data: global.Monitor.ZM.CPU
+        });*/
+    },
+    getZMUsage: function (params, callback, sessionID, request, response) {       
+        var zmusage={'cpu' :global.Monitor.ZM.CPU,'mem':global.Monitor.ZM.MEM};
+        DXCommon.sendMsg(true,null,zmusage,callback,2);
+       /* callback({
+            success: success,
+            message: 'getshortcuts',
+            data: global.Monitor.ZM.CPU
+        });*/
+    }
 };
 
 function child(img) {
