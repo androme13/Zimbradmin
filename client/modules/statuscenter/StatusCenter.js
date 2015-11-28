@@ -32,6 +32,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
         };
     },
     createWindow: function (refer) {
+        var storeMaxValues=30;
         var me = this;
         var cfg = {};
         var desktop = this.app.getDesktop();
@@ -40,48 +41,19 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
         var polling;
         var store1 = Ext.create('Ext.data.JsonStore', {
             fields: ['name', 'idle', 'sys', 'user', 'irq', 'nice'],
-            data: [/*{
-             name: 'test',
-             data1: 10,
-             data2: 20 - 10,
-             data3: 30 - 20
-             },
-             {
-             name: 'test2',
-             data1: 15,
-             data2: 25 - 15,
-             data3: 35 - 25
-             },
-             {
-             name: 'test3',
-             data1: 20,
-             data2: 30 - 20,
-             data3: 40 - 30
-             }*/
-            ]
+            data: []
         });
-
-        /*polling = setInterval(function () {
-         ExtRemote.core.DXMonitor.getCPUUsage({},
-         function (result, event) {
-         //console.log(result.data.idle)
-         if (result===null) clearInterval(this);
-         if (store1.getCount()>=30)
-         store1.removeAt(0);
-         store1.add([{
-         //name: '',
-         name: Math.floor(Math.random() * 10000).toString(),
-         idle: result.data.idle,
-         sys: result.data.sys,
-         user: result.data.user,
-         irq: result.data.irq,
-         nice: result.data.nice,
-         }]);
-         //console.log(result, event);
-         }
-         );
-         }, 2000);*/
-        //console.log ('polling',polling);
+        // on peuple le store de 50 valeurs à 0
+        for (var i=0;i<=storeMaxValues;i++){
+            store1.add({
+                name: Math.floor(Math.random() * 100000).toString(),
+                idle: 0,
+                sys: 0,
+                user: 0,
+                irq: 0,
+                nice: 0
+            });
+        }
         var chart = Ext.create('Ext.chart.Chart', {
             style: 'background:#fff',
             //animate: true,
@@ -92,7 +64,6 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
             axes: [{
                     type: 'Numeric',
                     position: 'left',
-                    //fields: ['idle', 'sys', 'user', 'irq', 'nice'],
                     fields: ['idle', 'sys', 'user'],
                     title: 'CPU',
                     grid: {
@@ -113,8 +84,9 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                     //majorTickSteps: 2,
                     position: 'bottom',
                     fields: ['name'],
-                    title: 'Month of the Year',
-                    grid: true,
+                    hidden: true,
+                    //title: 'Month of the Year',
+                    //grid: true,
                     label: {
                         rotate: {
                             degrees: 90
@@ -137,6 +109,12 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                         size: 2,
                         radius: 2,
                         'stroke-width': 0
+                    },
+                    style: {
+                      //  stroke: '#003300',
+                        //'stroke-width': 20,
+                        fill: '#96CA2D',
+                        opacity: 0.8
                     }
                 }, {
                     type: 'line',
@@ -153,6 +131,10 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                         size: 2,
                         radius: 2,
                         'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#FF358B',
+                        opacity: 0.8
                     }
                 }, {
                     type: 'line',
@@ -169,6 +151,10 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                         size: 2,
                         radius: 2,
                         'stroke-width': 0
+                    },
+                    style: {
+                        fill: '#01B0F0',
+                        opacity: 0.8
                     }
                 }
             ]
@@ -178,11 +164,11 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 ExtRemote.core.DXMonitor.getCPUUsage({},
                         function (result, event) {
                             if (result !== null) {
-                                if (store1.getCount() >= 30)
+                                if (store1.getCount() >= storeMaxValues)
                                     store1.removeAt(0);
-                                    store1.add([{
+                                store1.add([{
                                         //name: '',
-                                        name: Math.floor(Math.random() * 10000).toString(),
+                                        name: Math.floor(Math.random() * 100000).toString(),
                                         idle: result.data.idle,
                                         sys: result.data.sys,
                                         user: result.data.user,
