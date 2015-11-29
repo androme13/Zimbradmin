@@ -84,13 +84,13 @@ Ext.define('MyDesktop.App', {
         );
     },
     onKillSession: function () {
-        ExtRemote.core.DXLogin.logout({'logout': 'ok'},
+        ExtRemote.core.DXLogin.logout(null,
         function (result, event) {}
         );
     },
     onTestDirectSession: function () {
         console.log("test direct");
-        ExtRemote.core.DXUser.get(null,
+        ExtRemote.DXRouter.getRouterLogsMailinfo({start : 0, limit : 5},
         function (result, event) {
         }
         );
