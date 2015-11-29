@@ -6,6 +6,7 @@
 var log = global.log.child({widget_type: 'DXMonitor'});
 //global.Monitor.ZM = {};
 var exec = require('child_process').exec;
+
 var fs = require('fs');
 var os = require('os');
 var cpu = os.cpus();
@@ -37,9 +38,7 @@ function start(MonitorConfig) {
             tempData=memDataRaw[i].split(':');
             tempData[1]= parseInt(tempData[1]);
             memData[tempData[0]]=tempData[1];
-            //memData.push(tempData);
         }
-        console.log(memData.MemTotal,memData.MemFree,memData.MemAvailable,memData.Buffers,memData.Cached);;
         global.Monitor.ZM.MEM=memData;
         //console.log(global.Monitor.ZM.MEM);
         // on s'occupe du CPU
