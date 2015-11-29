@@ -18,27 +18,38 @@ icon : 16x16, shortcut 48x48
 .logcenter-win-icon {
     background-image: url(img/icon.png);
 }
-
+.logcenter-blue_cell{
+background-color:blue !important;    
+}
+.logcenter-green_cell{
+background-color:#8FCF3C !important;    
+}
+.logcenter-orange_cell{
+background-color:#FF5B2B !important;    
+}
+.logcenter-red_cell{
+background-color:#E70739 !important;    
+}
 /* 0 : inactif, 1 : bloqué, 2 : actif, 3 : supprimé*/
-.router-disabled_entry24{
+.logcenter-disabled_entry24{
 background-image:url(img/item_disabled.gif) !important;
 width: auto !important;
 background-position:center  !important;
 background-repeat: no-repeat;
 }
-.router-blocked_entry24{
+.logcenter-blocked_entry24{
 background-image:url(img/item_blocked.png) !important;
 width: auto !important;
 background-position:center  !important;
 background-repeat: no-repeat;
 }
-.router-enabled_entry24{
+.logcenter-enabled_entry24{
 background-image:url(img/item_enabled.gif) !important;
 width: auto !important;
 background-position:center  !important;
 background-repeat: no-repeat;
 }
-.router-deleted_entry24{
+.logcenter-deleted_entry24{
 background-image:url(img/item_deleted.png) !important;
 width: auto !important;
 background-position:center  !important;
