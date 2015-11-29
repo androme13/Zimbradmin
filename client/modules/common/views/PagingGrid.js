@@ -8,6 +8,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
+    contextMenu: [],
     me: this,
     customLoadStore: function (search) {
         if (!search || search === '') {
@@ -99,6 +100,9 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 if (i.exportable) {
                     colCFG.exportable = i.exportable;
                 }
+                if (i.contextMenu) {
+                    colCFG.contextMenu = i.contextMenu;
+                }
                 columns.push(colCFG);
             }
         });
@@ -179,47 +183,51 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     // dans ce cas on cache les boutons
                     if (this.readOnly === true) {
                         var toolbar = this.down('toolbar[xtype=toolbar]');
-                        toolbar.query('button').every(function (entry) {
-                            entry.hide();
-                            return true;
-                        });
+                        // on cache les boutons d'ajout et de suppression
+                        toolbar.query('button[action=add]')[0].hide();
+                        toolbar.query('button[action=remove]')[0].hide();
                     }
-
                 },
-                cellcontextmenu: function (cell, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                    e.stopEvent();
+                cellcontextmenu: function (view, cell, cellIndex, record, row, rowIndex, event) {
+                    var column = view.getHeaderByCell(cell);
+                    me.contextMenu = [];
+                    // on ajoute le menu custom de la colonne si il existe
+                    if (column.contextMenu)
+                        me.contextMenu=column.contextMenu;
+                    event.stopEvent();
                 },
                 itemcontextmenu: function (record, item, index, e, eOpts) {
                     var xy = eOpts.getXY();
                     var menu = Ext.create('Ext.menu.Menu');
                     var item, btn;
                     // ajout des menus liés à la toolbar
-                    // 
+                    // boutons customs lors de la création
+                    menu.add(me.contextMenu);
+
+
+                    // bouton génériques 
                     //////bouton ajouter                   
                     if (me.readOnly !== true) {
                         btn = this.down('toolbar').down('button[action="add"]');
                         item = new Ext.menu.Item({
                             text: "Ajouter une entrée",
-                            //value: rec.data.VALUE_FIELD,
                             iconCls: btn.iconCls,
                             handler: function (item) {
                                 me.addRow();
                             }
                         });
                         menu.add(item);
+
                         //////bouton supprimer
                         btn = this.down('toolbar').down('button[action="remove"]');
-                        if (btn.disabled === false) {
-                            item = new Ext.menu.Item({
-                                text: "supprimer",
-                                //value: rec.data.VALUE_FIELD,
-                                iconCls: btn.iconCls,
-                                handler: function (item) {
-                                    me.removeRow();
-                                }
-                            });
-                            menu.add(item);
-                        }
+                        item = new Ext.menu.Item({
+                            text: "supprimer",
+                            iconCls: btn.iconCls,
+                            handler: function (item) {
+                                me.removeRow();
+                            }
+                        });
+                        menu.add(item);
                     }
                     if (menu.items.items.length > 0)
                         menu.showAt(xy);
