@@ -3,8 +3,6 @@
  * (C) Androme 2015
  * 
  */
-
-// tools.js
 // ========
 module.exports = {
     add: function (params, callback, sessionID, request, response) {
@@ -299,6 +297,7 @@ module.exports = {
             log.info(data);
         if (success === true)
         {
+            console.log(data);
             callback(null, {
                 success: true,
                 totalCount: totalCount,
