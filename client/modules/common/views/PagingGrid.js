@@ -46,14 +46,11 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     }
                 }
             });
-        }
-        else
+        } else
         {
             if (this.customEditRow)
             {
-                //grid.customAddRow(grid);
                 this.addListener('itemdblclick', function (grid, record) {
-                    //console.log(grid,record);
                     this.customEditRow(grid, record);
                 })
             }
@@ -81,7 +78,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         {
             if (i.binded !== false) {
                 var colCFG = {header: i.name, dataIndex: i.name};
-                if (i.flex){
+                if (i.flex) {
                     colCFG.flex = i.flex;
                 }
                 if (i.hidden) {
@@ -145,8 +142,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             }
                             if (menu.activeHeader.searchable === true) {
                                 menu.items.items[menuItem].show();
-                            }
-                            else
+                            } else
                             {
                                 menu.items.items[menuItem].hide();
                             }
@@ -199,31 +195,34 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     var item, btn;
                     // ajout des menus liés à la toolbar
                     // 
-                    //////bouton ajouter
-                    btn = this.down('toolbar').down('button[action="add"]');
-                    item = new Ext.menu.Item({
-                        text: "Ajouter une entrée",
-                        //value: rec.data.VALUE_FIELD,
-                        iconCls: btn.iconCls,
-                        handler: function (item) {
-                            me.addRow();
-                        }
-                    });
-                    menu.add(item);
-                    //////bouton supprimer
-                    btn = this.down('toolbar').down('button[action="remove"]');
-                    if (btn.disabled === false) {
+                    //////bouton ajouter                   
+                    if (me.readOnly !== true) {
+                        btn = this.down('toolbar').down('button[action="add"]');
                         item = new Ext.menu.Item({
-                            text: "supprimer",
+                            text: "Ajouter une entrée",
                             //value: rec.data.VALUE_FIELD,
                             iconCls: btn.iconCls,
                             handler: function (item) {
-                                me.removeRow();
+                                me.addRow();
                             }
                         });
                         menu.add(item);
+                        //////bouton supprimer
+                        btn = this.down('toolbar').down('button[action="remove"]');
+                        if (btn.disabled === false) {
+                            item = new Ext.menu.Item({
+                                text: "supprimer",
+                                //value: rec.data.VALUE_FIELD,
+                                iconCls: btn.iconCls,
+                                handler: function (item) {
+                                    me.removeRow();
+                                }
+                            });
+                            menu.add(item);
+                        }
                     }
-                    menu.showAt(xy);
+                    if (menu.items.items.length > 0)
+                        menu.showAt(xy);
                 },
                 select: function (rowModel, record, index, eOpts)
                 {
@@ -277,8 +276,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                             },
                                             icon: Ext.MessageBox.ERROR
                                         });
-                                    }
-                                    else
+                                    } else
                                     {
                                         if (newValue !== oldValue) {
                                             bbarItem.pageSize = parseInt(newValue);
@@ -381,8 +379,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         if (grid.customRemoveRow)
         {
             grid.customRemoveRow(grid);
-        }
-        else
+        } else
         {
             var rows = grid.getSelectionModel().getSelection();
             var store = Ext.create(grid.store.$className);
@@ -420,14 +417,14 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         iconCls: 'accept16',
                         handler: function () {
                             grid.store.remove(rows);
-                            grid.store.sync({                                
+                            grid.store.sync({
                                 success: function () {
                                     if (grid.customAfterRemoveRow)
-                                        grid.customAfterRemoveRow(true,rows);
+                                        grid.customAfterRemoveRow(true, rows);
                                 },
                                 failure: function (batch, Opts) {
                                     if (grid.customAfterRemoveRow)
-                                        grid.customAfterRemoveRow(false,rows);
+                                        grid.customAfterRemoveRow(false, rows);
                                 },
                                 callback: function () {
                                     //grid.customAfterRemoveRow(rows);
@@ -466,8 +463,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         if (grid.customAddRow)
         {
             grid.customAddRow(grid);
-        }
-        else
+        } else
         {
             //var grid = this.up('window').down('grid');
             var newEntry = Ext.create(grid.store.model.modelName, {
@@ -518,8 +514,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-        }
-        else
+        } else
         {
             Ext.MessageBox.show({
                 title: 'Export Impossible',
