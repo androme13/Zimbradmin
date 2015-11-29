@@ -52,7 +52,16 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
                 //metaData.tdAttr = "data-qtip='" + value + "'";
                 metaData.tdAttr = 'title="' + Ext.util.Format.ellipsis(value, 800) + '"';
                 return text;
-            }
+            },
+            contextMenu: [
+                new Ext.menu.Item({
+                    text: "Ajouter une entrée",
+                    //iconCls: btn.iconCls,
+                    handler: function (item) {
+                        me.addRow();
+                    }
+                })
+            ]
         },
         {
             name: 'message',
@@ -63,15 +72,15 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
                 // 550 blocked
-                 if (value.search(/said: 550/i) > -1)
+                if (value.search(/said: 550/i) > -1)
                     metaData.tdCls = 'logcenter-red_cell';
                 else
                 // message entrant
-                 if (value.search(/^from=.*\)$/) > -1)
+                if (value.search(/^from=.*\)$/) > -1)
                     metaData.tdCls = 'logcenter-greenclear_cell';
                 else
                 // message entrant dans la queue
-                 if (value.search(/^message-id=.*>$/) > -1)
+                if (value.search(/^message-id=.*>$/) > -1)
                     metaData.tdCls = 'logcenter-greenclear_cell';
                 else
                 // message reject
