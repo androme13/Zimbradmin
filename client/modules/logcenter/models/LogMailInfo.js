@@ -44,10 +44,10 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             flex: 1,
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
-                if (text==='NOQUEUE')
+                if (text === 'NOQUEUE')
                     metaData.tdCls = 'logcenter-red_cell';
-               // else
-               //     metaData.style = "background-color:green;";
+                // else
+                //     metaData.style = "background-color:green;";
 
                 //metaData.tdAttr = "data-qtip='" + value + "'";
                 metaData.tdAttr = 'title="' + Ext.util.Format.ellipsis(value, 800) + '"';
@@ -62,16 +62,35 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             //searchable: true
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
-                if (value.search('status=sent')>-1)
-                    metaData.tdCls = 'logcenter-green_cell';
-                   // metaData.style = "background-color:#96CA2D;";
-                else
-                if (value.search('status=deferred')>-1)
-                    metaData.tdCls = 'logcenter-orange_cell';
-                else
-                if (value.search('reject:')>-1)
+                // 550 blocked
+                 if (value.search(/said: 550/i) > -1)
                     metaData.tdCls = 'logcenter-red_cell';
-            
+                else
+                // message entrant
+                 if (value.search(/^from=.*\)$/) > -1)
+                    metaData.tdCls = 'logcenter-greenclear_cell';
+                else
+                // message entrant dans la queue
+                 if (value.search(/^message-id=.*>$/) > -1)
+                    metaData.tdCls = 'logcenter-greenclear_cell';
+                else
+                // message reject
+                if (value.search('reject:') > -1)
+                    metaData.tdCls = 'logcenter-red_cell';
+                else
+                // message removed
+                if (value.search('removed') > -1)
+                    metaData.tdCls = 'logcenter-greenclear_cell';
+                else
+                // message send
+                if (value.search('status=sent') > -1)
+                    metaData.tdCls = 'logcenter-green_cell';
+                else
+                // message deferred 
+                if (value.search('status=deferred') > -1)
+                    metaData.tdCls = 'logcenter-orange_cell';
+
+
                 //metaData.tdAttr = "data-qtip='" + value + "'";
                 metaData.tdAttr = 'title="' + Ext.util.Format.ellipsis(value, 800) + '"';
                 return text;
