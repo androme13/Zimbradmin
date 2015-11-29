@@ -7,7 +7,7 @@
 Ext.define('MyDesktop.modules.logcenter.LogCenter', {
     extend: 'Ext.ux.desktop.Module',
     requires: [
-        'MyDesktop.modules.logcenter.stores.RelayDomains',
+        'MyDesktop.modules.logcenter.stores.RouterLogsMailInfo',
         'Ext.toolbar.Spacer',
         'MyDesktop.modules.common.gridStoreOn',
         'MyDesktop.modules.common.proxyOn'
@@ -19,10 +19,10 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
         var idCSS = '' + Math.floor(Math.random() * 100);
         Ext.util.CSS.createStyleSheet('', idCSS);
         Ext.util.CSS.swapStyleSheet(idCSS, 'modules/logcenter/rsc/style.css');
-       /* this.ACL = {
-          r : 2, // read minimum level
-          w : 4, // write minimum level
-        },*/
+        /* this.ACL = {
+         r : 2, // read minimum level
+         w : 4, // write minimum level
+         },*/
         this.launcher = {
             menu: 'Logs',
             text: 'Gestion des Logs',
@@ -37,6 +37,14 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
+            var routerLogsMailInfoStore = Ext.create('MyDesktop.modules.logcenter.stores.RouterLogsMailInfo');
+            var routerLogsMailInfoGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+                store: routerLogsMailInfoStore,
+                rowEditing: false,
+                title: 'logs',
+                multiSelect: true,
+                readOnly: true
+            });
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
@@ -49,7 +57,7 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
                     xtype: 'tabpanel',
                     listeners: {
                         afterrender: function () {
-                            //relayDomainsStore.load();
+                            routerLogsMailInfoStore.load();
                         },
                         tabchange: function (tabPanel, newTab, oldTab, eOpts) {
                             if (newTab.store)
@@ -73,7 +81,7 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
                     //tabPosition:'left',
                     items: [
                         {
-                            //xtype: relayDomainsgrid
+                            xtype: routerLogsMailInfoGrid
                         },
                         {
                             //xtype: myNetworksgrid
