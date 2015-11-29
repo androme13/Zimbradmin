@@ -324,7 +324,7 @@ Ext.define('MyDesktop.modules.statuscenter.StatusCenter', {
                 ExtRemote.core.DXMonitor.getZMUsage({},
                         function (result, event) {
                             if (result !== null) {
-                                console.log(result);
+                                //console.log(result);
                                 if (storeCPU.getCount() >= storeMaxValues)
                                     storeCPU.removeAt(0);
                                 if (storeMEM.getCount() >= storeMaxValues)
