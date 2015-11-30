@@ -191,7 +191,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 cellcontextmenu: function (view, cell, cellIndex, record, row, rowIndex, event) {
                     var column = view.getHeaderByCell(cell);
                     var menuItem = {};
-                    var that=this;
+                    //var that=this;
                     me.contextMenu = [];
                     // on ajoute les menus customs de la colonne si ils existent
                     // et on refait le handler avec le bon scope
@@ -201,7 +201,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                             menuItem = new Ext.menu.Item({
                                     text: column.contextMenu[i].text,
                                     iconCls: column.contextMenu[i].iconCls,
-                                    handler: column.contextMenu[i].handler.bind(this),
+                                    handler: column.contextMenu[i].handler.bind(this,column,record),
                                 });
                             me.contextMenu.push(menuItem);
                         }
