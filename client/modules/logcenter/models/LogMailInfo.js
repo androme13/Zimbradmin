@@ -53,9 +53,13 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
                 {
                     text: "Chercher cette clé",
                     iconCls: 'search16',
-                    handler: function (item) {
-                        console.log('this',this);
-                        console.log('item',item);
+                    handler: function (column,record,item) {
+                        console.log(column,record)
+                        console.log(record.get(column.dataIndex));
+                        var search=record.get(column.dataIndex);                       
+                        this.store.load({
+                            params:{search: search}
+                        });
                     }
                 },
             ]
