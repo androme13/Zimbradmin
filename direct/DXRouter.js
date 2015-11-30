@@ -114,7 +114,7 @@ var DXRouter = {
         if (!params.limit)
             params.limit = 50;
         params.log = log;
-        var stream = fs.createReadStream('/var/log/postfix/mail.info', {
+        var stream = fs.createReadStream('/var/log/postfix/mail', {
             flags: 'r',
             encoding: 'utf-8',
             fd: null,
