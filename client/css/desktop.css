@@ -188,27 +188,6 @@ div.ux-taskbar div.x-toolbar {
     text-decoration: underline;
 }
 
-
-/*----------------------------------------------------
-    Various icon classes
-*/
-
-.accordion-shortcut {
-    background-image: url(../images/im48x48.png);
-}
-
-.cpu-shortcut {
-    background-image: url(../images/statusLarge.png);
-}
-
-
-.notepad-shortcut {
-    background-image: url(../images/notepadLarge.png);
-    width: 46px;
-    height: 46px;
-}
-
-
 .video {
     background-image: url(../images/gears.gif);
 }
@@ -290,8 +269,8 @@ div.ux-taskbar div.x-toolbar {
     background-image:url(../../shared/icons/fam/user_delete.gif) !important;
 }
 
-.connect {
-    background-image:url(../../shared/icons/fam/connect.gif) !important;
+.search16 {
+    background-image:url(../images/16x16/add-location.png) !important;
 }
 
 .user-girl {
