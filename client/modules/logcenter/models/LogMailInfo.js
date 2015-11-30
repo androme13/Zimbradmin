@@ -13,34 +13,30 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             type: 'int',
             flex: 1,
             hidden: true
-                    //searchable: true
         },
         {
             name: 'date',
             exportable: true,
             type: 'string',
             flex: 1
-                    //searchable: true
         },
         {
             name: 'host',
             exportable: true,
             type: 'string',
-            //searchable: true
             flex: 1
         },
         {
             name: 'process',
             exportable: true,
             type: 'string',
-            //searchable: true
             flex: 1
         },
         {
             name: 'key',
             exportable: true,
             type: 'string',
-            //searchable: true
+            searchable: true,
             flex: 1,
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
@@ -54,13 +50,14 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
                 return text;
             },
             contextMenu: [
-                new Ext.menu.Item({
-                    text: "Ajouter une entrée",
-                    //iconCls: btn.iconCls,
+                {
+                    text: "Chercher cette clé",
+                    iconCls: 'search16',
                     handler: function (item) {
-                        me.addRow();
+                        console.log('this',this);
+                        console.log('item',item);
                     }
-                })
+                },
             ]
         },
         {
@@ -68,7 +65,7 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             exportable: true,
             type: 'string',
             flex: 4,
-            //searchable: true
+            searchable: true,
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
                 // 550 blocked
