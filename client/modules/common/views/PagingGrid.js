@@ -190,10 +190,21 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                 },
                 cellcontextmenu: function (view, cell, cellIndex, record, row, rowIndex, event) {
                     var column = view.getHeaderByCell(cell);
+                    var menuItem = {};
+                    var that=this;
                     me.contextMenu = [];
-                    // on ajoute le menu custom de la colonne si il existe
+                    // on ajoute les menus customs de la colonne si ils existent
+                    // et on refait le handler avec le bon scope
                     if (column.contextMenu)
-                        me.contextMenu=column.contextMenu;
+                        for (var i = 0; i < column.contextMenu.length; i++)
+                        {
+                            menuItem = new Ext.menu.Item({
+                                    text: column.contextMenu[i].text,
+                                    iconCls: column.contextMenu[i].iconCls,
+                                    handler: column.contextMenu[i].handler.bind(this),
+                                });
+                            me.contextMenu.push(menuItem);
+                        }
                     event.stopEvent();
                 },
                 itemcontextmenu: function (record, item, index, e, eOpts) {
@@ -202,8 +213,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     var item, btn;
                     // ajout des menus liés à la toolbar
                     // boutons customs lors de la création
+                    // généré dans cellcontextmenu (qui se lance en premier)
                     menu.add(me.contextMenu);
-
 
                     // bouton génériques 
                     //////bouton ajouter                   
