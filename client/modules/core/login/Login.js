@@ -36,7 +36,7 @@ Ext.define('MyDesktop.modules.core.login.Login', {
                 layout: 'fit',
                 maximizable: false,
                 minimizable: false,
-                modal: true,
+                //modal: true,
                 resizable: false,
                 width: 300,
                 title: me.launcher.title,
