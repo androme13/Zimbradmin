@@ -14,7 +14,7 @@ Ext.define('MyDesktop.modules.smtp.Smtp', {
         Ext.util.CSS.swapStyleSheet(idCSS, 'modules/smtp/rsc/style.css');
         this.launcher = {
             menu: 'Smtp',
-            text: 'Gestion SMTP',
+            text: 'Serveurs SMTP',
             title: 'Gestion des Serveurs SMTP',
             iconCls: this.id + '-icon',
             shortcutCls: this.id + '-shortcut',
