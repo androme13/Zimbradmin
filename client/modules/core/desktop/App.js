@@ -33,32 +33,6 @@ Ext.infoMsg = function () {
     };
 }();
 
-// fix hide submenu (in chrome 43)
-/*Ext.override(Ext.menu.Menu, {
-    onMouseLeave: function (e) {
-        var me = this;
-        // BEGIN FIX
-        var visibleSubmenu = false;
-        me.items.each(function (item) {
-            if (item.menu && item.menu.isVisible()) {
-                visibleSubmenu = true;
-            }
-        });
-        if (visibleSubmenu) {
-            //console.log('apply fix hide submenu');
-            return;
-        }
-        // END FIX
-        me.deactivateActiveItem();
-        if (me.disabled) {
-            return;
-        }
-        me.fireEvent('mouseleave', me, e);
-    }
-});*/
-
-
-
 Ext.define('Ext.ux.desktop.App', {
     mixins: {
         observable: 'Ext.util.Observable'
@@ -72,16 +46,15 @@ Ext.define('Ext.ux.desktop.App', {
     useQuickTips: true,
     constructor: function (config) {
         var me = this;
-        me.dxQueue=Ext.create('MyDesktop.modules.core.dxqueue.dxQueue');
+        me.dxQueue = Ext.create('MyDesktop.modules.core.dxqueue.dxQueue');
         // on defini les exceptions des appels DIRECT
-        Ext.Direct.on("exception", function (event,eOpts) {
-            console.log('exception XHR:', event,eOpts);
+        Ext.Direct.on("exception", function (event, eOpts) {
+            console.log('exception XHR:', event, eOpts);
             if (event.xhr) {
                 if (event.xhr.status === 401)
                 {
                     me.onLogin(me.session.userinfo.username);
-                }
-                else
+                } else
                 {
                     Ext.infoMsg.msg("Erreur Serveur", event.message);
                 }
@@ -91,21 +64,21 @@ Ext.define('Ext.ux.desktop.App', {
         me.task = {
             run: function () {
                 ExtRemote.core.DXLogin.isvalidsession({'action': 'isvalidsession'},
-                function (result, event) {
-                    //si la session existe cote serveur
-                    if (result) {
-                        if (result.success === false)
-                        {
-                            me.onLogin(me.session.userinfo.username);
-                        }
-                    }
-                });
+                        function (result, event) {
+                            //si la session existe cote serveur
+                            if (result) {
+                                if (result.success === false)
+                                {
+                                    me.onLogin(me.session.userinfo.username);
+                                }
+                            }
+                        });
             },
             interval: 60000 // toutes les 60 secondes
         };
         // gestion des timers
-        me.timers=Ext.create('MyDesktop.modules.common.timerspool.timersPool');
-        
+        me.timers = Ext.create('MyDesktop.modules.common.timerspool.timersPool');
+
         me.addEvents(
                 'ready',
                 'beforeunload'
@@ -122,54 +95,53 @@ Ext.define('Ext.ux.desktop.App', {
         processlogin: function (obj) {
             var me = this;
             ExtRemote.core.DXLogin.getsession({'action': 'getsession'},
-            function (resultgetsession, event) {
-                //si la session existe cote serveur
-                if (resultgetsession.success === true)
-                {
-                    // on recupere les modules auxquels l'user à le droit
-                    ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
-                    function (resultgetmodules, event2) {
-                        if (resultgetmodules.success === true) {
-                            resultgetsession.data.modules = resultgetmodules.data;
-                            // on configure la session
-                            me.sessionConfig(resultgetsession.data);
-                            // si c'est la premiere fois que 
-                            // la fenetre de login est lancée
-                            // c'est que l'utilisateur vient
-                            // de lancer l'application
-                            // on garde une instance vers login-win pour la suite
-                            var backlogin = me.getModule('login-win');
-                            if (me.getModule('login-win').firstLaunch === true) {
-                                me.getModule('login-win').firstLaunch = false;
-                                me.modules = me.loadModules();
-                                // on injecte le login deja existant dans les modules
-                                me.modules.push(backlogin);
-                                me.initModules(me.modules);
-                                me.finishmenubar();
-                                me.finishtaskbar();
-                                me.loginwindow.close();
-                                me.desktop.taskbar.show();
-                                me.loadShortcuts(resultgetmodules.data);
-                                me.restoreShortcuts();
-                            }
-                            else
-                                    //sinon c'est que la session a été renouvellée
-                                    {
-                                        me.loginwindow.close();
-                                        me.desktop.taskbar.show();
-                                        me.restoreWindows();
-                                        me.restoreShortcuts();
-                                    }
-                            Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
-                            me.runSessionPollTask();
+                    function (resultgetsession, event) {
+                        //si la session existe cote serveur
+                        if (resultgetsession.success === true)
+                        {
+                            // on recupere les modules auxquels l'user à le droit
+                            ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
+                                    function (resultgetmodules, event2) {
+                                        if (resultgetmodules.success === true) {
+                                            resultgetsession.data.modules = resultgetmodules.data;
+                                            // on configure la session
+                                            me.sessionConfig(resultgetsession.data);
+                                            // si c'est la premiere fois que 
+                                            // la fenetre de login est lancée
+                                            // c'est que l'utilisateur vient
+                                            // de lancer l'application
+                                            // on garde une instance vers login-win pour la suite
+                                            var backlogin = me.getModule('login-win');
+                                            if (me.getModule('login-win').firstLaunch === true) {
+                                                me.getModule('login-win').firstLaunch = false;
+                                                me.modules = me.loadModules();
+                                                // on injecte le login deja existant dans les modules
+                                                me.modules.push(backlogin);
+                                                me.initModules(me.modules);
+                                                me.finishmenubar();
+                                                me.finishtaskbar();
+                                                me.loginwindow.close();
+                                                me.desktop.taskbar.show();
+                                                me.loadShortcuts(resultgetmodules.data);
+                                                me.restoreShortcuts();
+                                            } else
+                                                    //sinon c'est que la session a été renouvellée
+                                                    {
+                                                        me.loginwindow.close();
+                                                        me.desktop.taskbar.show();
+                                                        me.restoreWindows();
+                                                        me.restoreShortcuts();
+                                                    }
+                                            Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
+                                            me.runSessionPollTask();
 
+                                        }
+                                    });
+                        } else
+                        {
+                            console.log('error processlogin');
                         }
-                    });
-                } else
-                {
-                    console.log('error processlogin');
-                }
-            }
+                    }
             );
         }
     },
@@ -180,46 +152,46 @@ Ext.define('Ext.ux.desktop.App', {
             Ext.QuickTips.init();
         }
         // on demande au serveur si la session existe
-        console.log('extremote',ExtRemote);
+        console.log('extremote', ExtRemote);
         ExtRemote.core.DXLogin.getsession({'action': 'getsession'},
-        function (resultgetsession, event) {
-            // si une session existe c'est que l'user
-            // a juste raffraichi son navigateur donc on
-            // reconstruit le desktop sans demande de login
-            if (resultgetsession.success === true)
-            {
-                // on recupere les modules auxquels l'user à le droit
-                ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
-                function (resultgetmodules, event2) {
-                    if (resultgetmodules.success === true) {
-                        resultgetsession.data.modules = resultgetmodules.data;
-                        // puisque c'est un raffraichissement
-                        // il faut ajouter le module win-login
-                        // à la main sinon il n'est pas chargé.
-                        // on donne la valeur true au parametre 
-                        // de preparedesktop pour lui
-                        // indiquer de l'ajouter.
-                        me.sessionConfig(resultgetsession.data);
-                        me.preparedesktop(true);
-                        me.getModule('login-win').firstLaunch = false;
-                        me.finishmenubar();
-                        me.finishtaskbar();
-                        me.loadShortcuts(resultgetmodules.data);
-                        // on lance le polltask à la main puisque l'on ne passe pas par le login
-                        me.runSessionPollTask();
-                        Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
-                    }
-                });
-            } else
-                    // sinon c'est un premier login
+                function (resultgetsession, event) {
+                    // si une session existe c'est que l'user
+                    // a juste raffraichi son navigateur donc on
+                    // reconstruit le desktop sans demande de login
+                    if (resultgetsession.success === true)
                     {
-                        me.preparedesktop();
-                        me.onLogin();
-                    }
-        });
+                        // on recupere les modules auxquels l'user à le droit
+                        ExtRemote.core.DXUser.getmodules({'id': resultgetsession.data.userinfo.id},
+                                function (resultgetmodules, event2) {
+                                    if (resultgetmodules.success === true) {
+                                        resultgetsession.data.modules = resultgetmodules.data;
+                                        // puisque c'est un raffraichissement
+                                        // il faut ajouter le module win-login
+                                        // à la main sinon il n'est pas chargé.
+                                        // on donne la valeur true au parametre 
+                                        // de preparedesktop pour lui
+                                        // indiquer de l'ajouter.
+                                        me.sessionConfig(resultgetsession.data);
+                                        me.preparedesktop(true);
+                                        me.getModule('login-win').firstLaunch = false;
+                                        me.finishmenubar();
+                                        me.finishtaskbar();
+                                        me.loadShortcuts(resultgetmodules.data);
+                                        // on lance le polltask à la main puisque l'on ne passe pas par le login
+                                        me.runSessionPollTask();
+                                        Ext.infoMsg.msg("Bienvenue", me.session.userinfo.firstname + ' ' + me.session.userinfo.lastname);
+                                    }
+                                });
+                    } else
+                            // sinon c'est un premier login
+                            {
+                                me.preparedesktop();
+                                me.onLogin();
+                            }
+                });
     },
     runSessionPollTask: function () {
-        console.log('runpolltask', this,ExtRemote);
+        console.log('runpolltask', this, ExtRemote);
         Ext.TaskManager.start(this.task);
         this.timers.resumeAll();
     },
@@ -235,6 +207,7 @@ Ext.define('Ext.ux.desktop.App', {
             return false;
     },
     onLogin: function (user) {
+        var that = this;
         this.stopSessionPollTask();
         // on cache les elements
         this.hideShortcuts();
@@ -387,9 +360,9 @@ Ext.define('Ext.ux.desktop.App', {
             }
         });
         ExtRemote.core.DXModules.addmodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
-        function (result) {
-            me.addShortcuts([record]);
-        });
+                function (result) {
+                    me.addShortcuts([record]);
+                });
     },
     unregisterShortcut: function (record) {
         var me = this;
@@ -401,9 +374,9 @@ Ext.define('Ext.ux.desktop.App', {
         });
         console.log(module);
         ExtRemote.core.DXModules.removemodulesshortcut({'id': this.desktop.app.session.userinfo.id, 'module': module},
-        function (result) {
-            me.removeShortcut([record]);
-        });
+                function (result) {
+                    me.removeShortcut([record]);
+                });
 
     },
     getDesktopConfig: function () {
