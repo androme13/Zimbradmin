@@ -26,6 +26,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         var columns = [];
         var config = {};
         var me = this;
+        this.store.pageSize = 50;
         // configuration du mode edition
         if (this.rowEditing === true) {
             this.rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
@@ -199,10 +200,10 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                         for (var i = 0; i < column.contextMenu.length; i++)
                         {
                             menuItem = new Ext.menu.Item({
-                                    text: column.contextMenu[i].text,
-                                    iconCls: column.contextMenu[i].iconCls,
-                                    handler: column.contextMenu[i].handler.bind(this,column,record),
-                                });
+                                text: column.contextMenu[i].text + ' (' + record.get(column.dataIndex) + ')',
+                                iconCls: column.contextMenu[i].iconCls,
+                                handler: column.contextMenu[i].handler.bind(this, column, record),
+                            });
                             me.contextMenu.push(menuItem);
                         }
                     event.stopEvent();
@@ -215,7 +216,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                     // boutons customs lors de la création
                     // généré dans cellcontextmenu (qui se lance en premier)
                     menu.add(me.contextMenu);
-
                     // bouton génériques 
                     //////bouton ajouter                   
                     if (me.readOnly !== true) {
@@ -363,6 +363,14 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                 //console.log(this.up('grid'));
                                 me.removeRow();
                             }
+                        },
+                        {
+                            xtype: 'panel',
+                            title: 'Basic Panel',
+                            collapsible: true,
+                            collapsed: true,
+                           // width: 400,
+                            html: 'htmltest'
                         },
                         {
                             xtype: 'tbfill'
