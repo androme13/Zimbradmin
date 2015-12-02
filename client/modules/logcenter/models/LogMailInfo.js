@@ -36,10 +36,10 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             name: 'key',
             exportable: true,
             type: 'string',
-            searchable: true,
+           // searchable: true,
             flex: 1,
             renderer: function (value, metaData, record, row, col, store, gridView) {
-                text = Ext.util.Format.htmlEncode(value);
+                var text = Ext.util.Format.htmlEncode(value);
                 if (text === 'NOQUEUE')
                     metaData.tdCls = 'logcenter-red_cell';
                 // else
@@ -53,15 +53,13 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
                 {
                     text: "Chercher cette clé",
                     iconCls: 'search16',
-                    handler: function (column,record,item) {
-                        console.log(column,record)
-                        console.log(record.get(column.dataIndex));
-                        var search=record.get(column.dataIndex);                       
+                    handler: function (column, record, item) {
+                        var search = record.get(column.dataIndex);
                         this.store.load({
-                            params:{search: search}
+                            params: {search: search}
                         });
                     }
-                },
+                }
             ]
         },
         {
@@ -69,7 +67,7 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
             exportable: true,
             type: 'string',
             flex: 4,
-            searchable: true,
+            //searchable: true,
             renderer: function (value, metaData, record, row, col, store, gridView) {
                 text = Ext.util.Format.htmlEncode(value);
                 // 550 blocked
@@ -101,7 +99,7 @@ Ext.define('MyDesktop.modules.logcenter.models.LogMailInfo', {
                     metaData.tdCls = 'logcenter-orange_cell';
 
 
-                //metaData.tdAttr = "data-qtip='" + value + "'";
+                //metaData.tdAttr = "data-qtip='" + Ext.util.Format.ellipsis(value, 800) + "'";
                 metaData.tdAttr = 'title="' + Ext.util.Format.ellipsis(value, 800) + '"';
                 return text;
             }
