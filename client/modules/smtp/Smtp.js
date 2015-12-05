@@ -96,7 +96,7 @@ Ext.define('MyDesktop.modules.smtp.Smtp', {
                 title: 'Serveurs SMTP',
                 multiSelect: true,
             };
-            var grid = Ext.create('MyDesktop.modules.common.views.PagingGrid', cfg);
+            var grid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', cfg);
 
             win = desktop.createWindow({
                 id: this.id,

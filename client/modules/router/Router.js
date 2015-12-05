@@ -39,7 +39,7 @@ Ext.define('MyDesktop.modules.router.Router', {
             relayDomainsStore.on(gridStoreOn.create());
             relayDomainsStore.proxy.on(proxyOn.create(relayDomainsStore));
 
-            var relayDomainsgrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+            var relayDomainsgrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
                 store: relayDomainsStore,
                 rowEditing: true,
                 title: 'relays_domain',
@@ -53,7 +53,7 @@ Ext.define('MyDesktop.modules.router.Router', {
             myNetworksStore.on(gridStoreOn.create());
             myNetworksStore.proxy.on(proxyOn.create(myNetworksStore));
 
-            var myNetworksgrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+            var myNetworksgrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
                 store: myNetworksStore,
                 rowEditing: true,
                 title: 'my_networks',

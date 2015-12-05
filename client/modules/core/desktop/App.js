@@ -152,7 +152,7 @@ Ext.define('Ext.ux.desktop.App', {
             Ext.QuickTips.init();
         }
         // on demande au serveur si la session existe
-        console.log('extremote', ExtRemote);
+        //console.log('extremote', ExtRemote);
         ExtRemote.core.DXLogin.getsession({'action': 'getsession'},
                 function (resultgetsession, event) {
                     // si une session existe c'est que l'user
@@ -262,8 +262,6 @@ Ext.define('Ext.ux.desktop.App', {
                 }
             });
         }
-
-
         module.show();
     },
     /**

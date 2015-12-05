@@ -4,7 +4,7 @@
  * 
  */
 
-Ext.define('MyDesktop.modules.common.views.PagingGrid', {
+Ext.define('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,
@@ -23,6 +23,8 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
         this.up('grid').customLoadStore(field.value);
     },
     initComponent: function () {
+       // var idCSS = 50000;
+       // Ext.util.CSS.createStyleSheet('.x-panel-advsearch{border-color: red;    padding: 0;}',    idCSS);
         var columns = [];
         var config = {};
         var me = this;
@@ -306,9 +308,7 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                             this.store.load({params: {start: 0, limit: newValue}});
                                         }
                                     }
-
                                 }
-
                             }
                         },
                         width: 112,
@@ -363,14 +363,6 @@ Ext.define('MyDesktop.modules.common.views.PagingGrid', {
                                 //console.log(this.up('grid'));
                                 me.removeRow();
                             }
-                        },
-                        {
-                            xtype: 'panel',
-                            title: 'Basic Panel',
-                            collapsible: true,
-                            collapsed: true,
-                           // width: 400,
-                            html: 'htmltest'
                         },
                         {
                             xtype: 'tbfill'

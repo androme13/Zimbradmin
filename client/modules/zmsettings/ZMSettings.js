@@ -48,7 +48,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             // on defini le wizard d'ajout/edition de l'user
             createUserPanel = createUserPanelOBJ.create(ZMUsersGrid, ZMModulesGridStore);
             // création et configuration du grid
-            var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+            var ZMUsersGrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
                 store: ZMUsersGridStore,
                 multiSelect: true,
                 customAddRow: function (grid) {
@@ -67,7 +67,7 @@ Ext.define('MyDesktop.modules.zmsettings.ZMSettings', {
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
             ZMModulesGridStore.on(gridStoreOn.create());
             ZMModulesGridStore.proxy.on(proxyOn.create(ZMModulesGridStore));
-            var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.PagingGrid', {
+            var ZMModulesGrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
                 store: ZMModulesGridStore,
                 rowEditing: true,
                 title: 'Modules',
