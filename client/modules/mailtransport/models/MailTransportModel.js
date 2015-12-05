@@ -14,6 +14,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
             type: 'string',
             searchable: true,
             exportable: true,
+            flex: 2,
             editor: {
                 vtype: 'email',
                 allowBlank: false,
@@ -24,6 +25,7 @@ Ext.define('MyDesktop.modules.mailtransport.models.MailTransportModel', {
             type: 'string',
             searchable: true,
             exportable: true,
+            flex: 2,
             editor: {
                 allowBlank: false,
                 //blankText: 'Le champ est obligatoire.',
