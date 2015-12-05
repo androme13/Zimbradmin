@@ -157,7 +157,7 @@ Ext.define('MyDesktop.modules.common.gridcols.gridCols', {
         return col;
     },
     createModifiedCol: function (options) {
-        var col = {name: 'modified_date', type: 'date', text: 'Modifié le',
+        var col = {name: 'modified_date', type: 'date', text: 'Modifié le',flex: 1,
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
                 var nameModifier = 'inconnu';
                 var idModifier = record.get('modified_by');
