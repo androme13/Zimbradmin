@@ -28,7 +28,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
         });
         // on fabrique le filtre de saisie
         var mask = /^[a-zA-Z0-9\-\_\.]*$/;
-        var origGrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
+        var origGrid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
             store: modulesStore,
             name: 'src',
             rowEditing: false,
@@ -38,7 +38,7 @@ Ext.define('MyDesktop.modules.zmsettings.views.UserWizard', {
             margins: '0 5 0 0'
         });
         var dstGridStore = Ext.create('MyDesktop.modules.zmsettings.stores.UserWizardModules');
-        var dstGrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
+        var dstGrid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
             store: dstGridStore,
             name: 'dst',
             rowEditing: false,

@@ -40,7 +40,7 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
             gridStore.on(gridStoreOn.create());
             gridStore.proxy.on(proxyOn.create(gridStore));
             // création et configuration du grid
-            var grid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
+            var grid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
                 store: gridStore,
                 rowEditing: true,
                 title: 'transport de mails',

@@ -4,7 +4,7 @@
  * 
  */
 
-Ext.define('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
+Ext.define('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
     extend: 'Ext.grid.Panel',
     autoScroll: true,
     loadMask: true,

@@ -38,7 +38,7 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
         var win = desktop.getWindow(this.id);
         if (!win) {
             var routerLogsMailInfoStore = Ext.create('MyDesktop.modules.logcenter.stores.RouterLogsMailInfo');
-            var routerLogsMailInfoGrid = Ext.create('MyDesktop.modules.common.views.pagingrid.PagingGrid', {
+            var routerLogsMailInfoGrid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
                 store: routerLogsMailInfoStore,
                 rowEditing: false,
                 title: 'logs',
