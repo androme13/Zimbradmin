@@ -6,10 +6,16 @@
 
 Ext.define('MyDesktop.modules.common.views.paginggrid.Grid', {
     extend: 'Ext.grid.Panel',
+    name:'grid',
+    //layout:'fit',
     autoScroll: true,
     loadMask: true,
     contextMenu: [],
     me: this,
+    srchFieldVisible: function(mode){
+     var srch = me.down('trigger[name=simpleSrch]');
+     srch.setVisible(mode);
+    },
     customLoadStore: function (search) {
         if (!search || search === '') {
             delete this.store.proxy.extraParams.search;
@@ -323,6 +329,7 @@ Ext.define('MyDesktop.modules.common.views.paginggrid.Grid', {
                     dock: 'top',
                     items: [{
                             xtype: 'trigger',
+                            name:'simpleSrch',
                             triggerCls: 'x-form-clear-trigger',
                             emptyText: 'Recherche ...',
                             enableKeyEvents: true,
