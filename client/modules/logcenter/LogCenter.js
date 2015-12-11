@@ -39,11 +39,13 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
         if (!win) {
             var routerLogsMailInfoStore = Ext.create('MyDesktop.modules.logcenter.stores.RouterLogsMailInfo');
             var routerLogsMailInfoGrid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
-                store: routerLogsMailInfoStore,
-                rowEditing: false,
-                title: 'logs',
-                multiSelect: true,
-                readOnly: true
+                gridParam: {
+                    store: routerLogsMailInfoStore,
+                    rowEditing: false,
+                    title: 'logs',
+                    multiSelect: true,
+                    readOnly: true
+                }
             });
             win = desktop.createWindow({
                 id: this.id,
@@ -81,7 +83,8 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
                     //tabPosition:'left',
                     items: [
                         {
-                            xtype: routerLogsMailInfoGrid
+                            xtype: routerLogsMailInfoGrid,
+                            title: 'Routeur',
                         },
                         {
                             //xtype: myNetworksgrid
