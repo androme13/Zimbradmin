@@ -16,7 +16,7 @@ Ext.define('MyDesktop.modules.common.views.paginggrid.AdvSearchPanel', {
             width: 180,
             items: [{
                     xtype: 'fieldset',
-                    
+                    checkboxToggle: true,
                     //flex: 1,
                     title: 'Case sensitive / Regex',
                     defaultType: 'checkbox', // each item will be a checkbox
@@ -40,7 +40,7 @@ Ext.define('MyDesktop.modules.common.views.paginggrid.AdvSearchPanel', {
                                 {boxLabel: 'Regex',name:'regex'},
                             ]
                         }]
-                }],
+                },this.customItems],
             listeners: {
                 afterrender: function () {
                     console.log('afterrender', this);
