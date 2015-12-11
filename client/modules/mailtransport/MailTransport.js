@@ -27,13 +27,13 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
             shortcutCls: this.id + '-shortcut',
         };
     },
-    createWindow: function (refer) {
+    createWindow: function () {
         var me = this;
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow(this.id);
         if (!win) {
             // création et configuration du store       
-            var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');           
+            var gridStore = Ext.create('MyDesktop.modules.mailtransport.stores.MailTransport');
             // utilisation des routines génériques pour les listeners
             var gridStoreOn = Ext.create('MyDesktop.modules.common.gridStoreOn');
             var proxyOn = Ext.create('MyDesktop.modules.common.proxyOn');
@@ -42,17 +42,37 @@ Ext.define('MyDesktop.modules.mailtransport.MailTransport', {
             // création et configuration du grid
             var grid = Ext.create('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
                 title: 'Routeur',
-                gridParam:{
-                store: gridStore,
-                rowEditing: true,
-                title: 'transport de mails',
-                multiSelect: true}
-            });
+                gridParam: {
+                    store: gridStore,
+                    rowEditing: true,
+                    title: 'transport de mails',
+                    multiSelect: true},
+                searchParam: {
+                    customItems: {
+                        xtype: 'fieldset',
+                        checkboxToggle: true,
+                        title: 'Case sensitive / Regex',
+                        defaultType: 'checkbox', // each item will be a checkbox
+                        items: [{
+                                padding: '5 0 5 0',
+                                xtype: 'checkboxgroup',
+                                layout: 'column',
+                                cls: 'x-check-group-alt',
+                                columns: 2,
+                                items: [
+                                    {boxLabel: 'Case Sens.', name: 'casesens'},
+                                    {boxLabel: 'Regex', name: 'regex'},
+                                ]
+                            }]
+                    }
+                }
 
+
+            });
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
-                width: 500,
+                width: 800,
                 height: 400,
                 iconCls: this.launcher.iconCls,
                 bodyBorder: Ext.themeName !== 'neptune',
