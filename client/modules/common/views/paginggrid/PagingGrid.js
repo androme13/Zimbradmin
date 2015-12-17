@@ -27,7 +27,7 @@ Ext.define('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
                     flex: 1,
                     region: 'west',
                     xtype: 'panel',
-                    minWidth: 190,
+                    minWidth: 300,
                     //minHeight: 250,
                     //width: 200,
                     //margins: '0 0 0 0',
@@ -64,11 +64,13 @@ Ext.define('MyDesktop.modules.common.views.paginggrid.PagingGrid', {
         Ext.applyIf(me, config);
         me.callParent(arguments);
     },
-    setExtraParam: function (params) {
+    addExtraParams: function (params) {
+
+    },
+    setExtraParams: function (params) {
 
     },
     setSrchMode: function (mode) {
-
         // 0: recherche normale
         // 1: recherche avancée
         var srch = me.down('trigger[name=simpleSrch]').show();
