@@ -50,8 +50,8 @@ Ext.define('MyDesktop.modules.logcenter.LogCenter', {
             win = desktop.createWindow({
                 id: this.id,
                 title: this.launcher.title,
-                width: 500,
-                height: 400,
+                width: 640,
+                height: 480,
                 iconCls: this.launcher.iconCls,
                 bodyBorder: Ext.themeName !== 'neptune',
                 layout: 'fit',
